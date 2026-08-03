@@ -11,7 +11,7 @@
 /plugin install live-submission-guidelines@live-submission-guidelines-marketplace
 ```
 
-裝好之後照常問投稿問題即可（「Psychological Methods 字數上限多少」「這篇該投哪」「幫我對照 IMPS 的規定」），`submission-guidelines` skill 會自動接手。
+裝好之後照常問投稿問題即可（「Psychological Methods 字數上限多少」「這篇該投哪」「幫我對照 IMPS 的規定」），`submit-to` skill 會自動接手。
 
 ## 跟 livedocs 的關係：哲學相同，機制相反
 
@@ -56,7 +56,7 @@ livedocs 不能存，因為存了就過時；本專案必須存，因為底層�
 | `apa/psychological-methods` | journal | 4 來源，2026-08-03 |
 | `psychometric-society/imps` | conference | 3 來源，2026-08-03（cycle 2026 已辦畢） |
 
-需求驅動 —— 有人要投才加。收錄新場次用 `venue-add` skill。
+需求驅動 —— 有人要投才加。收錄新場次用 `add-venue` skill。
 
 ## 開發
 

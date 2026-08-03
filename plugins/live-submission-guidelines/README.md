@@ -6,8 +6,8 @@
 
 | Skill | 何時觸發 |
 |---|---|
-| `submission-guidelines` | 查詢/比較投稿規定、對照稿件、投稿前驗證 |
-| `venue-add` | 場次尚未收錄，或 `verify.py` 回報來源已變動 |
+| `submit-to` | 查詢/比較投稿規定、對照稿件、投稿前驗證 |
+| `add-venue` | 場次尚未收錄，或 `verify.py` 回報來源已變動 |
 
 ## Scripts
 

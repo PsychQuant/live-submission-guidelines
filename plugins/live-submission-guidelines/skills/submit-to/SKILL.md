@@ -1,9 +1,11 @@
 ---
-name: submission-guidelines
-description: Use when the user is submitting to, choosing between, or preparing a manuscript for an academic journal or conference — word limits, abstract rules, masked/blind review, required sections, data/code availability, reporting standards (JARS/TOP), deadlines, or formatting. Triggers on "投稿", "submit to <journal>", "這篇該投哪", "字數上限", "截稿日", "abstract word limit", "does <venue> require preregistration", "check my draft against <venue>", or any named venue (Psychological Methods, IMPS, …). Reads a timestamped primary-source corpus instead of model memory, and forces live re-verification before an actual submission.
+name: submit-to
+description: Use when the user is submitting to, choosing between, or preparing a manuscript for an academic journal or conference — word limits, abstract rules, masked/blind review, required sections, data/code availability, reporting standards (JARS/TOP), deadlines, or formatting. Triggers on "投稿", "submit to <journal>", "這篇該投哪", "字數上限", "截稿日", "abstract word limit", "does <venue> require preregistration", "check my draft against <venue>", or any named venue (Psychological Methods, IMPS, …). Reads a timestamped primary-source corpus instead of model memory, and forces live re-verification before an actual submission. NOTE despite the name this skill NEVER performs the submission itself — it prepares and checks, then stops before the portal.
 ---
 
-# submission-guidelines
+# submit-to
+
+> **名字的免責**：本 skill **不會**替使用者送出稿件。它查規定、對照稿件、在真的要投之前做現場驗證，然後**停在投稿系統之前**——按下 submit 永遠是作者本人的動作。若使用者要求「幫我投出去」，說明本 skill 到哪裡為止，並把 portal URL 給他。
 
 投稿須知**不要憑記憶回答**。模型記憶對期刊規定特別不可靠：規定會改、各刊差異細碎，而錯誤的代價不對稱——照著錯的字數上限寫完一整篇稿，是不可逆的浪費。
 
@@ -27,7 +29,7 @@ ls ${CLAUDE_PLUGIN_ROOT}/venues/*/          # 列出已收錄的場次
 grep -ril "<關鍵字>" ${CLAUDE_PLUGIN_ROOT}/venues/
 ```
 
-**找不到就明說找不到**，不要用記憶補。此時走 `venue-add` skill 現場建一筆（那個 skill 會抓一手來源），或直接告訴使用者這個場次尚未收錄。
+**找不到就明說找不到**，不要用記憶補。此時走 `add-venue` skill 現場建一筆（那個 skill 會抓一手來源），或直接告訴使用者這個場次尚未收錄。
 
 ## Step 2 — 讀取並回答
 
