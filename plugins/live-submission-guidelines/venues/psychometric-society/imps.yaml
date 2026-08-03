@@ -1,0 +1,132 @@
+--- # live-submission-guidelines venue record
+# 研討會樣本 — 內容擷取自 psychometricsociety.org 2026-08-03。
+#
+# 這份樣本的用途不只是資料，也是 schema 的壓力測試：研討會與期刊的欄位重量完全相反
+# （期刊 requirements 厚 / cycle 空；研討會 requirements 薄 / cycle 厚），而且官網
+# 大量欄位根本不公布 —— 正是 `unknown` 型別存在的理由。
+
+schema_version: 1
+id: psychometric-society/imps
+kind: conference
+family: psychometrics-conferences
+status: active
+
+sources:
+  - id: meeting_2026
+    role: authoritative
+    url: https://www.psychometricsociety.org/imps-2026
+    note: >-
+      /imps 是 404（真正路徑帶年份 /imps-2026）。與 APA 的
+      /submission-guidelines → /submit 同類：URL 慣例必須編碼，不可推測。
+      另注意該 404 頁面本身有 28 KB —— 比某些真實頁面還大，所以
+      min_extracted_chars 擋不住，must_contain 是必要條件而非備援。
+    fetch:
+      method: http                  # 與 APA 相反：此站一般 HTTP 即可
+      http_viable: true
+      validity:
+        must_contain: "Yonsei University"
+        min_extracted_chars: 2000
+    snapshot:
+      fetched_at: 2026-08-03
+      last_verified_at: 2026-08-03
+      extracted_sha256: null        # 待抽取器定版
+
+  - id: annual_meeting
+    role: supporting
+    url: https://www.psychometricsociety.org/annual-meeting
+    note: 年度不變的通則（歷史、時程慣例、Proceedings 政策）
+    fetch: {method: http, http_viable: true}
+    snapshot: {fetched_at: 2026-08-03, last_verified_at: 2026-08-03}
+
+  - id: society_home
+    role: supporting
+    url: https://www.psychometricsociety.org/
+    fetch: {method: http, http_viable: true}
+    snapshot: {fetched_at: 2026-08-03, last_verified_at: 2026-08-03}
+
+identity:
+  name: International Meeting of the Psychometric Society (IMPS)
+  publisher: The Psychometric Society
+  homepage: https://www.psychometricsociety.org/annual-meeting
+  frequency: annual
+  issn: {status: not_applicable, checked: 2026-08-03}
+  metrics:
+    acceptance_rate: {status: not_published, checked: 2026-08-03}
+
+# ─────────────────────────────────────────────────────────────
+# SLOW — 年度之間不變的通則。研討會這一塊比期刊薄得多。
+# ─────────────────────────────────────────────────────────────
+requirements:
+  refresh: {check_every: P12M, method: extracted_hash_diff}
+
+  scope:
+    aims: >-
+      心理計量學會的年度國際會議，推進行為資料分析的理論與方法，
+      涵蓋心理學、教育與社會/行為科學。
+    audience_note: 通常來自約 30 個國家的與會者
+    since: 1935
+    typical_months: [6, 7]          # 「usually in June or July」
+    src: annual_meeting
+
+  proceedings:
+    exists: true
+    since: 2012
+    open_access_since_volume: 2024
+    src: annual_meeting
+
+  # 以下在學會層級的頁面上皆未載明，散落於各年度的 Presenter Information 子頁。
+  # 標成 not_found 而非留空，是為了讓後人知道「查過了，這裡沒有」。
+  submission_types: {status: not_found, checked: 2026-08-03,
+                     note: 由節目單可推知有 poster 與 session，但官網未描述投稿類別}
+  abstract_limits:  {status: not_found, checked: 2026-08-03}
+  formatting:       {status: not_found, checked: 2026-08-03}
+  eligibility:      {status: not_found, checked: 2026-08-03,
+                     note: 未見會員資格或每人發表篇數限制的說明}
+
+# ─────────────────────────────────────────────────────────────
+# FAST — 每年翻新。研討會這一塊才是重點。
+# ─────────────────────────────────────────────────────────────
+cycle:
+  applies_to: 2026
+  status: held                      # upcoming | submissions_open | submissions_closed | held
+  expires_at: 2026-07-24            # 會議結束日；今日之後此區塊全部不可沿用
+
+  edition: IMPS 2026
+  dates:
+    start: 2026-07-21
+    end: 2026-07-24
+    precursor_events:
+      - {label: Short Courses, date: 2026-07-20}
+  venue:
+    institution: Yonsei University
+    city: Seoul
+    country: Republic of Korea
+    mode: in_person
+
+  portal:
+    system: Ex Ordo
+    url: https://imps2026.exordo.com/programme
+    verified: false                 # 僅由 meeting_2026 頁面連出；本次未實際擷取該站
+    note: 官網未言明此系統同時處理投稿；Ex Ordo 通常兼作投稿系統，但頁面未證實
+
+  deadlines:
+    - {id: registration_open,  date: 2026-04-01, label: 報名開始}
+    - {id: registration_close, date: 2026-05-22, label: 報名結束}
+    - {id: abstract_submission, date: null,
+       status: not_found, checked: 2026-08-03, label: 摘要投稿截止}
+    - {id: notification, date: null,
+       status: not_found, checked: 2026-08-03, label: 錄取通知}
+
+  fees: {status: not_found, checked: 2026-08-03}
+
+  next_edition: {status: not_found, checked: 2026-08-03,
+                 note: 官網未列 2027 場次；Past Meetings 僅到 2025}
+
+warnings:
+  - >-
+    本 cycle 已於 2026-07-24 結束（status: held）。任何日期、地點、報名資訊
+    都不得沿用到下一屆 —— IMPS 每年更換主辦地與時程。下一屆資訊釋出前，
+    此檔的 cycle 區塊僅供歷史參考。
+  - >-
+    投稿相關的具體規定（類型、字數、格式）學會層級頁面均未載明，須查該年度
+    的 Presenter Information 子頁。本檔的 requirements 因此偏薄，不代表沒有規定。

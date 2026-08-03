@@ -1,0 +1,330 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/PsychQuant/live-submission-guidelines/schema/venue.schema.json",
+  "title": "Submission venue record",
+  "description": "投稿場次（期刊或研討會）的須知記錄。設計理由見 SCHEMA.md。此 schema 的職責是強制四個決策（provenance 可驗證、unknown 是一級公民、slow/fast 欄位分離、原生單位不假裝可比），不是窮舉所有欄位 —— requirements 底下容許擴充。",
+
+  "type": "object",
+  "required": ["schema_version", "id", "kind", "family", "sources", "identity", "requirements"],
+  "additionalProperties": false,
+
+  "properties": {
+    "schema_version": { "const": 1 },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*/[a-z0-9][a-z0-9-]*$",
+      "description": "穩定 slug，形如 publisher/venue（例 apa/psychological-methods）"
+    },
+    "kind": { "enum": ["journal", "conference"] },
+    "family": {
+      "type": "string",
+      "description": "plugin 分組軸 —— 出版社或領域，不是單一場次。跨場次比較（『這篇該投哪』）需要同時載入同一 family。"
+    },
+    "status": { "enum": ["active", "ceased", "renamed"], "default": "active" },
+
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/source" },
+      "description": "須知常散在多個頁面（實測 Psychological Methods 分佈於 3 個），故為列表。"
+    },
+
+    "identity": { "type": "object" },
+
+    "requirements": {
+      "type": "object",
+      "required": ["refresh"],
+      "description": "SLOW 欄位群 —— 數年不變。驗證用 hash diff 即可。",
+      "properties": {
+        "refresh": { "$ref": "#/$defs/refresh" },
+        "length": { "$ref": "#/$defs/length" },
+        "abstracts": { "type": "array", "items": { "type": "object" } },
+        "review": {
+          "type": "object",
+          "properties": {
+            "conditional": {
+              "type": "array",
+              "items": { "$ref": "#/$defs/conditionalRequirement" },
+              "description": "條件式要求。攤平成無條件清單會誤導 —— 遮蔽審查是選配，但一旦選了就帶出一整串額外規定。"
+            }
+          }
+        },
+        "standards": { "type": "array", "items": { "$ref": "#/$defs/externalStandard" } }
+      }
+    },
+
+    "cycle": {
+      "description": "FAST 欄位群 —— 每年翻新。期刊通常 applies_to: null；研討會必填。日期錯了是致命的，故與 requirements 分離、用不同更新頻率處理。",
+      "oneOf": [
+        { "type": "null" },
+        { "$ref": "#/$defs/cycle" }
+      ]
+    },
+
+    "warnings": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "工具應主動向使用者複述的警告（如「不符規定者不送審直接退」）。"
+    }
+  },
+
+  "allOf": [
+    {
+      "if": { "properties": { "kind": { "const": "conference" } }, "required": ["kind"] },
+      "then": {
+        "required": ["cycle"],
+        "properties": {
+          "cycle": {
+            "type": "object",
+            "required": ["applies_to", "expires_at"],
+            "properties": { "applies_to": { "type": "integer" } }
+          }
+        }
+      }
+    }
+  ],
+
+  "$defs": {
+
+    "unknown": {
+      "type": "object",
+      "required": ["status", "checked"],
+      "additionalProperties": false,
+      "description": "「查過，沒有」與「還沒查」必須可區分。留空會讓後人以為是漏抓，於是重複去查一次不存在的東西。",
+      "properties": {
+        "status": {
+          "enum": ["not_published", "not_found", "not_applicable"],
+          "description": "not_published=官方未公布；not_found=查了找不到；not_applicable=對此場次不適用"
+        },
+        "checked": { "type": "string", "format": "date" },
+        "note": { "type": "string" },
+        "src": { "type": "string", "description": "sources[].id" }
+      }
+    },
+
+    "valueOrUnknown": {
+      "oneOf": [
+        { "type": ["string", "number", "boolean", "array"] },
+        { "$ref": "#/$defs/unknown" }
+      ]
+    },
+
+    "source": {
+      "type": "object",
+      "required": ["id", "role", "url", "fetch", "snapshot"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string" },
+        "role": { "enum": ["authoritative", "supporting", "external_standard"] },
+        "url": { "type": "string", "format": "uri" },
+        "note": { "type": "string" },
+        "fetch": { "$ref": "#/$defs/fetch" },
+        "snapshot": { "$ref": "#/$defs/snapshot" }
+      }
+    },
+
+    "fetch": {
+      "type": "object",
+      "required": ["method"],
+      "properties": {
+        "method": {
+          "enum": ["http", "webfetch", "browser"],
+          "description": "browser = 需要真實瀏覽器（safari-browser）才能過 bot 防護"
+        },
+        "http_viable": {
+          "type": "boolean",
+          "description": "一般 HTTP 抓取是否可用。實測 APA 為 false —— Incapsula 回 HTTP 200 + 212 bytes 空殼，非 403。"
+        },
+        "http_failure_mode": { "type": "string" },
+        "validity": {
+          "$ref": "#/$defs/fetchValidity",
+          "description": "強烈建議必填。缺少時 freshness 檢查會安靜地說謊。"
+        }
+      }
+    },
+
+    "fetchValidity": {
+      "type": "object",
+      "required": ["must_contain", "min_extracted_chars"],
+      "additionalProperties": false,
+      "description": "抓取後、入庫前的斷言。存在的唯一理由：bot 挑戰頁會以 HTTP 200 回傳空殼，若不斷言就會把空殼當內容存下，且其 hash 穩定不變 —— 於是 freshness 檢查永遠回報「未變動」而實際未監看任何東西。",
+      "properties": {
+        "must_contain": { "type": "string" },
+        "min_extracted_chars": { "type": "integer", "minimum": 1 }
+      }
+    },
+
+    "snapshot": {
+      "type": "object",
+      "required": ["fetched_at", "last_verified_at"],
+      "additionalProperties": false,
+      "description": "三個欄位不可合併。單一時間戳只表達『我何時看過』，不表達『現在是否仍為真』。",
+      "properties": {
+        "fetched_at": { "type": "string", "format": "date", "description": "內容擷取時間" },
+        "last_verified_at": {
+          "type": "string", "format": "date",
+          "description": "最後一次重抓並確認 hash 相同的時間。staleness = now − last_verified_at（不是 fetched_at）。"
+        },
+        "extracted_sha256": {
+          "type": ["string", "null"],
+          "description": "算在【抽取後的純文字】上，不是 HTTP response body。跨 source 出現相同 hash 視為抓取故障，不是巧合。"
+        },
+        "extractor": {
+          "type": "string",
+          "description": "抽取器版本。不同抽取器給不同 hash，故 hash 只在同一 extractor 內可比。"
+        }
+      }
+    },
+
+    "refresh": {
+      "type": "object",
+      "required": ["check_every", "method"],
+      "properties": {
+        "check_every": { "type": "string", "description": "ISO 8601 duration，例 P6M" },
+        "method": { "enum": ["extracted_hash_diff", "manual"] }
+      }
+    },
+
+    "length": {
+      "type": "object",
+      "required": ["value", "unit"],
+      "description": "保留原生單位。硬轉字數再跨場次比較是製造假精確 —— 「50 頁雙倍行距含參考文獻」不等於任何確定字數。",
+      "properties": {
+        "value": { "type": "number" },
+        "unit": { "enum": ["pages_double_spaced", "words", "characters", "pages_typeset"] },
+        "basis": { "type": "object", "description": "字體/字級/行距等使單位可解釋的前提" },
+        "includes": {
+          "type": "array",
+          "items": { "enum": ["references", "tables", "figures", "appendixes", "abstract", "supplemental"] }
+        },
+        "approx_words": {
+          "type": "object",
+          "required": ["value", "assumption", "confidence"],
+          "description": "選配。必須標註換算假設與信心，讓比較功能可用而不騙人。",
+          "properties": {
+            "value": { "type": "number" },
+            "assumption": { "type": "string" },
+            "confidence": { "enum": ["low", "medium", "high"] }
+          }
+        },
+        "exceptions": { "type": "string" }
+      }
+    },
+
+    "conditionalRequirement": {
+      "type": "object",
+      "required": ["id", "when", "requirements"],
+      "properties": {
+        "id": { "type": "string" },
+        "optional": { "type": "boolean" },
+        "when": { "type": "string", "description": "觸發條件的人類可讀描述" },
+        "requirements": { "type": "array", "items": { "type": "string" }, "minItems": 1 }
+      }
+    },
+
+    "externalStandard": {
+      "type": "object",
+      "required": ["id"],
+      "description": "外部標準（JARS、TOP、CRediT）。必須能表達『此標準對本類研究無對應模組』—— 這是實測發現的真實缺口，不是資料不全。",
+      "properties": {
+        "id": { "type": "string" },
+        "url": { "type": "string", "format": "uri" },
+        "label": { "type": "string" },
+        "required": { "type": "boolean" },
+        "level": { "type": "string" },
+        "areas": { "type": "integer" },
+        "applicability": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["case", "status"],
+            "properties": {
+              "case": { "type": "string" },
+              "status": { "enum": ["covered", "partial", "no_module"] },
+              "ref": { "type": "string" },
+              "note": { "type": "string" }
+            }
+          }
+        },
+        "escalation": { "type": "string", "description": "標準本身無法回答時的求助管道" },
+        "decision_flowchart": { "type": "string", "format": "uri" }
+      }
+    },
+
+    "cycle": {
+      "type": "object",
+      "description": "研討會的重心在此（requirements 反而薄）；期刊多為 applies_to: null。實測 IMPS 證實此不對稱。",
+      "properties": {
+        "applies_to": {
+          "type": ["integer", "null"],
+          "description": "適用年度。null = 無年度週期（多數期刊）。"
+        },
+        "status": {
+          "enum": ["upcoming", "submissions_open", "submissions_closed", "held"],
+          "description": "『已舉行』與『截稿已過』是不同狀態，單靠日期比較無法表達 —— 前者整個 cycle 作廢，後者可能還能註冊參加。"
+        },
+        "expires_at": {
+          "type": "string", "format": "date",
+          "description": "過期後工具必須主動示警，不得靜默沿用。日期錯了是致命的。"
+        },
+        "edition": { "type": "string" },
+        "dates": {
+          "type": "object",
+          "properties": {
+            "start": { "type": "string", "format": "date" },
+            "end": { "type": "string", "format": "date" },
+            "precursor_events": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": ["label", "date"],
+                "properties": { "label": { "type": "string" }, "date": { "type": "string", "format": "date" } }
+              },
+              "description": "短期課程/工作坊等主會期前的活動 —— 常被忽略但影響行程與經費申請"
+            }
+          }
+        },
+        "venue": {
+          "type": "object",
+          "properties": {
+            "institution": { "type": "string" },
+            "city": { "type": "string" },
+            "country": { "type": "string" },
+            "mode": { "enum": ["in_person", "virtual", "hybrid"] }
+          }
+        },
+        "portal": {
+          "type": "object",
+          "description": "投稿系統常與主辦單位網站分離（Ex Ordo / EasyChair / Editorial Manager）。verified 記錄該 URL 是否經實際擷取確認，避免把『網站連出去的連結』當成『已證實的投稿入口』。",
+          "properties": {
+            "system": { "type": "string" },
+            "url": { "type": "string", "format": "uri" },
+            "verified": { "type": "boolean" },
+            "note": { "type": "string" }
+          }
+        },
+        "deadlines": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id"],
+            "properties": {
+              "id": { "type": "string" },
+              "date": { "type": ["string", "null"] },
+              "timezone": { "type": "string" },
+              "label": { "type": "string" },
+              "status": { "enum": ["not_published", "not_found", "not_applicable"] },
+              "checked": { "type": "string", "format": "date" },
+              "note": { "type": "string" }
+            },
+            "description": "date 可為 null 並附 status —— 『這個截止日官網沒寫』必須能表達，否則後人會以為是漏抓。"
+          }
+        },
+        "fees": {},
+        "next_edition": {},
+        "rolling_calls": { "type": "array", "items": { "type": "object" } },
+        "theme": { "type": "string" }
+      }
+    }
+  }
+}

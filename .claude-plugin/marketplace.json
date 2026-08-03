@@ -1,0 +1,22 @@
+{
+  "name": "live-submission-guidelines-marketplace",
+  "owner": {
+    "name": "Che Cheng"
+  },
+  "metadata": {
+    "description": "Primary-source-first submission guidelines for academic venues — journals and conferences. Curated, timestamped, hash-verified records instead of model memory.",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "live-submission-guidelines",
+      "version": "0.1.0",
+      "description": "投稿須知的一手來源語料庫 —— 期刊與研討會。快照帶時間戳與內容 hash，投稿前強制現場驗證，避免照著過期規定寫完一整篇稿。2 個 skill + schema + 驗證/新鮮度腳本。",
+      "author": {
+        "name": "Che Cheng"
+      },
+      "source": "./plugins/live-submission-guidelines",
+      "category": "productivity"
+    }
+  ]
+}

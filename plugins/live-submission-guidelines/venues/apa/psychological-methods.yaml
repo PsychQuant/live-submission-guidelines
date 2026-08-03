@@ -1,0 +1,246 @@
+--- # live-submission-guidelines venue record
+# 樣本實例 v1 — 內容擷取自 APA 官方頁面 2026-08-03。
+# 這是 schema 草案的唯一 worked example；欄位形狀以此為準，形式規格見 schema/venue.schema.json。
+
+schema_version: 1
+id: apa/psychological-methods
+kind: journal                       # journal | conference
+family: apa-journals                # plugin 分組軸 = 出版社/領域，不是單一場次
+status: active
+
+# ─────────────────────────────────────────────────────────────
+# 來源與 provenance。須知散在多個頁面，所以 sources 是列表。
+# ─────────────────────────────────────────────────────────────
+sources:
+  - id: submit
+    role: authoritative
+    url: https://www.apa.org/pubs/journals/met/submit
+    note: >-
+      最直覺的 /submission-guidelines 是 404；真正路徑是 /submit。
+      per-publisher 的 URL 慣例必須編碼，不可推測。
+    fetch:
+      method: webfetch              # http | webfetch | browser
+      http_viable: false
+      http_failure_mode: >-
+        Incapsula bot 挑戰回 HTTP 200 + 212 bytes 空殼（非 403）。
+        三個不同 APA 頁面因此得到相同 hash sha256:8bd329e5869bd8e0…
+        天真的 hash 比對會永遠回報「未變動」而實際未監看任何內容。
+      validity:                     # 抓取後必須先斷言，通過才入庫
+        must_contain: "double-spaced pages"
+        min_extracted_chars: 3000
+    snapshot:
+      fetched_at: 2026-08-03
+      last_verified_at: 2026-08-03  # staleness 算這欄，不是 fetched_at
+      extracted_sha256: null        # TODO: 抽取器定版後回填（見 SCHEMA.md 未決事項 2）
+
+  - id: journal_home
+    role: supporting
+    url: https://www.apa.org/pubs/journals/met
+    fetch: {method: webfetch, http_viable: false}
+    snapshot: {fetched_at: 2026-08-03, last_verified_at: 2026-08-03}
+
+  - id: calls
+    role: supporting
+    url: https://www.apa.org/pubs/journals/met/calls-for-papers
+    fetch: {method: webfetch, http_viable: false}
+    snapshot: {fetched_at: 2026-08-03, last_verified_at: 2026-08-03}
+
+  - id: jars
+    role: external_standard
+    url: https://apastyle.apa.org/jars/quantitative
+    fetch: {method: webfetch, http_viable: false}
+    snapshot: {fetched_at: 2026-08-03, last_verified_at: 2026-08-03}
+
+# ─────────────────────────────────────────────────────────────
+identity:
+  name: Psychological Methods
+  publisher: American Psychological Association
+  issn: {print: "1082-989X", electronic: "1939-1463"}
+  homepage: https://www.apa.org/pubs/journals/met
+  editor: {name: Fred Oswald, email: foswald@gmail.com, src: submit}
+  frequency: bimonthly
+  external_ids:                     # 機讀層 — 這些欄位可以真的 live 查
+    crossref: "1082-989X"
+    openalex: issn:1082-989X
+  metrics:
+    impact_factor: {value: 7.5, as_of: 2026-08-03, src: journal_home}
+    impact_factor_5yr: {value: 11.5, as_of: 2026-08-03, src: journal_home}
+    category_rank: {value: "8/222", category: Psychology–Multidisciplinary, src: journal_home}
+    acceptance_rate: {status: not_published, checked: 2026-08-03, src: journal_home}
+    time_to_first_decision: {status: not_found, checked: 2026-08-03}
+
+# ─────────────────────────────────────────────────────────────
+# SLOW — 數年不變。驗證用 hash diff 即可。
+# ─────────────────────────────────────────────────────────────
+requirements:
+  refresh: {check_every: P6M, method: extracted_hash_diff}
+
+  scope:
+    aims: >-
+      發展與傳播「收集、分析、理解、詮釋心理學資料」的技術。
+    evaluation_criteria:            # 官網明列的三項審稿判準
+      - 與理解心理學資料的相關性
+      - 方法上的正確性
+      - 對廣泛讀者的可及性（最好用具體實例）
+    out_of_scope_hints:             # 對「該投哪」的比較功能特別有用
+      - {case: 偏窄的測驗編製論文, suggested_venue: Psychological Assessment}
+      - {case: 只服務單一次領域的論文, suggested_venue: 專科期刊, unless: 特別強}
+
+  article_types:
+    - {id: original, label: 原創理論／量化／實證／方法論文}
+    - {id: review, label: 方法議題回顧}
+    - {id: tutorial, label: Tutorial, note: 有常設徵稿, src: calls}
+    - {id: application, label: 新方法的創新應用}
+    - {id: teaching, label: 量化方法教學}
+    - {id: software_review, label: 統計軟體評論}
+    - id: replication
+      label: 複製研究
+      extra: 副標與摘要都必須含 "A Replication of XX Study"
+
+  length:
+    value: 50
+    unit: pages_double_spaced
+    basis: {font: Times New Roman, size_pt: 12, spacing: double}
+    includes: [references, tables, figures, appendixes]
+    approx_words: {value: 12500, assumption: "250 words/page", confidence: low}
+    exceptions: 僅在被判定能對文獻做出 exceptional contribution 時考慮超長
+    src: submit
+
+  abstracts:                        # 複數 — APA 要兩份，極易漏
+    - id: technical
+      max_words: 250
+      required_at: submission
+      placement: separate_page
+      purpose: 資料庫檢索
+    - id: nontechnical
+      max_words: {status: not_published, checked: 2026-08-03}
+      required_at: submission_or_first_revision
+      purpose: 向非方法學者的應用研究者說明價值
+      note: 編輯可協助草擬
+  keywords: {max: 5}
+
+  formatting:
+    style_manual: {name: APA Publication Manual, edition: 7}
+    spacing: double
+    file_formats: [".docx", ".tex (zip)"]
+    pdf_required: true
+    line_numbers: {status: not_found, checked: 2026-08-03}
+    equations:
+      required_tool: [MathType, Equation Editor 3.0]
+      forbidden: Word 2007/2010 內建公式編輯器（轉低解析度圖檔、需重打）
+      note: 走 LaTeX 投稿可完全避開
+    code_in_text: {font: Courier New, size_pt: 8, image_if_over_chars: 40}
+    tables: {method: Word Insert Table, forbidden: [tab 對齊, 多餘空格對齊]}
+    figures:
+      formats: {preferred: [TIFF, JPG], vector: EPS, forbidden: 網頁下載圖}
+      dpi: {color_line_and_halftone: 300, bw_line_and_gray_halftone: 600}
+      color_note: 圖說印刷/線上共用，必須用文字描述顏色（色相 + 灰階值）
+
+  structure:
+    required_sections:
+      - {id: transparency_and_openness, placement: Method 章節末尾}
+    author_note: {sentences: [2, 4], content: 先前散布情形（研討會、listserv、網站、ResearchGate）}
+    separate_pages: [author_footnotes, title_page]
+
+  review:
+    type: standard_apa
+    conditional:
+      - id: masked_review
+        optional: true
+        when: 作者於投稿時主動要求
+        requirements:
+          - 上傳去除標題頁與可辨識資訊的稿件 PDF
+          - 另附不給審稿人看的標題頁檔案
+          - 清除補助案號、IRB 所屬機構名稱、自我引用、repository/預先註冊連結
+          - OSF 建議用 view-only link
+          - 錄取後製作階段須補回 byline 與完整 author note
+    author_may_suggest_reviewers: true
+
+  openness:
+    top_guidelines: {level: disclosure, areas: 8, applies_to: 實證研究含後設分析}
+    data_statement: {required: true, alternative: 說明法律或倫理上不可得的理由}
+    code_statement: {required: true, applies_to: 使用量化或模擬方法的研究}
+    preregistration_statement: {required: true, note: 即使未預先註冊也必須陳述}
+    recommended_repositories: [APA OSF repository, re3data 收錄且有 persistent identifier 者]
+    citation_requirement: 資料、程式碼、方法都須在正文引用並列入參考文獻
+    badges:
+      optional: true
+      requires: 簽署的 badge disclosure form（列為 supplemental material）
+      available: [Open Data, Open Data with Protected Access, Open Materials,
+                  Preregistered, Preregistered+Analysis Plan]
+      conditions: [公開存放, persistent identifier, time-stamped, immutable, permanent,
+                   開放授權（允許重製/分享/使用並註明出處）]
+
+  authorship:
+    taxonomy: CRediT
+    roles: 14
+    agreed_in_advance: true
+    written_statement_at_submission: false
+
+  submission:
+    portal: https://www.editorialmanager.com/met/default.aspx
+    cover_letter_must_assert:
+      - 未在他處審查中
+      - 主要資料未曾發表、也未被他處接受
+      - 研究過程遵循適當的倫理準則
+      - （若申請 badges）badge 資格
+
+  fees:
+    apc: {status: optional, note: 開放取用有 green 自我典藏與 gold APC 兩條路；投稿與審稿免費}
+    color_print: {first: 900, second_additional: 600, each_after: 450, currency: USD,
+                  note: 由編輯與出版方裁量}
+
+  policies:
+    dual_submission: forbidden
+    preprints: allowed
+    similarity_screening: 與 4,000 萬份以上學術文獻及開放網路內容比對
+    generative_ai:
+      disclosure_required: true
+      placement: Method 章節
+      citation_required: true
+      authorship: 不得列為作者
+    ethics:
+      republication_as_original: 違反 Ethical Standard 8.13
+      data_sharing: Standard 8.14 — 向尋求驗證的合格專業人士分享；發表後至少保存 5 年
+      signed_certification: Certification of Compliance with APA Ethical Principles（錄取時）
+    conflict_of_interest: {disclosure_required: true, form: Full Disclosure of Interests}
+    permissions: {required_at: final_acceptance, covers: [測驗材料, 照片, 實驗刺激圖像],
+                  note: 來源不明的圖像 APA 可拒收}
+    orcid: {status: not_found, checked: 2026-08-03, src: submit}
+
+  standards:                        # 外部標準 + 真實的適用缺口
+    - id: jars-quant
+      url: https://apastyle.apa.org/jars/quantitative
+      applicability:
+        - {case: structural_equation_modeling, status: covered,
+           ref: https://apastyle.apa.org/jars/quant-table-7.pdf}
+        - {case: longitudinal, status: covered,
+           ref: https://apastyle.apa.org/jars/quant-table-4.pdf}
+        - {case: monte_carlo_simulation, status: no_module}
+        - {case: new_estimator_development, status: no_module,
+           note: Analytic methods 表是給「應用」既有技術的實證研究，非開發新方法}
+        - {case: secondary_analysis_existing_data, status: no_module,
+           note: 總則適用範圍寫的是「report new data collections」}
+      escalation: styleexpert@apa.org
+      decision_flowchart: https://apastyle.apa.org/jars/jars-quant-decision-flowchart.pdf
+    - {id: jars-rec, label: 種族、族裔、文化報告標準, required: true}
+    - {id: top-guidelines, level: disclosure, areas: 8}
+
+# ─────────────────────────────────────────────────────────────
+# FAST — 每年翻新。期刊通常為 null；研討會必填且會過期。
+# ─────────────────────────────────────────────────────────────
+cycle:
+  applies_to: null                  # 期刊無年度週期
+  rolling_calls:
+    - id: tutorials
+      label: "Call for Papers: Tutorials"
+      type: general_ongoing          # 非主題特刊
+      deadline: {status: not_applicable, note: 滾動收件}
+      url: https://www.apa.org/pubs/journals/met/call-for-papers-tutorials.html
+      wants: 對進階心理學方法的 tutorial 處理，或對創新方法的極清楚闡述
+      src: calls
+
+# ─────────────────────────────────────────────────────────────
+warnings:                           # 工具應主動向使用者複述的
+  - 不符合規定的稿件「may be returned without review」（不送審直接退）
+  - APA 是唯一官方投稿管道；可疑的假期刊網站通報 apajournals@apa.org
