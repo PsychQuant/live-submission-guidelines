@@ -1,0 +1,256 @@
+--- # live-submission-guidelines venue record
+# 台灣心理學會年會 — 內容擷取自 tpa-tw.org 2026-08-08。
+#
+# 這筆記錄的教訓：學會的「通則頁」(/submissionformat) 已經 stale —— 上面的聯絡信箱
+# 還是 taiwanpsy2021@gmail.com，格式規定也與 2026 年度頁衝突。所以本檔把規定本體
+# 放進 cycle（年度專屬）而非 requirements（跨年通則），與 IMPS 的擺法一致但理由不同：
+# IMPS 是通則頁薄，TPA 是通則頁不可信。
+
+schema_version: 1
+id: tpa/annual-meeting
+kind: conference
+family: psychometrics-conferences
+status: active
+
+sources:
+  - id: theme_2026
+    role: authoritative
+    url: https://www.tpa-tw.org/2026theme
+    note: >-
+      年度主題頁，載明會議日期、地點與完整時程表（含 symposium 與
+      oral/poster 兩個不同的截止日）。站台是 Wix SPA：curl 取回
+      906 KB 但抽出的純文字只有 4832 字元，且不含「徵稿」「截止」
+      「亞洲大學」任一關鍵字 —— 內容全由 JS 注入。這不是 bot 挑戰頁
+      （那種通常只有幾百 bytes），是 client-side rendering。
+    fetch:
+      method: webfetch
+      http_viable: false
+      http_failure_mode: >-
+        HTTP 200 + 906 KB，但 DOM 為空殼，正文由 JavaScript 載入。
+        純 HTTP 抽取只得到導覽列與頁尾。
+      validity:
+        must_contain: "Asia University"
+        min_extracted_chars: 800
+    snapshot:
+      fetched_at: 2026-08-08
+      last_verified_at: 2026-08-08
+      extracted_sha256: null
+
+  - id: submission_2026
+    role: authoritative
+    url: https://www.tpa-tw.org/2026submission
+    note: >-
+      2026 投稿專區，規定本體所在。與 /submissionformat（通則頁）**衝突**，
+      以本頁為準，見 warnings。同為 Wix SPA。
+    fetch:
+      method: webfetch
+      http_viable: false
+      http_failure_mode: 同 theme_2026 —— Wix client-side rendering。
+      validity:
+        must_contain: "tpa2026.contact@gmail.com"
+        min_extracted_chars: 800
+    snapshot:
+      fetched_at: 2026-08-08
+      last_verified_at: 2026-08-08
+      extracted_sha256: null
+
+  - id: submissionformat_generic
+    role: supporting
+    url: https://www.tpa-tw.org/submissionformat
+    note: >-
+      名義上是跨年度的「年會參加流程／投稿格式」通則頁，實際上是**過期殘留**：
+      聯絡信箱仍為 taiwanpsy2021@gmail.com，投稿連結顯示「投稿截止」，
+      版面邊界與關鍵詞數量都與 2026 年度頁不同。保留此 source 是為了記錄
+      它的存在與不可信，避免後人把它當通則採用。
+    fetch: {method: webfetch, http_viable: false}
+    snapshot: {fetched_at: 2026-08-08, last_verified_at: 2026-08-08}
+
+  - id: society_home
+    role: supporting
+    url: https://www.tpa-tw.org/
+    fetch: {method: webfetch, http_viable: false}
+    snapshot: {fetched_at: 2026-08-08, last_verified_at: 2026-08-08}
+
+identity:
+  name: 台灣心理學會年會暨心理學門發表會 (Taiwanese Psychological Association Annual Conference)
+  publisher: 台灣心理學會 (Taiwanese Psychological Association, TPA)
+  homepage: https://www.tpa-tw.org/
+  frequency: annual
+  issn: {status: not_applicable, checked: 2026-08-08}
+  metrics:
+    acceptance_rate: {status: not_published, checked: 2026-08-08}
+
+# ─────────────────────────────────────────────────────────────
+# SLOW — 跨年度通則。TPA 這一塊刻意留薄：官網唯一的通則頁已 stale，
+# 把它的內容當「不變的規定」會產生錯誤，見 warnings。
+# ─────────────────────────────────────────────────────────────
+requirements:
+  refresh: {check_every: P12M, method: extracted_hash_diff}
+
+  scope:
+    aims: >-
+      台灣心理學會的年度學術年會，與國科會心理學門成果發表會合辦。
+      涵蓋心理學各次領域，投稿分口頭、壁報、專題研討與工作坊四類。
+    language_note: 摘要可用中文或英文撰寫。
+    src: submission_2026
+
+  typical_months:
+    status: not_found
+    checked: 2026-08-08
+    note: >-
+      官網未載明固定月份。已知 2026 年為 10 月底至 11 月初；先前年度
+      （2024、2025）的月份未在現行頁面上查得，不由單一年度外推。
+
+  proceedings:
+    status: not_found
+    checked: 2026-08-08
+    note: 年會有摘要手冊（2025 年度手冊為 PDF），但官網未說明是否為正式 proceedings。
+
+  eligibility: {status: not_found, checked: 2026-08-08,
+                note: 未見會員資格要求或每人發表篇數上限的說明}
+
+  fees: {status: not_found, checked: 2026-08-08,
+         note: 官網有早鳥／一般報名截止日但未公布金額}
+
+# ─────────────────────────────────────────────────────────────
+# FAST — 每年翻新。TPA 的規定本體也放這裡（理由見檔頭）。
+# ─────────────────────────────────────────────────────────────
+cycle:
+  applies_to: 2026
+  status: submissions_open
+  expires_at: 2026-11-01
+
+  edition: 2026 年會暨心理學門發表會
+  edition_number:
+    status: not_found
+    checked: 2026-08-08
+    note: >-
+      2026theme 與 2026submission 兩頁都未標屆次。2025 年度資料夾內的
+      投稿表單標為「第64屆」，據此 2026 應為第 65 屆，但官網未證實，
+      不寫進 edition 欄位。
+
+  theme: >-
+    Social Emotional Learning In The AI Era: From Psychological Foundations
+    To Clinical and Health Integration
+  dates:
+    start: 2026-10-31
+    end: 2026-11-01
+  venue:
+    institution: 亞洲大學 (Asia University)
+    hall: 國際會議廳 (International Conference Hall)
+    city: 台中
+    country: Taiwan
+    mode: in_person
+
+  portal:
+    system: email + Google Form
+    email: tpa2026.contact@gmail.com
+    form_url: https://forms.gle/kga3X89x9BgFUiXn7
+    verified: true
+    note: >-
+      「線上投稿，收到後將立即以 e-mail 回函確認。」沒有專用投稿系統
+      （非 Ex Ordo / EasyChair）。
+
+  deadlines:
+    - {id: call_open, date: 2026-07-15, label: 徵稿開始}
+    - id: symposium_workshop_proposal
+      date: 2026-08-24
+      label: 專題研討／工作坊企劃書截止
+      src: submission_2026
+      note: "「請於 2026/08/24 前寄企劃書」—— 比摘要截止早 7 天"
+    - id: abstract_submission
+      date: 2026-08-31
+      label: 口頭／壁報摘要截止
+      src: theme_2026
+      note: >-
+        此日期只出現在 theme_2026 頁的時程表；2026submission 投稿專區
+        未重述 oral/poster 截止日，只寫了 symposium/workshop 那條。
+        投稿前應以 email 向主辦單位確認。
+    - {id: notification, date: 2026-09-21, label: 審查結果通知}
+    - {id: early_bird, date: 2026-09-28, label: 早鳥報名截止}
+    - {id: registration_close, date: 2026-10-05, label: 報名截止}
+
+  submission_types:
+    - id: oral
+      label: 專題論文（口頭發表）
+      note: 「如果口頭發表未獲通過，可以選擇是否改以壁報形式審查。」
+    - id: poster
+      label: 獨立論文（壁報發表）
+      note: 「獨立論文特依領域歸屬集結發表」，需標示類別與學組歸屬。
+    - id: symposium
+      label: （小型）專題研討
+      note: >-
+        籌畫人寄企劃書（8/24 截止），各發表人仍須依口頭論文規定另投摘要。
+        通則頁提到論壇「以 5~8 篇為原則」，但該頁已 stale，篇數上限
+        未在 2026 年度頁證實。
+    - id: workshop
+      label: 工作坊
+      note: 同企劃書路徑；召集人依口頭論文規定提交簡介。
+
+  abstract_limits:
+    chinese_chars: 500
+    english_words: 250
+    page_limit: 1
+    keywords: {min: 3, max: 4}
+    src: submission_2026
+
+  structured_abstract:
+    required: true
+    sections: [研究背景與目的, 研究方法, 結果與結論]
+    exemption: >-
+      「若投稿論文為綜述或理論性文章，請自行選用適當的格式」——
+      綜述／理論性文章不受結構化摘要格式約束。這條對尚無實證結果的
+      理論性投稿是決定性的例外。
+    src: submission_2026
+
+  formatting:
+    file_format: Microsoft Word
+    filename_rule: 第一作者姓名（例：李秀秀.doc）
+    line_spacing: 單行間距
+    fonts:
+      title: {size_pt: 14, bold: true}
+      author_affiliation: {size_pt: 12, bold: true}
+      body: {size_pt: 12}
+      english: Times New Roman（半形標點）
+      chinese: 新細明體（全形標點）
+    margins_cm: {left: 3.0, right: 2.5, top: 3.0, bottom: 3.5}
+    margin_note: 左邊界 3 cm 含裝訂邊。
+    src: submission_2026
+
+  email_body_checklist:
+    src: submission_2026
+    items:
+      - 投稿類別與領域／學組歸屬
+      - 口頭發表未獲通過時是否接受改以壁報形式審查
+      - 設備需求（單槍、幻燈機、OHP、VCR、壁報架）
+      - 通訊作者姓名／服務單位／職稱
+      - 傳真、電話、e-mail
+
+  template:
+    status: not_found
+    checked: 2026-08-08
+    note: 投稿專區以兩張圖檔展示「論文摘要範本」，無可下載的範本檔連結。
+
+  fees: {status: not_found, checked: 2026-08-08}
+
+  next_edition: {status: not_found, checked: 2026-08-08}
+
+warnings:
+  - >-
+    **兩頁規定衝突，以 2026submission 為準。** 通則頁 /submissionformat 仍寫
+    聯絡信箱 taiwanpsy2021@gmail.com、邊界「兩側 3.18 公分，上下 2.54 公分」、
+    關鍵字「以 5 項為限」；2026 年度頁則為 tpa2026.contact@gmail.com、
+    邊界左 3／右 2.5／上 3／下 3.5 公分、關鍵詞 3~4 個。照通則頁寫會全錯。
+  - >-
+    **兩個截止日相差 7 天，容易誤判。** 專題研討／工作坊企劃書 08/24；
+    口頭／壁報摘要 08/31。要辦 symposium 的人若只記得 8/31 就會錯過。
+  - >-
+    oral/poster 的 08/31 截止日只見於 theme_2026 的時程表，投稿專區本身
+    未重述。投稿前建議 email 主辦單位確認該日期仍然有效。
+  - >-
+    屆次未經證實。2025 年度投稿表單標為第 64 屆，據此 2026 應為第 65 屆，
+    但 2026 的兩個官方頁面都沒寫。對外文件若需標屆次，先向主辦確認。
+  - >-
+    站台為 Wix SPA，純 HTTP 抓取只得到空殼（200 + 900 KB 但無正文）。
+    verify.py 的 freshness 檢查必須走 webfetch 路徑，否則會把空殼 hash
+    當成穩定基準，永遠回報「沒變動」而實際上什麼都沒監看。
