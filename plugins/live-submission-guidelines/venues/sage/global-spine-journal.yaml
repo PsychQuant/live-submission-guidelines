@@ -1,0 +1,153 @@
+--- # live-submission-guidelines venue record
+# 內容擷取自 Sage 官方作者須知頁 2026-10-05。
+# 收錄緣由：case-report skill 原本自帶一份 GSJ 須知（沒有來源追蹤），寫著「接受
+# case report」。官方頁面明載 GSJ 已不再接受病例報告 —— 本記錄取代那份檔案。
+
+schema_version: 1
+id: sage/global-spine-journal
+kind: journal
+family: sage-journals
+status: active
+
+sources:
+  - id: author_instructions
+    role: authoritative
+    url: https://journals.sagepub.com/author-instructions/GSJ
+    note: >-
+      期刊代碼必須大寫。小寫 /author-instructions/gsj 會被導到
+      /action/cookieAbsent（56 KB 的錯誤頁），不是須知本體。
+      頁面 HTML 內含大量被註解掉的範本段落（例如同時有 Vancouver 與 AMA 兩種
+      引用格式的說明），只有未註解的部分生效；verify.py 的抽取器不讀 HTML
+      註解，與此一致。頁首的站務公告（例如維護通知）也在抽取文字內，
+      所以 hash 可能因非實質變動而改變，CHANGED 時要人工看差異。
+    fetch:
+      method: http
+      http_viable: true
+      validity:
+        must_contain: "Global Spine Journal requires a specific structured abstract"
+        min_extracted_chars: 15000
+    snapshot:
+      fetched_at: 2026-10-05
+      last_verified_at: 2026-10-05
+      extracted_sha256: "496b84315ee61f990094440b9bec9863cf035c6a609707f35e9cc3db4becc666"
+      extractor: stdlib-htmlparser/1
+
+  - id: journal_home
+    role: supporting
+    url: https://journals.sagepub.com/home/gsj
+    fetch: {method: http, http_viable: true}
+    snapshot: {fetched_at: 2026-10-05, last_verified_at: 2026-10-05}
+
+identity:
+  name: Global Spine Journal
+  abbreviation: GSJ
+  publisher: Sage
+  issn: {print: "2192-5682", electronic: "2192-5690"}
+  homepage: https://journals.sagepub.com/home/gsj
+  open_access: gold
+  metrics:
+    acceptance_rate: {status: not_found, checked: 2026-10-05, src: author_instructions}
+
+requirements:
+  refresh: {check_every: P6M, method: extracted_hash_diff}
+
+  case_reports:
+    accepted: false
+    statement: "GSJ publishes Original Research and Review articles. GSJ no longer accepts Case Reports."
+    src: author_instructions
+
+  article_types:
+    - {id: original_research, label: GSJ-Original Research, note: 含 technical reports、basic science、clinical research}
+    - {id: narrative_review, label: GSJ-Narrative Review}
+    - {id: literature_review, label: GSJ-Literature Review}
+    - {id: systematic_review, label: GSJ-Systematic Review}
+    - id: letter_to_the_editor
+      label: Letter to the Editor
+      limits: 一至兩段、總計不超過 500 字、無摘要、無小標、參考文獻少於 8 篇；不得含圖或研究資料
+      apc: 不收
+    - id: registered_report
+      label: Registered Reports（Pre-Data／Post-Data）
+      note: 兩階段審查；Stage 1 需完整 Introduction、Methods 與 Proposed Analyses
+    - id: special_issue
+      label: Special Issue 類型
+      note: 只有受邀的 Special Issue 稿件可選
+
+  # schema 的 length 需要 value + unit；查過但官網沒寫，所以記在這裡而非 length。
+  main_text_length: {status: not_found, checked: 2026-10-05, src: author_instructions,
+                     note: 除 Letter to the Editor 外，未載明正文字數上限}
+
+  abstracts:
+    - id: structured
+      max_words: 250
+      structure: [Study Design, Objectives, Methods, Results, Conclusions]
+      note: >-
+        Study Design 為 2–3 個字的研究類型描述。未使用此結構的稿件會被退回改寫。
+        臨床試驗須在摘要末尾附 trial registry 名稱、網址與註冊號，否則不予考慮。
+      src: author_instructions
+    - id: graphical
+      required: false
+      note: 鼓勵提供；標為 "Graphical Abstract" 或 "GA"，以 .tiff 或 .jpeg 與圖檔一起上傳
+
+  keywords:
+    conflicting: true
+    statements:
+      - "Please include 4-8 keywords."
+      - "Please include a minimum of 3 keywords, listed after the abstract."
+    src: author_instructions
+
+  formatting:
+    file_formats: [Word DOC, RTF, XLS, LaTeX]
+    spacing: double
+    margins: 左右至少 3 cm、上下至少 5 cm
+    font_size_pt: [10, 12]
+    figures: 以 .tiff 或 .jpeg 另檔上傳，置於參考文獻之後；不得嵌入正文
+    tables: 置於參考文獻之後另行上傳
+    figure_legends: 一份 Word 文件，放在參考文獻之後、圖檔之前
+    src: author_instructions
+
+  references:
+    style: AMA Manual of Style
+    preprint_citations: 不鼓勵；有同儕審查版本時應改引正式版
+    src: author_instructions
+
+  review:
+    type: double_anonymized
+    requirements:
+      - 稿件須完全去識別；作者資訊只放在另檔的 Title Page
+      - Title Page 不送審稿人；檔名、頁首頁尾不得含作者姓名
+    src: author_instructions
+
+  ethics:
+    ethical_considerations_heading: >-
+      須有 "Ethical considerations" 段：載明審查委員會全名、所屬機構與核准號，
+      或豁免審查；不需審查也要明確寫出
+    consent_to_participate: 須說明知情同意為書面或口頭，或已獲豁免；不適用則寫 'Not applicable'
+    consent_for_publication: >-
+      含個人資料（個別細節、影像、影片）的稿件須聲明已取得當事人或法定代理人
+      的發表同意；非必要的可識別細節應刪除。不得附上同意書本身，同意書由作者
+      保存；可另附一封確認已取得書面同意的信
+    src: author_instructions
+
+  submission:
+    portal: https://mc.manuscriptcentral.com/gsjournal
+    system: ScholarOne Manuscripts
+    preprints: 可接受已張貼於 preprint server 的稿件
+
+  fees:
+    submission: 0
+    apc: {value: 3360, currency: USD, payable: 審查錄取後、刊登前}
+    apc_waiver: >-
+      AO Spine 會員 APC 為 0；自 2026-01-05 起，投稿時第一或最後作者加上另一位
+      作者須為有效會員。投稿後才加入或續約、錄取後才補會員證明，均不適用減免
+    src: author_instructions
+
+cycle:
+  applies_to: null
+
+warnings:
+  - >-
+    GSJ 不再接受病例報告（Case Reports）。不要把 GSJ 當成病例報告的投稿目標；
+    小型病例系列是否可改投 Original Research，官方頁面未說明，須先問編輯部。
+  - >-
+    關鍵字數量在同一頁上前後矛盾（「4-8 keywords」與「minimum of 3 keywords」）。
+    採 4–8 個可同時滿足兩者；有疑問以投稿系統為準。

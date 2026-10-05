@@ -11,7 +11,7 @@
 /plugin install live-submission-guidelines@live-submission-guidelines-marketplace
 ```
 
-裝好之後照常問投稿問題即可（「Psychological Methods 字數上限多少」「這篇該投哪」「幫我對照 IMPS 的規定」），`submit-to` skill 會自動接手。
+裝好之後照常問投稿問題即可（「Psychological Methods 字數上限多少」「這篇該投哪」「幫我對照 IMPS 的規定」），`submit-to` skill 會自動接手。要把病歷寫成病例報告投稿時，`case-report` skill 會從本語料庫讀該場次的規定。
 
 ## 跟 livedocs 的關係：哲學相同，機制相反
 
@@ -55,6 +55,8 @@ livedocs 不能存，因為存了就過時；本專案必須存，因為底層�
 |---|---|---|
 | `apa/psychological-methods` | journal | 4 來源，2026-08-03 |
 | `psychometric-society/imps` | conference | 3 來源，2026-08-03（cycle 2026 已辦畢） |
+| `sage/global-spine-journal` | journal | 2 來源，2026-10-05（已不收病例報告） |
+| `toa/spring-meeting` | conference | 6 來源，2026-10-05（中華民國骨科醫學會春季會；cycle 2026 已辦畢；摘要字數只在登入後表單） |
 
 需求驅動 —— 有人要投才加。收錄新場次用 `add-venue` skill。
 
@@ -67,8 +69,8 @@ python3 plugins/live-submission-guidelines/scripts/verify.py [venue-id] # 新鮮
 
 設計理由、實測發現與未決事項見 [`SCHEMA.md`](SCHEMA.md)。
 
-## 現況（v0.1.0）
+## 現況（v0.3.0）
 
-**可用，但年輕。** 兩個樣本、一個 schema、兩支腳本、兩個 skill，全部驗證過（含反例測試）。尚未決定的事誠實列在 `SCHEMA.md` 末尾 —— 主要是抽取器尚未定版（故 `extracted_sha256` 目前為 `null`）、以及是否需要 MCP server（目前判斷不需要）。
+**可用，但年輕。** 一個 schema、兩支腳本、三個 skill（`submit-to`、`add-venue`、`case-report`），全部驗證過（含反例測試）。尚未決定的事誠實列在 `SCHEMA.md` 末尾 —— 主要是抽取器尚未定版（故 `extracted_sha256` 目前為 `null`）、以及是否需要 MCP server（目前判斷不需要）。
 
 MIT License.

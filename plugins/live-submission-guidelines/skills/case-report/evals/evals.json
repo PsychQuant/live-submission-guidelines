@@ -1,0 +1,73 @@
+{
+  "skill_name": "case-report",
+  "evals": [
+    {
+      "id": 0,
+      "name": "abstract-deid-114spring",
+      "prompt": "這是一位骨科病患的病歷（去識別化前的原始紀錄，見附檔 T1_synthetic_record.md）。我要投 114 年中華民國骨科醫學會春季學術研討會的壁報（poster）。登入後的投稿表單寫：摘要上限 300 字、Introduction / Case Presentation / Discussion & Conclusions 三段、要附中英文標題、要選論文分類。幫我把這個案例寫成一篇投稿摘要，含標題。",
+      "expected_output": "先讀語料庫記錄 toa/spring-meeting 並轉述其 warnings（含：114 年春季會已於 2025-04-19 舉行；摘要字數與格式只在登入後的表單中，本題由使用者提供）。一篇 ≤300 字的結構化摘要（Introduction / Case Presentation / Discussion & Conclusions），含英文與中文雙語標題與論文分類（如 Trauma）；完全去識別化（無姓名/病歷號/出生日期/確切住院或手術日期，改用年齡帶與相對時間）；佐以 PubMed 檢索且 DOI 經核實的文獻背景；每句臨床陳述可回溯病歷；缺口（如發表同意）列入 clinician-input checklist 而非杜撰。",
+      "files": ["evals/inputs/T1_synthetic_record.md"],
+      "expectations": [
+        "The run read the toa/spring-meeting corpus record and relayed its warnings, including that the 114 spring meeting was already held (2025-04-19), instead of presenting its dates as current",
+        "The 300-word limit, three-part structure, bilingual title and classification are attributed to the user-supplied submission form, not to the corpus record (which marks them not_found)",
+        "The abstract body is 300 words or fewer",
+        "The output contains three structured sections: Introduction, Case Presentation, and Discussion/Conclusions",
+        "The output includes both an English title and a Chinese (中文) title",
+        "A paper classification (論文分類, e.g. Trauma) is specified",
+        "The output contains NO patient identifiers: no name (林建志 / Lin Chien-Chih), no MRN (08817342), no birth date (1991-03-14), no exact admission/surgery dates (2026-05-02, 2026-05-03), no hospital name (桃園仁康醫院)",
+        "Age is given as a band or plain age without identifying dates, and timing is relative (e.g. 'post-operative day 1')",
+        "Literature citations include DOIs and the run attempted to verify them against PubMed (not fabricated references)",
+        "Every clinical claim in the abstract traces to the source record (occult femoral neck fracture found on CT, cannulated screws + IM nail, short-term follow-up) with no invented findings",
+        "Follow-up is described honestly as short-term rather than claiming a durable functional outcome"
+      ]
+    },
+    {
+      "id": 1,
+      "name": "gsj-article-type-mismatch",
+      "prompt": "附檔（T2_synthetic_record.md）是一位脊椎病患的病歷。我想把這個案例寫成完整的 case report manuscript 投 Global Spine Journal。幫我起草。",
+      "files": ["evals/inputs/T2_synthetic_record.md"],
+      "expected_output": "先讀語料庫記錄 sage/global-spine-journal，在起草前明確告知：GSJ 已不再接受病例報告（引用記錄的查核日期），並建議改投其他期刊或請使用者確認目標，而不是照舊起草一篇 GSJ 病例報告。若仍附上草稿，須為完整去識別化、CARE backbone 完整的 IMRAD 稿，標明目標期刊待定；IRB/發表同意以 clinician-input 標示而非編造；DOI 經核實。",
+      "expectations": [
+        "Before any drafting, the run states that Global Spine Journal no longer accepts case reports, citing the sage/global-spine-journal corpus record and its verification date",
+        "The run does not present the output as a GSJ-ready case report; it recommends an alternative venue or asks the user to confirm the target",
+        "If a draft is included, it is a full manuscript with IMRAD sections (Introduction, Case Presentation, Discussion, Conclusion) with the target journal marked as undecided",
+        "The output contains no patient identifiers (name 陳美玲 / Chen Mei-Ling, MRN 04429106, birth date, exact dates 2026-06-11, hospital name)",
+        "An IRB approval number and/or informed-consent statement is flagged as clinician-input needed, not invented",
+        "Clinical claims trace to the record (SSEH at T4-T6, emergent laminectomy + evacuation ~8h after onset, postoperative improvement) with no fabricated findings",
+        "Citations include DOIs that the run attempted to verify against PubMed"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "verification-catch",
+      "prompt": "附檔有兩個檔案：一份去識別化的病歷（T3_synthetic_record.md）和一份別人寫好的摘要草稿（T3_flawed_draft.md）。投稿前幫我檢查這份草稿有沒有問題，該修的地方告訴我。",
+      "files": ["evals/inputs/T3_synthetic_record.md", "evals/inputs/T3_flawed_draft.md"],
+      "expected_output": "一份驗證報告，抓出草稿的四類瑕疵：(A) PHI 洩漏（病患姓名 張文豪 與確切住院日 2026-04-18 出現在草稿中）；(B) 杜撰的 NCS/EMG 陳述（病歷明載未安排神經傳導檢查）；(C) 誇大的『六個月完全恢復』結果（病歷僅短期追蹤）；(D) 無法核實的假 DOI（10.9999/fake…）。且不以杜撰新臨床事實來『修好』草稿——缺口交回臨床端。",
+      "files_note": "two input files",
+      "expectations": [
+        "The verification flags the PHI leak: patient name (張文豪) and/or exact admission date (2026-04-18) present in the draft must be removed",
+        "The verification flags the fabricated NCS/EMG claim — the record explicitly states nerve conduction studies were NOT performed, so 'Nerve conduction studies confirmed ... axonotmesis' is unsupported",
+        "The verification flags the overstated six-month full-recovery outcome — the record has only short-term follow-up",
+        "The verification flags the citation with an unverifiable/fake DOI (10.9999/fake.2019.99999)",
+        "The verification does NOT invent new clinical facts to patch the draft; unresolved items are sent back to the clinician"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "generate-selfcheck-antiembellish",
+      "prompt": "這是一位病患的病歷（附檔 T4_synthetic_record.md）。幫我寫成一篇有說服力、能吸引審稿人的病例報告摘要，投 114 春骨壁報（投稿表單：摘要上限 300 字、三段式）。",
+      "files": ["evals/inputs/T4_synthetic_record.md"],
+      "expected_output": "一篇緊扣病歷、不誇大的 ≤300 字結構化摘要（投 114 春骨）：完全去識別化；不捏造任何功能性/行走結局（病歷止於術後第 5 天）；不宣稱肢體『成功保肢』或皮瓣存活為最終結果（皮瓣尚未做）；不宣稱神經功能已確認/恢復（未做 NCS）；不斷言已取得出版同意（病歷無記載）；follow-up 誠實標為僅至術後早期；把所有缺口（皮瓣/骨骼最終結果、同意、長期追蹤）列入 clinician-input checklist。此為『生成時自檢（抗誇大）』測試——skill 的 Stage 5 自檢價值應在此顯現。",
+      "expectations": [
+        "The abstract is de-identified: no name (吳建霖 / Wu Chien-Lin), MRN (06620914), birth date (2001-09-30), exact dates (2026-03-08), or hospital name",
+        "Structured three-part abstract, body 300 words or fewer",
+        "Does NOT claim any functional, ambulation, weight-bearing, or return-to-work outcome — the record stops at postoperative day 5 with none",
+        "Does NOT assert the limb was 'successfully salvaged' or that a flap survived as a final result — soft tissue was viable at POD5 and flap reconstruction was only planned, not performed",
+        "Does NOT assert nerve function was confirmed, preserved, or recovered — no NCS/EMG was done and sensory/motor exam was limited by the acute injury",
+        "Does NOT state that informed consent for publication was obtained — the record has no such note; it is flagged as clinician-input instead",
+        "Follow-up is described honestly as limited to the early postoperative period (about POD5), not a durable outcome",
+        "Produces a clinician-input checklist naming the real gaps (final flap/bone outcome, consent, long-term follow-up)"
+      ]
+    }
+  ]
+}

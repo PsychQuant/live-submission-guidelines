@@ -1,0 +1,174 @@
+--- # live-submission-guidelines venue record
+# 內容擷取自中華民國骨科醫學會官網 2026-10-05。
+# 收錄緣由：case-report skill 原本自帶一份「114 年春季會壁報」須知（沒有來源追蹤）。
+# 那份檔案的字數上限、摘要結構、分類清單、雙語標題等規定，在學會的公開頁面
+# 與「投稿須知」PDF 都找不到 —— 只存在於登入後的線上投稿表單。依本語料庫的紀律，
+# 這些欄位記為 not_found，不沿用舊檔的數字。
+
+schema_version: 1
+id: toa/spring-meeting
+kind: conference
+family: orthopaedic-conferences
+status: active
+
+sources:
+  - id: rules_current
+    role: authoritative
+    url: https://bone.org.tw/meetings/pages/37
+    note: >-
+      「115年度第89次春季聯合學術研討會-相關投稿作業辦法」。學會每屆另開一頁，
+      下一屆春季會的作業辦法公告後，這個來源要換成新頁（各屆清單見 announcements）。
+      頁面附的「投稿須知.pdf」內容與本頁相同，沒有額外的格式規定。
+    fetch:
+      method: http
+      http_viable: true
+      validity:
+        must_contain: "e-poster論文限定5頁"
+        min_extracted_chars: 2000
+    snapshot:
+      fetched_at: 2026-10-05
+      last_verified_at: 2026-10-05
+      extracted_sha256: "a53adf0df7e1eb706a7134c332ef0a3f16d31a5394d83428de01ec801dc3bb91"
+      extractor: stdlib-htmlparser/1
+
+  - id: rules_114
+    role: supporting
+    url: https://bone.org.tw/meetings/pages/32
+    note: >-
+      「114年度第87次春季聯合學術研討會-相關投稿作業辦法」。與 115 年版逐條比對，
+      只有繼續教育積分（5 分 → 8 點）與住院醫師加分規定不同，其餘相同。
+    fetch: {method: http, http_viable: true}
+    snapshot: {fetched_at: 2026-10-05, last_verified_at: 2026-10-05}
+
+  - id: meeting_115
+    role: supporting
+    url: https://bone.org.tw/meetings/60
+    note: 115 年春季會的日期、地點、主辦單位
+    fetch: {method: http, http_viable: true}
+    snapshot: {fetched_at: 2026-10-05, last_verified_at: 2026-10-05}
+
+  - id: meeting_114
+    role: supporting
+    url: https://bone.org.tw/meetings/57
+    note: 114 年春季會的日期、地點、主辦單位
+    fetch: {method: http, http_viable: true}
+    snapshot: {fetched_at: 2026-10-05, last_verified_at: 2026-10-05}
+
+  - id: announcements
+    role: supporting
+    url: https://bone.org.tw/meetings/pages
+    note: 各屆「相關投稿作業辦法」與簡易議程的公告列表
+    fetch: {method: http, http_viable: true}
+    snapshot: {fetched_at: 2026-10-05, last_verified_at: 2026-10-05}
+
+  - id: portal
+    role: supporting
+    url: https://bone.org.tw/meetings/submission
+    note: >-
+      線上投稿入口，需登入。公開部分只顯示「目前這一場」的收件期與作業說明；
+      2026-10-05 擷取時顯示的是 116 年度第 91 次聯合學術研討會暨 50 週年大會。
+    fetch: {method: http, http_viable: true}
+    snapshot: {fetched_at: 2026-10-05, last_verified_at: 2026-10-05}
+
+identity:
+  name: 中華民國骨科醫學會春季聯合學術研討會
+  name_en: Annual Spring Meeting of Taiwan Orthopaedic Association
+  publisher: 中華民國骨科醫學會（Taiwan Orthopaedic Association）
+  homepage: https://bone.org.tw/
+  frequency: annual
+  co_organizers_note: 每屆由一家醫院骨科部主辦，另有多個次專科學會合辦
+  issn: {status: not_applicable, checked: 2026-10-05}
+  metrics:
+    acceptance_rate: {status: not_published, checked: 2026-10-05}
+
+requirements:
+  refresh: {check_every: P12M, method: extracted_hash_diff}
+
+  submission:
+    method: 只收學會官網線上投稿，依網頁表格填寫，填妥才可預覽並送出
+    login: 會員以會員編號登入；骨科住院醫師以身分證字號登入；非會員自行註冊
+    after_submission: 送出後不退換內容，也不能更改作者與指導老師
+    src: rules_current
+
+  presentation_types:
+    - {id: oral, label: 口頭報告（Free paper）, note: 篇數有限，投稿多時擇優錄用}
+    - {id: e_poster, label: 壁報（e-poster）}
+
+  case_reports:
+    accepted: true
+    default_presentation: e_poster
+    rule: 病例報告除非很罕見珍貴，原則以壁報論文呈現；原始論文若追蹤時間太短、尚無結論，也以壁報呈現
+    src: rules_current
+
+  e_poster:
+    file_format: Microsoft PowerPoint
+    max_pages: 5
+    delivery: >-
+      錄取後依「論文審查結果通知」上的連結，在期限內上傳；大會現場不受理。
+      逾期未交視為未投稿，之後也不能用於相關加分
+    src: rules_current
+
+  # 以下在公開頁面與「投稿須知」PDF 皆未載明，只出現在登入後的投稿表單。
+  # 標成 not_found 而非留空：查過了，公開來源沒有。
+  abstract_limits: {status: not_found, checked: 2026-10-05,
+                    note: 字數上限、摘要結構只在登入後的投稿表單中；投稿前須登入核對}
+  title_rules: {status: not_found, checked: 2026-10-05, note: 標題語言（中文／英文／雙語）公開頁面未載明}
+  categories: {status: not_found, checked: 2026-10-05, note: 論文分類清單公開頁面未載明}
+  language: {status: not_found, checked: 2026-10-05, note: 春季會作業辦法未規定報告語言}
+
+  policies:
+    withdrawal: 錄取後勿無故取消或缺席
+    poster_award: 自民國 108 年起取消壁報優秀論文比賽
+    board_exam_credit: >-
+      第一作者親自報告者，骨科專科醫師甄審筆試加分：口頭 1 分、壁報 0.5 分，
+      每次大會上限 1 分（115 年版另增住院醫師條款，該目上限 4 分）
+    src: rules_current
+
+cycle:
+  applies_to: 2026
+  status: held
+  expires_at: 2026-04-25
+  edition: 中華民國骨科醫學會115年度第89次春季聯合學術研討會
+  dates: {start: 2026-04-25, end: 2026-04-25}
+  venue:
+    institution: 新竹豐邑喜來登大飯店
+    city: 新竹
+    country: Taiwan
+    mode: in_person
+  portal:
+    system: 學會官網線上投稿
+    url: https://bone.org.tw/meetings/submission
+    verified: true
+    note: 入口頁已擷取；表單本身需登入，未擷取
+  deadlines:
+    - {id: abstract_submission_open, date: 2025-12-01, timezone: Asia/Taipei, label: 論文摘要收件開始}
+    - {id: abstract_submission, date: 2026-01-20, timezone: Asia/Taipei, label: 論文摘要收件截止,
+       note: 線上投稿於 2026-01-21 00:00 關閉}
+    - {id: notification, date: 2026-03-20, timezone: Asia/Taipei, label: 論文審查結果通知（預定此日前寄出）}
+    - {id: presentation_upload, date: 2026-04-06, timezone: Asia/Taipei, label: 錄取論文（口頭與壁報）PowerPoint 上傳截止}
+  cme_credits: 骨科專科繼續教育積分 8 點（完成報到者）
+  next_edition:
+    label: 中華民國骨科醫學會116年度第91次聯合學術研討會暨50週年大會
+    submission_window: {start: 2026-09-15, end: 2026-11-30, timezone: Asia/Taipei}
+    notification_by: 2027-01-20
+    presentation_upload_by: 2027-03-10
+    language: 全英演講（討論、基層演講及醫學倫理可用中文）
+    note: >-
+      作業辦法 115-09-10 公告。官網未把這一屆標為「春季」會，是否即 116 年
+      春季會的位置，未載明。
+    src: portal
+
+warnings:
+  - >-
+    本 cycle（115 年春季會）已於 2026-04-25 舉行完畢。日期、地點、收件期都
+    不得沿用到下一屆。
+  - >-
+    摘要字數上限、摘要結構、標題語言與論文分類，公開頁面都沒有寫，只在登入後的
+    投稿表單中。準備摘要前要先登入投稿系統核對，不可假設任何字數上限。
+  - >-
+    病例報告原則上以壁報呈現（除非很罕見珍貴）。壁報檔為 PowerPoint、限 5 頁，
+    須在期限內上傳，現場不受理。
+  - >-
+    114 年度第 87 次春季會（2025-04-19，嘉義福容VOCO酒店）：收件
+    2024-12-01–2025-01-20、審查結果 2025-03-12 前、PowerPoint 上傳 2025-04-06 前，
+    規定與 115 年相同（見 rules_114、meeting_114）。
