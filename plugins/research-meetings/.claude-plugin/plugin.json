@@ -1,7 +1,7 @@
 {
   "name": "research-meetings",
-  "version": "0.1.0",
-  "description": "研究會議紀錄：把研究討論、統計諮詢、合作會面的錄音或逐字稿整理成可溯源的研究會議紀錄（Markdown）。每一點指得回逐字稿的 cue 與時間碼，語氣強度照原話，個別建議不寫成共識，待辦只列會中明講的。內容紀律改編自 sinica-admin meeting-minutes，去掉公文體與會議規範格式。",
+  "version": "0.2.0",
+  "description": "研究會議紀錄：把研究討論、統計諮詢、合作會面的錄音或逐字稿整理成可溯源的研究會議紀錄（XeLaTeX 標楷體 .tex，編譯成 PDF）。每一點指得回逐字稿的 cue 與時間碼，語氣強度照原話，個別建議不寫成共識，待辦只列會中明講的。內容紀律改編自 sinica-admin meeting-minutes，版型沿用其標楷體模板，抬頭與正文結構依研究會議調整。",
   "author": {
     "name": "Che Cheng"
   },

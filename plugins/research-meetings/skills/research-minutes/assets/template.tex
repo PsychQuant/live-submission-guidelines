@@ -1,0 +1,117 @@
+% 研究會議紀錄 XeLaTeX 標楷體模板（research-meetings / research-minutes）
+% 版型改編自 sinica-admin meeting-minutes 的 template.tex：標楷體、公文階層編號、寡行孤行保護。
+% 與行政會議版的差別：抬頭無主席欄；正文為 壹研究報告、貳討論事項（每題寫狀態）、參待辦事項、肆補充說明。
+% ── 使用方式 ──
+%   1) 複製到會議資料夾，改名 <會議名>_會議紀錄_<YYYY-MM-DD>.tex
+%   2) 填抬頭；沒有的欄位整行刪掉
+%   3) 正文用 gitemize 巢狀環境；凡是「標題＋其下子項」一律用 \topic{…}，不用 \item
+%   4) 製作資訊與不入紀錄的段落寫在 % 註解，註解要寫明移除了什麼、為什麼
+%   5) 編譯：scripts/compile.sh <檔名>.tex
+\documentclass[12pt]{article}
+
+\usepackage[a4paper,top=2.4cm,bottom=2.2cm,left=2.2cm,right=2.2cm]{geometry}
+\usepackage{xeCJK}
+\usepackage{zhnumber}
+\usepackage{enumitem}
+\usepackage{array}
+\usepackage{ragged2e}
+\usepackage{needspace}
+
+\setCJKmainfont{DFKai-SB}
+\xeCJKsetup{AutoFakeBold=true}
+\setlength{\parindent}{0pt}
+\widowpenalty=10000
+\clubpenalty=10000
+\displaywidowpenalty=10000
+\brokenpenalty=10000
+\linespread{1.32}
+
+\newcommand{\HdrLabelWidth}{4em}
+\newcommand{\hdr}[2]{%
+  \noindent\hangindent=\dimexpr\HdrLabelWidth+1em\relax\hangafter=1
+  \makebox[\HdrLabelWidth][r]{#1}：#2\par\vspace{0.4em}}
+
+\newlist{gitemize}{enumerate}{4}
+\setlist[gitemize,1]{label=\protect\zhnum{gitemizei}、,   leftmargin=2.4em,labelsep=0.3em,itemsep=0.35em,topsep=0.3em}
+\setlist[gitemize,2]{label=（\protect\zhnum{gitemizeii}）, leftmargin=2.6em,labelsep=0.2em,itemsep=0.25em,topsep=0.2em}
+\setlist[gitemize,3]{label=\arabic{gitemizeiii}.,         leftmargin=2.2em,labelsep=0.4em,itemsep=0.2em,topsep=0.2em}
+\setlist[gitemize,4]{label=（\arabic{gitemizeiv}）,       leftmargin=2.4em,labelsep=0.2em,itemsep=0.15em,topsep=0.15em}
+
+\newcommand{\topic}[2][6]{\needspace{#1\baselineskip}\item #2\nopagebreak}
+\newcommand{\mtgsection}[1]{%
+  \needspace{4\baselineskip}%
+  \vspace{0.9em}{\large #1}\par\nopagebreak\vspace{0.35em}\nopagebreak}
+
+\pagestyle{plain}
+
+\begin{document}
+
+\begin{center}{\Large <會議名>　會議紀錄}\end{center}
+\vspace{0.6em}
+
+% 欄位次序沿用《會議規範》第 11 條的相對順序；研究會議通常沒有主席，整行省略。
+% 「紀錄」為名詞（那份文件、那個人），不寫「記錄」。
+\hdr{會議名稱}{<會議名>（<研究題目>）}
+\hdr{會議時間}{<YYYY 年 M 月 D 日（星期○）HH:MM>}
+\hdr{會議地點}{<地點>}
+\hdr{出席人員}{<姓名（單位，角色）>、<姓名（單位，角色）>}
+\hdr{紀錄}{<姓名>}
+\hdr{參考資料}{<隨紀錄提供或可取得的文件；沒有就刪掉這行>}
+
+\vspace{0.4em}\hrule\vspace{0.9em}
+
+% 製作資訊（不入正文）：來源、轉錄與校對方式、溯源檔位置、講者歸屬的依據與不確定處。
+
+\mtgsection{壹、研究報告（<報告人>）}
+\begin{gitemize}
+  \topic{研究背景與目的}
+  \begin{gitemize}
+    \item <內容>
+  \end{gitemize}
+  \topic{測量與設計}
+  \begin{gitemize}
+    \item <內容>
+  \end{gitemize}
+  \topic{分析方法}
+  \begin{gitemize}
+    \item <內容>
+  \end{gitemize}
+  \topic{目前結果}
+  \begin{gitemize}
+    \item <內容>
+  \end{gitemize}
+\end{gitemize}
+
+\mtgsection{貳、討論事項}
+\begin{gitemize}
+  \topic{<議題，用名詞片語，不用動詞或評價>}
+  \begin{gitemize}
+    \item <誰提出、誰說明、誰建議；語氣照原話>
+    % 【未列入】<移除了什麼>（cue <範圍>）。理由：<對不在場第三人的評價／對機關動機的推測／預判審查結果／私人事務／離題>。
+    \item 狀態：<有明確結論／建議，未定案／會中未有結論>。
+  \end{gitemize}
+\end{gitemize}
+
+\mtgsection{參、待辦事項}
+（依辦理人分列。期限除另註明者外，均未於會中訂定。）
+\begin{gitemize}
+  \topic[4]{<姓名>辦理}
+  \begin{gitemize}
+    \item <要做什麼>
+  \end{gitemize}
+  \topic[4]{共同或未指定}
+  \begin{gitemize}
+    \item <要做什麼>
+  \end{gitemize}
+\end{gitemize}
+
+\mtgsection{肆、補充說明}
+以下為紀錄者於會後（<YYYY 年 M 月 D 日>）補充，不是會中內容。
+\begin{gitemize}
+  \topic[4]{<主題>}
+  \begin{gitemize}
+    \item <查得的內容、依據（程式、輸出檔、文件版本）、與會中說法的關係>
+  \end{gitemize}
+\end{gitemize}
+
+\end{document}

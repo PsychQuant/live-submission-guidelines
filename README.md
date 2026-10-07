@@ -4,7 +4,7 @@
 
 | Plugin | 做什麼 |
 |---|---|
-| [`research-meetings`](plugins/research-meetings) | 研究會議錄音／逐字稿 → 可溯源的研究會議紀錄（討論、結論、待辦），每一點指得回逐字稿 |
+| [`research-meetings`](plugins/research-meetings) | 研究會議錄音／逐字稿 → 可溯源的研究會議紀錄（標楷體 .tex → PDF；討論、結論、待辦），每一點指得回逐字稿 |
 | [`research-submission`](plugins/research-submission) | 投稿須知的一手來源語料庫（期刊與研討會），投稿前強制現場驗證 |
 
 ## Install

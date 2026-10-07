@@ -1,6 +1,6 @@
 # research-meetings (plugin)
 
-研究會議紀錄：把研究討論、統計諮詢、合作會面的錄音或逐字稿，整理成每一點都指得回逐字稿的研究會議紀錄。完整說明見 [repo README](https://github.com/PsychQuant/research-workflow)。
+研究會議紀錄：把研究討論、統計諮詢、合作會面的錄音或逐字稿，整理成每一點都指得回逐字稿的研究會議紀錄（XeLaTeX 標楷體 .tex，編譯成 PDF）。完整說明見 [repo README](https://github.com/PsychQuant/research-workflow)。
 
 ## Skills
 
@@ -12,10 +12,10 @@
 
 ```bash
 python3 -I ${CLAUDE_PLUGIN_ROOT}/skills/research-minutes/scripts/verify_provenance.py <校對版.srt> <溯源驗證.jsonl>
-python3 -I ${CLAUDE_PLUGIN_ROOT}/skills/research-minutes/scripts/check_style.py <會議紀錄.md> [--allow-tai <人名>]
+bash ${CLAUDE_PLUGIN_ROOT}/skills/research-minutes/scripts/compile.sh <會議名>_會議紀錄_<日期>.tex
 ```
 
-只用 Python 標準庫。
+`verify_provenance.py` 只用 Python 標準庫；`compile.sh` 需要 TeX Live 的 `xelatex`、poppler 的 `pdfinfo`／`pdftotext`，以及標楷體（DFKai-SB）。
 
 ## 相關
 
