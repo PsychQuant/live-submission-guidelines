@@ -20,7 +20,7 @@
     },
     {
       "name": "research-meetings",
-      "version": "0.2.0",
+      "version": "0.3.0",
       "description": "研究會議紀錄：研究討論、統計諮詢、合作會面的錄音或逐字稿 → 可溯源的研究會議紀錄（標楷體 .tex → PDF），每一點指得回逐字稿。",
       "author": {
         "name": "Che Cheng"

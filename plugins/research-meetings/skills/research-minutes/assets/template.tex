@@ -16,8 +16,13 @@
 \usepackage{array}
 \usepackage{ragged2e}
 \usepackage{needspace}
+\usepackage{fvextra}
 
 \setCJKmainfont{DFKai-SB}
+% 附件程式碼：Latin 用 Menlo（含 ± × – 等字形），CJK 註解用標楷體；長行自動折行
+\setmonofont{Menlo}[Scale=MatchLowercase]
+\setCJKmonofont{DFKai-SB}
+\fvset{breaklines=true,breakanywhere=true,numbers=left,numbersep=6pt,fontsize=\footnotesize,frame=lines,framesep=2mm}
 \xeCJKsetup{AutoFakeBold=true}
 \setlength{\parindent}{0pt}
 \widowpenalty=10000
@@ -56,7 +61,8 @@
 \hdr{會議地點}{<地點>}
 \hdr{出席人員}{<姓名（單位，角色）>、<姓名（單位，角色）>}
 \hdr{紀錄}{<姓名>}
-\hdr{參考資料}{<隨紀錄提供或可取得的文件；沒有就刪掉這行>}
+% 會中討論的檔案（程式碼、分析結果、文件）列為附件，隨紀錄附在 PDF 末；沒有就刪掉這行。
+\hdr{附件}{附件一：<檔案說明>；附件二：<檔案說明>}
 
 \vspace{0.4em}\hrule\vspace{0.9em}
 
@@ -113,5 +119,12 @@
     \item <查得的內容、依據（程式、輸出檔、文件版本）、與會中說法的關係>
   \end{gitemize}
 \end{gitemize}
+
+% ══════════════ 附件 ══════════════
+% 直接讀原檔（單一來源，不複製內容）；路徑相對於本 .tex 所在資料夾。沒有附件就刪掉這段。
+\clearpage
+\mtgsection{附件一　<檔案說明>}
+{\small 檔案：<repo 內路徑，底線寫成 \_>，<日期與來源>。}
+\VerbatimInput{<相對路徑，例如 ../../analysis/script.R>}
 
 \end{document}
