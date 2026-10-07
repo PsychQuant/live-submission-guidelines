@@ -1,6 +1,6 @@
 ---
 name: add-venue
-description: Use when a journal or conference is NOT yet in the live-submission-guidelines corpus and needs to be added, or when an existing record must be re-fetched because verify.py reported CHANGED. Triggers on "把 <期刊> 加進來", "add <venue> to the corpus", "這個期刊還沒收錄", "收錄 <conference>", "來源變了要更新". Fetches the venue's primary sources, asserts fetch validity, and writes a schema-valid YAML record with full provenance.
+description: Use when a journal or conference is NOT yet in the research-submission corpus and needs to be added, or when an existing record must be re-fetched because verify.py reported CHANGED. Triggers on "把 <期刊> 加進來", "add <venue> to the corpus", "這個期刊還沒收錄", "收錄 <conference>", "來源變了要更新". Fetches the venue's primary sources, asserts fetch validity, and writes a schema-valid YAML record with full provenance.
 ---
 
 # add-venue

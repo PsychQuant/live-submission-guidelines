@@ -1,6 +1,6 @@
-# live-submission-guidelines (plugin)
+# research-submission (plugin)
 
-學術投稿須知的一手來源語料庫。完整說明見 [repo README](https://github.com/PsychQuant/live-submission-guidelines)。
+學術投稿須知的一手來源語料庫。完整說明見 [repo README](https://github.com/PsychQuant/research-workflow)。
 
 ## Skills
 

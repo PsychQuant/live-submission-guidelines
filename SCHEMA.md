@@ -1,7 +1,7 @@
-# live-submission-guidelines — Schema 設計草案 v1
+# research-submission — Schema 設計草案 v1
 
 > 草案日期 2026-08-03。單一樣本：*Psychological Methods*（APA）。
-> 形式規格見 [`schema/venue.schema.json`](plugins/live-submission-guidelines/schema/venue.schema.json)，實例見 [`venues/apa/psychological-methods.yaml`](plugins/live-submission-guidelines/venues/apa/psychological-methods.yaml)。
+> 形式規格見 [`schema/venue.schema.json`](plugins/research-submission/schema/venue.schema.json)，實例見 [`venues/apa/psychological-methods.yaml`](plugins/research-submission/venues/apa/psychological-methods.yaml)。
 
 ---
 
@@ -9,7 +9,7 @@
 
 繼承**哲學**（primary-source-first、不維護會腐爛的二手索引、provenance 一律露出），但**機制相反**：
 
-| | livedocs | live-submission-guidelines |
+| | livedocs | research-submission |
 |---|---|---|
 | 底層變動速度 | 快（套件版本天天動） | **慢**（投稿須知數年不變） |
 | 一手來源可機讀？ | 是（實測 25 個 docs host，約 88% 有 `llms.txt`） | **否**（實測 6 家出版社，`llms.txt` 0/6） |
