@@ -29,7 +29,7 @@
 
 投稿須知不該憑模型記憶回答：規定會改、各刊差異細碎，而錯誤的代價不對稱 —— **照著錯的字數上限寫完一整篇稿是不可逆的浪費**。
 
-裝好之後照常問投稿問題即可（「Psychological Methods 字數上限多少」「這篇該投哪」「幫我對照 IMPS 的規定」），`submit-to` skill 會自動接手。要把病歷寫成病例報告投稿時，`case-report` skill 會從本語料庫讀該場次的規定。
+裝好之後照常問投稿問題即可（「Psychological Methods 字數上限多少」「幫我對照 IMPS 的規定」），`submit-to` skill 會自動接手；問「這篇該投哪」「A 跟 B 哪個適合這篇」時由 `choose-venue` 接手。要把病歷寫成病例報告投稿時，`case-report` skill 會從本語料庫讀該場次的規定。
 
 ### 跟 livedocs 的關係：哲學相同，機制相反
 
@@ -48,7 +48,8 @@ livedocs 不能存，因為存了就過時；本專案必須存，因為底層�
 
 | 情境 | 政策 |
 |---|---|
-| 瀏覽 / 跨場次比較（「這篇該投哪」） | 讀快照。快、可離線 |
+| 瀏覽 / 跨場次比較（「A 和 B 哪個字數寬」） | 讀快照。快、可離線 |
+| 選期刊（`choose-venue`） | 排序讀快照；回報淘汰前、開始為第一志願改稿前現場驗證 |
 | **實際準備投稿** | **強制現場驗證**；記錄過期不得靜默通過 |
 
 投稿前是唯一「錯了會很貴」的時刻。平常寬鬆、關鍵時刻嚴格，優於一律嚴格（難用）或一律寬鬆（危險）。
@@ -75,6 +76,13 @@ livedocs 不能存，因為存了就過時；本專案必須存，因為底層�
 | `psychometric-society/imps` | conference | 3 來源，2026-08-03（cycle 2026 已辦畢） |
 | `sage/global-spine-journal` | journal | 2 來源，2026-10-05（已不收病例報告） |
 | `toa/spring-meeting` | conference | 6 來源，2026-10-05（中華民國骨科醫學會春季會；cycle 2026 已辦畢；摘要字數只在登入後表單） |
+| `tpa/annual-meeting` | conference | 4 來源，2026-08-08 |
+| `asa/jasa` | journal | 10 來源，2026-10-08 |
+| `rss/jrss-series-b` | journal | 10 來源，2026-10-08 |
+| `rss/jrss-series-c` | journal | 10 來源，2026-10-08 |
+| `biometrika-trust/biometrika` | journal | 8 來源，2026-10-08 |
+| `ims/annals-of-statistics` | journal | 17 來源，2026-10-08 |
+| `psychometric-society/psychometrika` | journal | 25 來源，2026-10-08 |
 
 需求驅動 —— 有人要投才加。收錄新場次用 `add-venue` skill。
 
@@ -87,8 +95,8 @@ python3 plugins/research-submission/scripts/verify.py [venue-id] # 新鮮度驗�
 
 設計理由、實測發現與未決事項見 [`SCHEMA.md`](SCHEMA.md)。
 
-### 現況（v0.4.0）
+### 現況（v0.5.0）
 
-**可用，但年輕。** 一個 schema、兩支腳本、三個 skill（`submit-to`、`add-venue`、`case-report`），全部驗證過（含反例測試）。尚未決定的事誠實列在 `SCHEMA.md` 末尾 —— 主要是抽取器尚未定版（故 `extracted_sha256` 目前為 `null`）、以及是否需要 MCP server（目前判斷不需要）。
+**可用，但年輕。** 一個 schema、三支腳本（`validate.py`、`verify.py`、`venue_topic_scan.py`）、四個 skill（`choose-venue`、`submit-to`、`add-venue`、`case-report`），全部驗證過（含反例測試）。尚未決定的事誠實列在 `SCHEMA.md` 末尾 —— 主要是抽取器尚未定版（故 `extracted_sha256` 目前為 `null`）、以及是否需要 MCP server（目前判斷不需要）。
 
 MIT License.

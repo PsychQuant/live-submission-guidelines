@@ -1,6 +1,6 @@
 ---
 name: submit-to
-description: Use when the user is submitting to, choosing between, or preparing a manuscript for an academic journal or conference — word limits, abstract rules, masked/blind review, required sections, data/code availability, reporting standards (JARS/TOP), deadlines, or formatting. Triggers on "投稿", "submit to <journal>", "這篇該投哪", "字數上限", "截稿日", "abstract word limit", "does <venue> require preregistration", "check my draft against <venue>", or any named venue (Psychological Methods, IMPS, …). Reads a timestamped primary-source corpus instead of model memory, and forces live re-verification before an actual submission. NOTE despite the name this skill NEVER performs the submission itself — it prepares and checks, then stops before the portal.
+description: Use when the user has chosen (or is checking) a specific academic journal or conference and is submitting to it or preparing a manuscript for it — word limits, abstract rules, masked/blind review, required sections, data/code availability, reporting standards (JARS/TOP), deadlines, or formatting. Triggers on "投稿", "submit to <journal>", "字數上限", "截稿日", "abstract word limit", "does <venue> require preregistration", "check my draft against <venue>", or any question about a named venue's rules (Psychological Methods, IMPS, …). Reads a timestamped primary-source corpus instead of model memory, and forces live re-verification before an actual submission. NOTE despite the name this skill NEVER performs the submission itself — it prepares and checks, then stops before the portal. Division of labour: deciding which venue fits a manuscript — even when the user names candidates or asks about one venue ("這篇該投哪", "A 跟 B 哪個適合這篇", "X 適合這篇嗎") — is choose-venue; comparing one rule across venues ("A 和 B 哪個字數寬") or checking a draft against a chosen venue is this skill.
 ---
 
 # submit-to
@@ -17,7 +17,8 @@ description: Use when the user is submitting to, choosing between, or preparing 
 
 | 情境 | 政策 |
 |------|------|
-| **瀏覽/比較**——「這篇該投哪」「A 和 B 哪個字數寬」「IMPS 大概什麼時候」 | 讀快照即可。快、可離線 |
+| **瀏覽/比較**——「A 和 B 哪個字數寬」「IMPS 大概什麼時候」 | 讀快照即可。快、可離線 |
+| **選期刊**——「這篇該投哪」「A 跟 B 哪個適合這篇」 | 交給 `choose-venue`（它排序用快照，回報淘汰前與開始改稿前才現場驗證） |
 | **實際準備投稿**——「我要投 X」「幫我檢查這份稿」「照 X 的規定改」「要交了」 | **強制現場驗證**（見 Step 3）。記錄過期不得靜默通過 |
 
 判準是「使用者會不會據此動筆或送出」。會，就走嚴格路徑。
@@ -67,6 +68,8 @@ python3 ${CLAUDE_PLUGIN_ROOT}/scripts/verify.py <venue-id>
 | `UNCHANGED` | 來源未變，快照有效 | 可以放心用 |
 | `CHANGED` | **來源已變動** | **停下來**。重新擷取該頁，人工覆核差異後才繼續 |
 | `NEEDS_AGENT` | 該來源擋一般 HTTP（如 APA 的 Incapsula） | 你自己用 WebFetch 或 safari-browser 抓，比對關鍵欄位 |
+| `BASELINE` | 記錄還沒有 hash 基準，這次只是第一次建立 | **不等於未變動**。自己打開被引用的頁面，確認原文仍在並報出確認日期 |
+| `EXTRACTOR_MISMATCH` | 記錄的 hash 是別版抽取器算的 | hash 不可比；照 `BASELINE` 處理並重建基準 |
 | `INVALID` | 抓到了但內容不對（缺必含字串/過短） | 視為抓取失敗，**不可**當成「沒變動」 |
 | `FETCH_FAILED` | 抓不到 | 明確告知使用者「無法驗證」，並報出快照已幾天未驗證 |
 
