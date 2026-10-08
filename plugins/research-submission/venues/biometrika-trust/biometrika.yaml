@@ -1,0 +1,495 @@
+--- # research-submission venue record
+# 內容擷取自 Oxford Academic 上的 Biometrika 官方頁面，以及 instructions 頁連出的官方
+# style guide 壓縮檔，2026-10-08。
+# Biometrika 由 Oxford University Press 與 Biometrika Trust 合作出版。Trust 自己的網站
+# （www.biometrikatrust.org）的 "Author Information" 連回 OUP 的 General_Instructions，
+# 所以作者須知的正本在 OUP，Trust 網站只當 supporting。
+
+schema_version: 1
+id: biometrika-trust/biometrika
+kind: journal
+family: statistics-journals
+status: active
+
+# ─────────────────────────────────────────────────────────────
+sources:
+  - id: instructions
+    role: authoritative
+    url: https://academic.oup.com/biomet/pages/General_Instructions
+    note: >-
+      從期刊首頁 Submit 選單的 "Author Guidelines" 點入，頁內標題是 "Information for Authors"。
+      首頁 Submit 選單的 "Open Access" 也連到同一頁。Editor 的信箱取自頁內 "Paul Fearnhead"
+      的 mailto 連結。
+    fetch:
+      method: browser
+      http_viable: false
+      http_failure_mode: >-
+        Cloudflare managed challenge：curl 不論用預設 UA 或 verify.py 的 UA，都回 HTTP 403
+        加約 5.4–5.7 KB 的 "Just a moment..." 頁（Biometrika 四個 OUP 頁面與 ScholarOne 入口
+        皆同）。WebFetch 能通過挑戰，但只回模型摘要、拒絕逐字重現，無法斷言 must_contain；
+        本記錄的逐字內容是用 safari-browser 讀 document.body.innerText 取得。
+      validity:
+        must_contain: "Biometrika strongly encourages authors to make all data and software code"
+        min_extracted_chars: 6000
+    snapshot:
+      fetched_at: 2026-10-08
+      last_verified_at: 2026-10-08
+      extracted_sha256: null
+
+  - id: style_guide
+    role: authoritative
+    url: https://static.primary.prod.gcms.the-infra.com/static/site/biomet/document/biometrika-2025.zip?node=2c33dd0d691d6381de39
+    note: >-
+      instructions 頁 "Style Guide and LaTeX Template" 段的 "Download the style guide and LaTeX
+      template" 連結。這是 zip 壓縮檔（目錄 Biometrika2025/，含 biometrika.cls、biometrika.bst、
+      styleguide.tex 與 styleguide.pdf、lineno.sty 等），規定本文在 styleguide.tex
+      （"Some notes on Biometrika style"）。本記錄的內容是解壓後逐字讀 styleguide.tex 取得；
+      2026-10-08 下載的壓縮檔 sha256 為 10e3aa4103f49c15d357bc1576fbc0eafde4e611dd23fe7b273a59c9f0416294，
+      styleguide.tex 檔案日期 2025-02-03。
+      verify.py 的 HTML 抽取器讀不到壓縮後的內文：must_contain 用的是壓縮檔目錄裡的成員檔名，
+      只能斷言「抓到的是這個壓縮檔、不是錯誤頁」，不能斷言規定內容；hash 等於監看整個壓縮檔。
+      檔名帶年份、網址帶 node 參數，改版時網址很可能換掉，屆時要從 instructions 頁重新點入。
+      style guide 自述投稿時不必符合這些格式，錄取後才可能要求修改。
+    fetch:
+      method: http
+      http_viable: true
+      validity:
+        must_contain: "Biometrika2025/styleguide.tex"
+        min_extracted_chars: 500000
+    snapshot:
+      fetched_at: 2026-10-08
+      last_verified_at: 2026-10-08
+      extracted_sha256: null
+
+  - id: about
+    role: authoritative
+    url: https://academic.oup.com/biomet/pages/About
+    note: 範圍、三項審稿判準、三種論文類型，以及 "Journal metrics" 表。從首頁 About 選單的 "About Biometrika" 點入。
+    fetch:
+      method: browser
+      http_viable: false
+      http_failure_mode: 同 instructions（Cloudflare 403 挑戰頁；WebFetch 只給摘要）。
+      validity:
+        must_contain: "The three primary criteria by which all papers are judged are"
+        min_extracted_chars: 2500
+    snapshot:
+      fetched_at: 2026-10-08
+      last_verified_at: 2026-10-08
+      extracted_sha256: null
+
+  - id: publishing
+    role: supporting
+    url: https://academic.oup.com/biomet/pages/publishing-in-biometrika
+    note: 首頁 Submit 選單的 "Why Publish with Biometrika?"。錄取率、首次決定時間、投稿系統名稱的出處。
+    fetch:
+      method: browser
+      http_viable: false
+      http_failure_mode: 同 instructions（Cloudflare 403 挑戰頁）。
+      validity:
+        must_contain: "around 13% are accepted for publication"
+        min_extracted_chars: 2000
+    snapshot:
+      fetched_at: 2026-10-08
+      last_verified_at: 2026-10-08
+      extracted_sha256: null
+
+  - id: reviewer_guidelines
+    role: supporting
+    url: https://academic.oup.com/biomet/pages/reviewer-guidelines
+    note: 寫給審稿人，但載有審稿判準與四種建議決定，對判斷適不適合投稿有用。
+    fetch:
+      method: browser
+      http_viable: false
+      http_failure_mode: 同 instructions（Cloudflare 403 挑戰頁）。
+      validity:
+        must_contain: "Most Biometrika papers will support new statistical methods with relevant theory"
+        min_extracted_chars: 3000
+    snapshot:
+      fetched_at: 2026-10-08
+      last_verified_at: 2026-10-08
+      extracted_sha256: null
+
+  - id: journal_home
+    role: supporting
+    url: https://academic.oup.com/biomet
+    note: 導覽選單（Submit、About）與首頁上的指標摘要。curl 回 403 挑戰頁；WebFetch 讀得到導覽連結與指標。
+    fetch:
+      method: webfetch
+      http_viable: false
+      http_failure_mode: Cloudflare managed challenge，HTTP 403 + 5403 bytes 的 "Just a moment..." 頁。
+    snapshot: {fetched_at: 2026-10-08, last_verified_at: 2026-10-08}
+
+  - id: oa_charges
+    role: supporting
+    url: https://academic.oup.com/pages/open-research/open-access/charges-licences-and-self-archiving
+    note: >-
+      instructions 頁 "Details of the open access licences and open access charges" 連到
+      /journals/pages/open_access/charges，會轉址到這裡。這是 OUP 全社的頁面；金額要在頁內表單
+      選 Journal = Biometrika（option value BIOMET）與 Manuscript category，再按 "Show charge"
+      才會顯示，WebFetch 只看得到空表單。
+    fetch:
+      method: browser
+      http_viable: false
+      http_failure_mode: Cloudflare 403 挑戰頁；且金額由 JavaScript 表單產生，必須在真實瀏覽器操作。
+    snapshot: {fetched_at: 2026-10-08, last_verified_at: 2026-10-08}
+
+  - id: trust_journal
+    role: supporting
+    url: https://www.biometrikatrust.org/Journal
+    note: >-
+      Biometrika Trust 網站的期刊頁（Google Sites）。"Author Information" 連到 OUP 的
+      General_Instructions；另載編輯部信箱與歷任主編。不帶 www 的 biometrikatrust.org 與
+      biometrika.org 在 2026-10-08 都無法解析（DNS）。
+    fetch:
+      method: http
+      http_viable: true
+      validity:
+        must_contain: "For information on an article currently under review"
+        min_extracted_chars: 800
+    snapshot:
+      fetched_at: 2026-10-08
+      last_verified_at: 2026-10-08
+      extracted_sha256: null
+
+# ─────────────────────────────────────────────────────────────
+identity:
+  name: Biometrika
+  publisher: Oxford University Press
+  owner: {name: Biometrika Trust, note: OUP 與 Biometrika Trust 合作出版；頁尾版權屬 Biometrika Trust, src: publishing}
+  issn:
+    electronic: "1464-3510"
+    print: {status: not_found, checked: 2026-10-08, note: 官方頁面頁尾只列 Online ISSN, src: about}
+  homepage: https://academic.oup.com/biomet
+  society_site: https://www.biometrikatrust.org/
+  founded: {value: 1901, src: trust_journal}
+  editor: {name: Paul Fearnhead, email: editor@biometrikatrust.org, note: 編務與投稿詢問寄這個信箱, src: instructions}
+  editorial_office: {email: editorial@biometrika.org.uk, note: 審查中、即將刊出或已刊文章的查詢, src: trust_journal}
+  frequency: {status: not_found, checked: 2026-10-08, note: instructions 與 About 頁都沒寫}
+  metrics:
+    impact_factor: {value: 2.8, year: 2025, provider: Clarivate, as_of: 2026-10-08, src: about}
+    impact_factor_5yr: {value: 4.1, year: 2025, provider: Clarivate, as_of: 2026-10-08, src: about}
+    category_rank: {value: "22/170", category: "Statistics & Probability", basis: Impact Factor, as_of: 2026-10-08, src: about}
+    citescore: {value: 5.4, year: 2025, provider: Scopus, as_of: 2026-10-08, src: about}
+    citescore_rank: {value: "37/303", category: "Statistics And Probability", as_of: 2026-10-08, src: about}
+    acceptance_rate:
+      value: "around 13%"
+      quote: "Of the many worthwhile submissions received, around 13% are accepted for publication."
+      note: 未載統計期間
+      as_of: 2026-10-08
+      src: publishing
+    time_to_first_decision:
+      value: "Nearly 75% of submissions receive a first decision within one month, and almost all receive a decision within five months."
+      note: 未載統計期間
+      as_of: 2026-10-08
+      src: publishing
+
+# ─────────────────────────────────────────────────────────────
+# SLOW — 數年不變。
+# ─────────────────────────────────────────────────────────────
+requirements:
+  refresh: {check_every: P6M, method: extracted_hash_diff}
+
+  scope:
+    aims: >-
+      統計學各領域皆收，沒有領域限制（"There are no restrictions on the area of statistics
+      considered by Biometrika."）。
+    src: about
+    emphasis:
+      quote: "Biometrika places an emphasis on papers containing original methodological and theoretical contributions of direct or potential value in applications."
+      src: publishing
+    evaluation_criteria:            # About 頁與 style guide 逐字相同
+      - "importance of the work to the understanding, practice or potential practice of statistics"
+      - "the degree of conceptual novelty and insight"
+      - "the conciseness and clarity with which the ideas are conveyed"
+    novelty_forms:                  # 官方列舉的新穎性形式（"may take many forms, including"，非封閉列舉）
+      - 新方法論，並附有洞見的分析
+      - 以計算效率為創新，且這個效率對方法的應用很重要
+      - 深入剖析主流推論工具的異常或意外行為
+      - 揭示基礎結構、可能與統計實務相關的原創表述
+    out_of_scope_hints:
+      - case: 只談既有程序的抽樣性質，或其小幅延伸
+        verdict: 通常不適合
+        unless: 這些性質揭示了可觀的結構性理解
+        quote: "Papers concerned purely with sampling properties of existing procedures or minor developments thereof are typically unsuitable unless such properties reveal considerable structural understanding."
+        src: about
+      - case: 純應用研究
+        verdict: 不刊
+        quote: "We do not publish purely applied work."
+        src: about
+      - case: 為統計引入新應用領域的論文
+        verdict: 不適合
+        quote: "Papers that introduce a new application area for statistics are not appropriate."
+        src: instructions
+    reviewer_criteria:
+      quote: >-
+        The key criteria for papers in Biometrika are that the work is important to the practice,
+        understanding or theory of statistics, that the ideas are novel and its contribution is not
+        just incremental over other work in the area, and that the mathematical and theoretical
+        aspects are accurate. Most Biometrika papers will support new statistical methods with
+        relevant theory, though this is not necessary if the work is of the highest standards in
+        terms of importance and novelty.
+      recommendations: [Accept, Minor Revision, Major Revision, Reject]
+      note: 審稿人若認為修改後 novelty 與 importance 的評價也不會提升，應建議 Reject 而非 Major Revision
+      src: reviewer_guidelines
+
+  article_types:
+    - id: regular
+      label: Regular paper
+      length: "normally fewer than 20 pages"
+      src: instructions
+    - id: synthesis
+      label: Synthesis paper
+      length: "normally fewer than 20 pages"
+      wants: >-
+        二擇一：(i) 把統計以外的新興領域介紹給統計讀者，且該領域對統計實務或學科發展重要；
+        (ii) 綜合兩個以上的統計領域，帶來根本的新洞見
+      extra: 投稿系統 Step 5 須附 cover letter，說明符合 (i) 或 (ii)
+      src: instructions
+    - id: miscellanea
+      label: Miscellanea
+      length: "max. 8 pages"
+      note: >-
+        不要求 regular paper 的貢獻廣度，但重要性、新穎性與整體品質的標準相同（"need to meet
+        the same standards in terms of importance of the work, novelty of the insights and general
+        quality"）。審稿人須知稱之為 short papers，"do not need to be as substantive in terms of
+        their contribution"
+      src: instructions
+
+  # schema 的 length 需要 value + unit（封閉列舉）。官方只寫 "pages"，沒說是 Biometrika 排版頁
+  # 還是投稿稿件頁，也沒說參考文獻、附錄、補充材料計不計入；投稿又不要求用期刊格式。
+  # 硬選一個 unit 就是製造假精確，所以記在這裡而不放 length。
+  length_by_type:
+    statement: "Biometrika publishes three types of paper: regular papers, synthesis papers (both normally fewer than 20 pages) and miscellanea articles (max. 8 pages)."
+    src: instructions
+    regular_and_synthesis: {value: 20, qualifier: "normally fewer than"}
+    miscellanea: {value: 8, qualifier: "max."}
+    unit_as_stated: pages
+    unit_definition: {status: not_published, checked: 2026-10-08, src: instructions, note: 未說明以何種版面計頁}
+    includes: {status: not_published, checked: 2026-10-08, src: instructions, note: 未說明參考文獻、附錄是否計入}
+    supplementary_counted:
+      status: not_published
+      checked: 2026-10-08
+      src: style_guide
+      note: >-
+        補充材料另交一份 PDF；style guide 要求不讀補充材料也能讀懂論文，但沒有明說補充材料
+        不計入頁數
+    over_length_handling: {status: not_published, checked: 2026-10-08, src: instructions}
+
+  abstracts:
+    - id: summary
+      label: Summary
+      max_words: {status: not_published, checked: 2026-10-08, src: style_guide}
+      paragraphs: 1
+      forbidden: [formulae, symbols, acronyms]
+      references: 只在必要時才放書目引用
+      content: >-
+        應寫出結果而非描述論文內容；style guide 的例子是把 'A simulation study is performed'
+        改成 'In a simulation our estimator had smaller mean square error than its main competitors.'
+      applies_at: 期刊格式要求；投稿時不強制（見 formatting.submission_conformance）
+      src: style_guide
+  keywords: {min: 3, max: 8, order: alphabetical, src: style_guide}
+
+  formatting:
+    submission_conformance:
+      required: false
+      quote: >-
+        It is not necessary for papers submitted to the journal to follow the specific style
+        requirements of Biometrika. A decision on a paper will not be affected by the level that it
+        conforms to the style requirements. However, papers that are accepted may require revisions
+        to adhere to the style of the journal.
+      src: instructions
+    file_formats_at_submission: [PDF]
+    files_at_submission: 主文一份 PDF（含圖、表與參考文獻），補充材料另一份 PDF
+    latex:
+      encouraged: true
+      class: biometrika.cls
+      bibliography_style: biometrika.bst
+      note: 類別檔在 style guide 壓縮檔內；範例以 "\documentclass[lineno]{biometrika}" 起頭；建議用 BibTeX
+      src: style_guide
+    files_after_acceptance: 所有 TeX 相關檔寄給編輯部，含 .eps 圖檔、.bib、.sty、.bst
+    style_rules:                    # 出自 style guide；錄取後才會要求
+      - 英式拼字、牛津 -ize 字尾
+      - 可用編號清單，不可用項目符號清單（bullet point lists）
+      - 不用 subsubsection；一節若分成 subsection，第一個 subsection 之前不得有文字
+      - 不寫「本文架構」段落（'contents of the paper' paragraph）
+      - 除表格外避免註腳
+      - 不要為方法自創縮寫（例如 'method WZ'）
+      - 方程式只在被引用時才編號，編號置右
+      - 記號慣例：var、cov、pr、tr、E(X)、log x；轉置寫成上標 T，不用撇號
+      - Monte Carlo 結果要附標準誤或其他精確度指標，位數依模擬規模取捨
+      - Discussion 只在有新內容（開放問題、未來方向）時才需要，不得重述摘要
+    references:
+      citation: 三位以上作者寫 'First author et al.'
+      arxiv: 存放於 arXiv 等永久典藏的著作可列入參考文獻，引用最新版本
+      unpublished: 博士論文、未發表報告只能在正文以文字提及，不列入參考文獻（已被接受或存於永久典藏者除外）
+      src: style_guide
+    figures:
+      alt_text:
+        required: true
+        scope: 主文中所有圖片、圖、插圖與照片
+        placement: 主文檔內、各圖說正下方，以 'Alt text:' 開頭
+        note: alt text 只在電子閱讀器中可見，不出現在排版後的文章
+        src: instructions
+      style: >-
+        軸標籤只有第一個字首字母大寫並附單位；caption 描述所有線條與符號、以句點結尾；
+        句首寫 Figure，其後縮寫為 Fig.
+      style_src: style_guide
+    line_numbers:
+      status: not_published
+      checked: 2026-10-08
+      src: instructions
+      note: 須知未要求行號；style guide 範例用 biometrika 類別的 lineno 選項開啟行號
+
+  supplementary_material:
+    format: 一份獨立 PDF，題為 'Supplementary material for Title-of-paper'
+    contents: 技術細節、延伸證明、程式碼、額外模擬、圖與例子
+    in_paper_section: 主文須有 'Supplementary material' 一節，以 'The Supplementary Material includes ...' 簡述內容
+    self_contained_paper: 不讀補充材料也必須能讀懂論文
+    software: 軟體應作為補充材料提交，並附 README 等充分說明
+    src: style_guide
+    review:
+      note: >-
+        審稿人須以與主文相同的標準評估補充材料，並指出應移回主文或不必要的部分；
+        大型資料集不要求細審
+      src: reviewer_guidelines
+
+  openness:
+    data_and_code:
+      level: strongly_encouraged
+      quote: "Where ethically feasible, Biometrika strongly encourages authors to make all data and software code on which the conclusions of the paper rely available to readers."
+      where: 主文、附加檔，或公開 repository
+      src: instructions
+    code_for_new_methods:
+      level: should
+      note: style guide 用 "should"，未見 "must"；而 style guide 自述投稿時不必遵守，所以這不是投稿門檻
+      quote: >-
+        Where the primary contribution of a paper is a new method, code implementing the method
+        should be made available, either as part of the Supplementary Material or via a public
+        repository, e.g., on GitHub. If simulation results are central to evaluation of such
+        methods, then details of how to reproduce those results should also be available.
+      src: style_guide
+    data_citation:
+      required: true
+      quote: "Biometrika supports the Force 11 Data Citation Principles and requires that all publicly available datasets be fully referenced in the reference list with an accession number or unique identifier such as a digital object identifier (DOI)."
+      format: "[dataset]* Authors, Year, Title, Publisher (repository or archive name), Identifier"
+      note: 最低資訊依 DataCite 建議；[dataset] 標籤刊出時會移除
+      src: instructions
+    data_availability_statement: {status: not_published, checked: 2026-10-08, src: instructions}
+    preregistration: {status: not_published, checked: 2026-10-08, src: instructions}
+
+  review:
+    type: single_anonymised
+    quote: "This journal operates single-anonymised peer review, meaning that the Authors identity is known to the Editor and to the Reviewers, but that the Reviewers’ identities are known only to the Editor and are hidden from the Authors."
+    src: instructions
+    author_may_suggest_reviewers: {status: not_published, checked: 2026-10-08, src: instructions}
+    reviewer_conflicts: 審稿人不審指導學生或指導教授、家人、同機構者、有資助關係者、近兩年合作者的稿件
+    reviewer_conflicts_src: reviewer_guidelines
+
+  authorship:
+    ai_as_author: forbidden
+    contributor_taxonomy: {status: not_published, checked: 2026-10-08, src: instructions}
+
+  submission:
+    portal: https://mc.manuscriptcentral.com/biometrika
+    system: ScholarOne Manuscripts
+    portal_verified: true
+    portal_note: >-
+      2026-10-08 以 safari-browser 開啟：經 Clarivate（Web of Science）登入頁轉址，進到
+      ScholarOne Manuscripts、referrer 帶 journal=biometrika。curl 與 WebFetch 皆回 403。
+    format: PDF
+    exclusivity: "Papers submitted to Biometrika must neither have been published nor be under consideration for publication elsewhere."
+    cover_letter:
+      required_when:
+        - 投稿 synthesis paper（Step 5，說明符合哪一項條件）
+        - 寫作中使用生成式 AI（須在 cover letter 揭露）
+    funding_statement: 投稿過程中須列出經費來源，或聲明沒有（CrossRef Funding Data Registry）
+    queries: 編務與投稿詢問寄 Editor（editor@biometrikatrust.org）
+    src: instructions
+
+  fees:
+    submission: {status: not_published, checked: 2026-10-08, src: instructions}
+    page_charges: {status: not_published, checked: 2026-10-08, src: instructions}
+    color_charges: {status: not_published, checked: 2026-10-08, src: instructions}
+    open_access_model: hybrid
+    open_access_note: 可選標準授權或開放取用授權；開放取用須付費，於錄取後在線上系統選擇
+    open_access_src: instructions
+    apc:
+      value: 2917.00
+      currency: GBP
+      applies_to: [Article, Miscellanea, Synthesis]
+      excludes: 銷售稅（VAT、GST 等）另計；可用其他幣別支付，匯率在簽授權時決定
+      note: OUP 查詢表單選 Journal = Biometrika 後，三種類別都顯示 "2917.00 GBP"；頁面註明價格可能變動
+      as_of: 2026-10-08
+      src: oa_charges
+    oa_licences:
+      status: not_published
+      checked: 2026-10-08
+      src: instructions
+      note: Biometrika 須知只說可選 "an open access licence"，未列 CC BY、CC BY-NC 等具體授權；OUP 通用頁說各刊不同、請看該刊須知
+    read_and_publish: 參與 OUP Read and Publish 協議的機構可能代付；通訊作者須在投稿時以該機構為主要所屬
+    read_and_publish_src: oa_charges
+
+  policies:
+    dual_submission: forbidden
+    preprints:
+      allowed: true
+      quote: "Authors retain the right to make an Author’s Original Version (preprint) available through various channels, and this does not prevent submission to the journal."
+      after_acceptance: 須依 Author Self-Archiving policy 更新 preprint 狀態，加上正式版 DOI
+      src: instructions
+    generative_ai:
+      allowed_in_writing: true
+      oversight: 作者須審閱並視需要修改輸出，對全文內容負完全責任
+      authorship: 不得列為作者；期刊會篩查作者名單
+      disclosure_required: true
+      disclosure_in: [cover letter, manuscript]
+      statement_title: "Declaration of the use of generative AI and AI-assisted technologies"
+      statement_placement: Acknowledgement 一節之前
+      statement_text: "During the preparation of this work the author(s) used [NAME TOOL/SERVICE] in order to [REASON]. After using this tool/service the author(s) reviewed and edited the content as necessary and take(s) full responsibility for the content of the publication."
+      exempt: 文法、拼字等基本檢查工具不需聲明；沒有可聲明的事項就不必放這段
+      review_effect: "Papers will be judged solely on their content, and the use of generative AI within the writing of the paper will not prejudice the review of the paper."
+      src: instructions
+    ethics:
+      misconduct: 發表後若發現或懷疑不當行為會調查，可能撤稿
+      screening: 稿件可能經第三方服務篩查不當影像修改與論文工廠
+      src: instructions
+    copyright:
+      licence: 須授予 Oxford University Press 專屬授權（exclusive licence）
+      reuse: 作者可在其他出版物再用自己的材料，須註明 Biometrika 為原出處並事先書面通知 OUP
+      src: instructions
+    language_editing: {required: false, note: 費用自付；不保證錄取，編修後仍須同儕審查, src: instructions}
+    conflict_of_interest:
+      status: not_published
+      checked: 2026-10-08
+      src: instructions
+      note: 作者端未見利益衝突揭露規定；審稿人端的規定見 reviewer_guidelines
+    orcid: {status: not_published, checked: 2026-10-08, src: instructions}
+    publication_speed:
+      note: 錄取並收到最終檔後，未經編修的錄取稿通常一週內上線，之後以排版校對版取代
+      src: publishing
+
+  standards:
+    - id: force11-data-citation
+      label: Force 11 Data Citation Principles
+      required: true
+    - id: cope-ai-authorship
+      label: COPE position statement on Authorship and AI
+      url: https://publicationethics.org/cope-position-statements/ai-author
+
+# ─────────────────────────────────────────────────────────────
+# FAST — 期刊無年度週期。
+# ─────────────────────────────────────────────────────────────
+cycle:
+  applies_to: null
+  rolling_calls: []
+  calls_for_papers:
+    status: not_found
+    checked: 2026-10-08
+    note: 期刊首頁的 Submit 與 About 選單、instructions 頁都沒有徵稿或特刊頁
+
+# ─────────────────────────────────────────────────────────────
+warnings:
+  - 篇幅上限寫成 "pages"（regular 與 synthesis "normally fewer than 20"，miscellanea "max. 8"），官方未定義以何種版面計頁、也未說參考文獻與補充材料計不計入
+  - 只談既有程序抽樣性質（或其小幅延伸）的論文通常不適合，除非揭示可觀的結構性理解；純應用研究不刊
+  - 主文所有圖都必須附 alt text，放在圖說正下方、以 'Alt text:' 開頭
+  - 寫作中用了生成式 AI，必須同時在 cover letter 與主文（Acknowledgement 之前的固定標題段落）揭露
+  - 投稿 synthesis paper 必須在 Step 5 附 cover letter 說明符合哪一項條件

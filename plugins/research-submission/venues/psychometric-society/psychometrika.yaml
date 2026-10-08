@@ -1,0 +1,809 @@
+--- # research-submission venue record
+# 內容擷取自 Cambridge Core 的 Psychometrika 期刊頁與 Psychometric Society 官網，2026-10-08。
+#
+# 出版社轉移：Psychometrika 自 2025 年起由 Cambridge University Press 代學會（期刊所有人）出版；
+# 之前是 Springer。Springer 舊頁仍在線、內容停在 2024 以前（Hybrid、ARCS 舊名），見 source springer_legacy。
+#
+# 抓取注意：2026-10-08 擷取時，Cambridge Core 全站頁首有一段 "Temporary Disruption" 橫幅
+# （約 230 字元），會進入抽取後純文字。橫幅撤下時，所有 Cambridge 來源的 hash 會一起變動——
+# 屆時 verify.py 回報 CHANGED 是橫幅造成，不代表須知改版，須人工比對正文。
+
+schema_version: 1
+id: psychometric-society/psychometrika
+kind: journal
+family: psychometrics-journals
+status: active
+
+# ─────────────────────────────────────────────────────────────
+# 來源與 provenance。須知散在 Cambridge Core 的十多個子頁。
+# ─────────────────────────────────────────────────────────────
+sources:
+  - id: author_instructions
+    role: authoritative
+    url: https://www.cambridge.org/core/journals/psychometrika/information/author-instructions
+    note: >-
+      Aims and Scope、三個 section、Article Types Accepted（含哪些類型收 APC）。
+      Cambridge 頁面的 "Allow content? This content requires cookies" 只是包在區塊外的同意提示，
+      區塊內容仍在 HTML 裡，抽取得到。頁首 Temporary Disruption 橫幅見檔頭註記。
+    fetch:
+      method: http
+      http_viable: true
+      validity:
+        must_contain: "Theory and Methods is the primary section"
+        min_extracted_chars: 4500
+    snapshot:
+      fetched_at: 2026-10-08
+      last_verified_at: 2026-10-08
+      extracted_sha256: null
+
+  - id: preparing
+    role: authoritative
+    url: https://www.cambridge.org/core/journals/psychometrika/information/author-instructions/preparing-your-materials
+    note: 規定本體：篇幅、摘要、稿件組成、APA、範本、ORCID、AI、補充資料、preprint 政策、圖表。
+    fetch:
+      method: http
+      http_viable: true
+      validity:
+        must_contain: "40 double-spaced pages"
+        min_extracted_chars: 25000
+    snapshot:
+      fetched_at: 2026-10-08
+      last_verified_at: 2026-10-08
+      extracted_sha256: null
+
+  - id: submitting
+    role: authoritative
+    url: https://www.cambridge.org/core/journals/psychometrika/information/author-instructions/submitting-your-materials
+    fetch:
+      method: http
+      http_viable: true
+      validity:
+        must_contain: "Author Center"
+        min_extracted_chars: 4500
+    snapshot:
+      fetched_at: 2026-10-08
+      last_verified_at: 2026-10-08
+      extracted_sha256: null
+
+  - id: research_transparency
+    role: authoritative
+    url: https://www.cambridge.org/core/journals/psychometrika/information/journal-policies/research-transparency
+    fetch:
+      method: http
+      http_viable: true
+      validity:
+        must_contain: "level II analytic methods"
+        min_extracted_chars: 3500
+    snapshot:
+      fetched_at: 2026-10-08
+      last_verified_at: 2026-10-08
+      extracted_sha256: null
+
+  - id: fees
+    role: authoritative
+    url: https://www.cambridge.org/core/journals/psychometrika/information/author-instructions/fees-and-pricing
+    fetch:
+      method: http
+      http_viable: true
+      validity:
+        must_contain: "Article Processing Charges for this journal"
+        min_extracted_chars: 2800
+    snapshot:
+      fetched_at: 2026-10-08
+      last_verified_at: 2026-10-08
+      extracted_sha256: null
+
+  - id: open_access
+    role: authoritative
+    url: https://www.cambridge.org/core/journals/psychometrika/information/journal-policies/open-access-options
+    fetch:
+      method: http
+      http_viable: true
+      validity:
+        must_contain: "preprints to be posted anywhere at any time"
+        min_extracted_chars: 4500
+    snapshot:
+      fetched_at: 2026-10-08
+      last_verified_at: 2026-10-08
+      extracted_sha256: null
+
+  - id: review_process
+    role: authoritative
+    url: https://www.cambridge.org/core/journals/psychometrika/information/peer-review-information/review-process
+    note: 全頁只有一句話（審查模式）。Cambridge 的不存在路徑回 HTTP 404，verify.py 會判 FETCH_FAILED，不會靜默入庫。
+    fetch:
+      method: http
+      http_viable: true
+      validity:
+        must_contain: "double-anonymized model of peer review"
+        min_extracted_chars: 1800
+    snapshot:
+      fetched_at: 2026-10-08
+      last_verified_at: 2026-10-08
+      extracted_sha256: null
+
+  - id: publishing_ethics
+    role: authoritative
+    url: https://www.cambridge.org/core/journals/psychometrika/information/journal-policies/publishing-ethics
+    note: 一稿多投、preprint、text recycling、以學位論文為基礎的稿件、審查人數、申訴、研究倫理。
+    fetch:
+      method: http
+      http_viable: true
+      validity:
+        must_contain: "minimum of two independent peer reviewers"
+        min_extracted_chars: 14000
+    snapshot:
+      fetched_at: 2026-10-08
+      last_verified_at: 2026-10-08
+      extracted_sha256: null
+
+  - id: publishing_agreement
+    role: supporting
+    url: https://www.cambridge.org/core/journals/psychometrika/information/author-instructions/publishing-agreement
+    fetch:
+      method: http
+      http_viable: true
+      validity:
+        must_contain: "non-exclusive licence to publish"
+        min_extracted_chars: 4000
+    snapshot:
+      fetched_at: 2026-10-08
+      last_verified_at: 2026-10-08
+      extracted_sha256: null
+
+  - id: reviewer_instructions
+    role: supporting
+    url: https://www.cambridge.org/core/journals/psychometrika/information/peer-review-information/instructions-for-peer-reviewers
+    note: 查過，沒有本刊專屬的審稿判準；只有通則資源連結與審稿人使用 AI 的限制。
+    fetch:
+      method: http
+      http_viable: true
+      validity:
+        must_contain: "should be shared with any public platform or artificial intelligence"
+        min_extracted_chars: 2600
+    snapshot:
+      fetched_at: 2026-10-08
+      last_verified_at: 2026-10-08
+      extracted_sha256: null
+
+  - id: journal_metrics
+    role: supporting
+    url: https://www.cambridge.org/core/journals/psychometrika/information/about-this-journal/journal-metrics
+    note: 頁面列出數值但未標年份；JCR 年份見 journal_home。
+    fetch:
+      method: http
+      http_viable: true
+      validity:
+        must_contain: "2-year Impact Factor"
+        min_extracted_chars: 2300
+    snapshot:
+      fetched_at: 2026-10-08
+      last_verified_at: 2026-10-08
+      extracted_sha256: null
+
+  - id: journal_home
+    role: supporting
+    url: https://www.cambridge.org/core/journals/psychometrika
+    note: >-
+      含 2025 JCR 年份與分類排名。頁面另有「近期文章」清單與依連線 IP 顯示的訂閱狀態
+      （擷取時顯示 "You have access: subscribed"），兩者都會讓 hash 經常變動，CHANGED 不代表規定改版。
+    fetch:
+      method: http
+      http_viable: true
+      validity:
+        must_contain: "Journal Citation Reports"
+        min_extracted_chars: 3500
+    snapshot:
+      fetched_at: 2026-10-08
+      last_verified_at: 2026-10-08
+      extracted_sha256: null
+
+  - id: about
+    role: supporting
+    url: https://www.cambridge.org/core/journals/psychometrika/information/about-this-journal
+    fetch:
+      method: http
+      http_viable: true
+      validity:
+        must_contain: "5 issues per year"
+        min_extracted_chars: 2500
+    snapshot:
+      fetched_at: 2026-10-08
+      last_verified_at: 2026-10-08
+      extracted_sha256: null
+
+  - id: editorial_board
+    role: supporting
+    url: https://www.cambridge.org/core/journals/psychometrika/information/about-this-journal/editorial-board
+    fetch:
+      method: http
+      http_viable: true
+      validity:
+        must_contain: "Associate Editors"
+        min_extracted_chars: 3000
+    snapshot:
+      fetched_at: 2026-10-08
+      last_verified_at: 2026-10-08
+      extracted_sha256: null
+
+  - id: contact
+    role: supporting
+    url: https://www.cambridge.org/core/journals/psychometrika/information/about-this-journal/contact-details
+    fetch:
+      method: http
+      http_viable: true
+      validity:
+        must_contain: "psychometrika@cambridge.org"
+        min_extracted_chars: 2400
+    snapshot:
+      fetched_at: 2026-10-08
+      last_verified_at: 2026-10-08
+      extracted_sha256: null
+
+  - id: publication_process
+    role: supporting
+    url: https://www.cambridge.org/core/journals/psychometrika/information/author-instructions/publication-process-after-acceptance
+    fetch:
+      method: http
+      http_viable: true
+      validity:
+        must_contain: "within 48 hours of final acceptance"
+        min_extracted_chars: 4800
+    snapshot:
+      fetched_at: 2026-10-08
+      last_verified_at: 2026-10-08
+      extracted_sha256: null
+
+  - id: special_sections
+    role: supporting
+    url: https://www.cambridge.org/core/journals/psychometrika/special-sections
+    note: 已出刊的 special section 清單（不是徵稿頁）。
+    fetch:
+      method: http
+      http_viable: true
+      validity:
+        must_contain: "Model Identification and Estimation for Longitudinal Data in Practice"
+        min_extracted_chars: 1400
+    snapshot:
+      fetched_at: 2026-10-08
+      last_verified_at: 2026-10-08
+      extracted_sha256: null
+
+  - id: cup_anonymising
+    role: supporting
+    url: https://www.cambridge.org/core/services/authors/anonymising-your-manuscript
+    note: >-
+      preparing 頁的 "Further instructions for anonymizing your manuscript" 連結指向
+      /core/services/authors/journals/anonymising-your-manuscript，會轉址到此 URL。這是 Cambridge 通則頁，非本刊專屬。
+    fetch:
+      method: http
+      http_viable: true
+      validity:
+        must_contain: "double-anonymous peer review process"
+        min_extracted_chars: 2000
+    snapshot:
+      fetched_at: 2026-10-08
+      last_verified_at: 2026-10-08
+      extracted_sha256: null
+
+  - id: overleaf_template
+    role: supporting
+    url: https://www.overleaf.com/latex/templates/cup-data-template/kwrskzvmfxbq
+    note: preparing 頁連出的官方 Overleaf 範本（CUP Data Template，多刊共用）。
+    fetch:
+      method: http
+      http_viable: true
+      validity:
+        must_contain: "Psychometrika: psy"
+        min_extracted_chars: 8000
+    snapshot:
+      fetched_at: 2026-10-08
+      last_verified_at: 2026-10-08
+      extracted_sha256: null
+
+  - id: society_psychometrika
+    role: supporting
+    url: https://www.psychometricsociety.org/psychometrika
+    note: >-
+      學會頁本身不載投稿規定，只指向出版社網站；但記錄了 2025 年轉到 Cambridge 後的 section 改名。
+      psychometricsociety.org 的 404 頁抽取後約 1,672 字元（HTML 約 30 KB），長度擋不住，must_contain 是必要條件。
+    fetch:
+      method: http
+      http_viable: true
+      validity:
+        must_contain: "on behalf of the owner, the Psychometric Society"
+        min_extracted_chars: 3000
+    snapshot:
+      fetched_at: 2026-10-08
+      last_verified_at: 2026-10-08
+      extracted_sha256: null
+
+  - id: society_editors
+    role: supporting
+    url: https://www.psychometricsociety.org/psychometrika-editors
+    note: 真實頁面抽取後只有約 1,437 字元，比學會的 404 頁（約 1,672）還短；只能靠 must_contain 判斷。
+    fetch:
+      method: http
+      http_viable: true
+      validity:
+        must_contain: "Term Expires"
+        min_extracted_chars: 1100
+    snapshot:
+      fetched_at: 2026-10-08
+      last_verified_at: 2026-10-08
+      extracted_sha256: null
+
+  - id: society_calls
+    role: supporting
+    url: https://www.psychometricsociety.org/psychometrika-calls
+    fetch:
+      method: http
+      http_viable: true
+      validity:
+        must_contain: "Calls for special issues or sections are periodically posted"
+        min_extracted_chars: 2200
+    snapshot:
+      fetched_at: 2026-10-08
+      last_verified_at: 2026-10-08
+      extracted_sha256: null
+
+  - id: call_data_intensive
+    role: supporting
+    url: https://www.psychometricsociety.org/post/call-special-issue-intensive-methods
+    fetch:
+      method: http
+      http_viable: true
+      validity:
+        must_contain: "Short proposals are due by March 15"
+        min_extracted_chars: 7000
+    snapshot:
+      fetched_at: 2026-10-08
+      last_verified_at: 2026-10-08
+      extracted_sha256: null
+
+  - id: call_acs_ai_diagnostic
+    role: supporting
+    url: https://www.psychometricsociety.org/post/call-papers-psychometrika-applications-and-case-studies-acs
+    fetch:
+      method: http
+      http_viable: true
+      validity:
+        must_contain: "The submission deadline is October 31st, 2025"
+        min_extracted_chars: 2500
+    snapshot:
+      fetched_at: 2026-10-08
+      last_verified_at: 2026-10-08
+      extracted_sha256: null
+
+  - id: springer_legacy
+    role: supporting
+    url: https://link.springer.com/journal/11336
+    note: >-
+      前出版社的舊期刊頁，仍在線但內容過時（"Publishing model: Hybrid"、ARCS 與 Book Reviews 舊 section 名）。
+      收錄的目的只是讓工具辨認出這是舊資料、不要引用。2026-10-08 以 safari-browser 確認頁面寫著
+      "Psychometrika will be published by Cambridge University Press from 2025."
+    fetch:
+      method: browser
+      http_viable: false
+      http_failure_mode: >-
+        依 User-Agent 不同而異：curl 預設 UA 拿到完整頁（約 208 KB）；verify.py 的 UA 與 "Mozilla/5.0"
+        都拿到 HTTP 200 + 約 3 KB 空殼，抽取後只有一句 "A required part of this site couldn’t load"。
+        WebFetch 被導向 idp.springer.com 的 cookie 授權流程，最後回 ?error=cookies_not_supported。
+      validity:
+        must_contain: "will be published by Cambridge University Press from 2025"
+        min_extracted_chars: 3000
+    snapshot:
+      fetched_at: 2026-10-08
+      last_verified_at: 2026-10-08
+      extracted_sha256: null
+
+# ─────────────────────────────────────────────────────────────
+identity:
+  name: Psychometrika
+  publisher: Cambridge University Press
+  owner: The Psychometric Society
+  owner_note: 期刊所有人是學會；Cambridge 代為管理與出版。
+  former_publisher: {name: Springer, until: 2024, src: society_calls,
+                     note: 學會頁稱 Springer 為 "former publisher"；Springer 頁寫 "will be published by Cambridge University Press from 2025"}
+  issn: {print: "0033-3123", electronic: "1860-0980", src: about}
+  homepage: https://www.cambridge.org/core/journals/psychometrika
+  society_page: https://www.psychometricsociety.org/psychometrika
+  frequency: {value: 5 issues per year, src: about,
+              note: 學會頁的 "Published quarterly since 1936" 是沿革敘述，不是現行刊期}
+  editors:
+    - {role: Executive Editor; Theory and Methods Editor, name: Sandip Sinharay,
+       affiliation: Educational Testing Service, term_expires: 2027, src: editorial_board,
+       note: 任期年份出自 society_editors}
+    - {role: Application and Case Studies Editor, name: Nidhi Kohli,
+       affiliation: University of Minnesota Twin Cities, term_expires: 2026, src: editorial_board,
+       note: 任期年份出自 society_editors（該頁 2026-06-30 更新）}
+    - {role: Reviews Editor, name: Ji Seung Yang,
+       affiliation: University of Maryland at College Park, term_expires: 2028, src: editorial_board}
+  editorial_office: {email: psychometrika@cambridge.org, src: contact}
+  external_ids:
+    crossref: "0033-3123"
+    openalex: issn:0033-3123
+  metrics:
+    impact_factor: {value: 2.9, jcr_year: 2025, as_of: 2026-10-08, src: journal_home,
+                    note: journal_metrics 頁同列 2.9 但未標年份；journal_home 標 "2025 Impact Factor"}
+    impact_factor_5yr: {value: 4.1, as_of: 2026-10-08, src: journal_metrics, note: 頁面未標年份}
+    category_rank:
+      - {value: "32/137", category: "Mathematics, Interdisciplinary Applications", jcr_year: 2025, src: journal_home}
+      - {value: "17/70", category: "Social Sciences, Mathematical Methods", jcr_year: 2025, src: journal_home}
+      - {value: "5/70", category: "Psychology, Mathematical", jcr_year: 2025, src: journal_home}
+    eigenfactor: {value: 0.00373, as_of: 2026-10-08, src: journal_metrics, note: 頁面未標年份}
+    article_influence_score: {value: 1.857, as_of: 2026-10-08, src: journal_metrics, note: 頁面未標年份}
+    citescore: {value: 5.1, as_of: 2026-10-08, src: journal_metrics, note: 頁面未標年份}
+    sjr: {value: 1.928, as_of: 2026-10-08, src: journal_metrics, note: 頁面未標年份}
+    snip: {value: 2.172, as_of: 2026-10-08, src: journal_metrics, note: 頁面未標年份}
+    acceptance_rate: {status: not_published, checked: 2026-10-08, src: journal_metrics}
+    time_to_first_decision: {status: not_published, checked: 2026-10-08, src: journal_metrics,
+                             note: review_process 頁也沒有}
+
+# ─────────────────────────────────────────────────────────────
+# SLOW — 數年不變。驗證用 hash diff 即可。
+# ─────────────────────────────────────────────────────────────
+requirements:
+  refresh: {check_every: P6M, method: extracted_hash_diff}
+
+  scope:
+    aims: >-
+      學會官方期刊，以「把心理學發展成量化的理性科學」為宗旨：檢驗統計方法、討論數學技術、
+      推進評估心理學、教育與社會行為科學資料的理論。
+    src: author_instructions
+    sections:
+      - id: theory_and_methods
+        label: Theory and Methods
+        primary: true
+        statement: >-
+          主要 section。刊登發展心理現象量化模型、社會行為科學量化方法論的原創研究，
+          包括評估心理學資料的新數學與統計技術及其應用。
+        conditions:
+          - 實證研究只有在涉及新的、或特別有意思的量化技術用法時才會考慮
+          - 關於特定測驗之發展或結果的文章一般不予考慮
+        also_accepts: [focus articles, commentaries on focus articles, rejoinders]
+        src: preparing
+      - id: application_and_case_studies
+        label: Application and Case Studies (ACS)
+        statement: >-
+          把新方法連到心理、教育等領域的實際應用；須展現方法嚴謹度，並含一個以上
+          對教育、心理、社會或行為科學家有廣泛興趣的真實資料例子。也收既有方法的新應用，
+          以及軟體開發文章（須明確處理 R、Python、MATLAB 等平台的軟體開發，並附原始碼與實證分析的重製材料）。
+        src: author_instructions
+      - id: reviews
+        label: Reviews
+        statement: 書籍、文獻、軟體、媒體的評論。
+        src: author_instructions
+    section_assignment: >-
+      投稿時作者可要求歸入 Theory and Methods 或 Application and Case Studies，
+      但編輯可在審視稿件後建議改投另一個 section。
+    section_assignment_src: preparing
+    evaluation_criteria:
+      status: not_published
+      checked: 2026-10-08
+      note: >-
+        查過 author_instructions、preparing、review_process、reviewer_instructions，
+        都沒有給審稿人的評分判準；只有上面各 section 的範圍敘述與下面的低優先清單。
+    lower_priority_hints:           # 官方原文 "likely to be assigned a lower priority ... (unless the manuscript has important implications for the field)"
+      src: preparing
+      items:
+        - 焦點在心理學、教育與廣義社會科學領域之外的稿件
+        - 以模擬或真實資料示範或比較「既有」心理計量工具的稿件
+        - 描述新課程、測驗或問卷開發的稿件
+        - 例行檢驗特定測驗心理計量品質，或例行分析一個以上教育資料集的稿件
+        - 只描述電腦程式、沒有方法論成分的稿件
+    topical_signal:
+      note: >-
+        special_sections 頁列出已出刊的 special section「Model Identification and Estimation for
+        Longitudinal Data in Practice」與「Integrating and Analyzing Complex High-Dimensional Data in
+        Social and Behavioral Sciences Research」。只看了標題，未讀內容。
+      src: special_sections
+    section_naming_inconsistency: >-
+      官方頁面對第二個 section 的名稱不一致：author_instructions 的 Aims and Scope 寫
+      "Application and Case Studies (ACS)"，Article Types 的標題卻寫 "Application Reviews and Case Studies Section"，
+      submitting 頁也寫 "Application Reviews and Case Studies"，preparing 頁還有一處寫 "Theory and Methodology"。
+      學會頁說明舊名 ARCS 已在 2025 年改為 ACS。
+
+  article_types:                    # 星號規則見 apc_note
+    - {id: tm_original, section: theory_and_methods, label: "Theory and Methods – Original", apc: research_article, src: author_instructions}
+    - {id: tm_focus, section: theory_and_methods, label: "Theory and Methods – Focus Article", apc: research_article,
+       note: 用來促成對量化方法論的公開辯論，與評論、回應一起刊出（2025 年新增）, src: author_instructions}
+    - {id: tm_commentary_on_focus, section: theory_and_methods, label: "Theory and Methods - Commentary on Focus Article", apc: research_article, src: author_instructions}
+    - {id: tm_rejoinder, section: theory_and_methods, label: "Theory and Methods - Rejoinder for Focus Article", apc: research_article, src: author_instructions}
+    - {id: acs_original, section: application_and_case_studies, label: "Application and Case Studies – Original", apc: research_article, src: author_instructions}
+    - {id: acs_software, section: application_and_case_studies, label: "Application and Case Studies – Software Development", apc: research_article,
+       extra: 須附原始碼與實證分析的重製材料, src: author_instructions}
+    - {id: book_review, section: reviews, label: Book review, apc: none,
+       length: "standard 約 2–4 頁、featured（2–3 本書）約 5–8 頁，雙倍行距 12 pt", src: preparing}
+    - {id: literature_review, section: reviews, label: Literature review, apc: research_article,
+       length: "10,000 words 以內（all inclusive），可與編輯協商", src: preparing}
+    - {id: software_review, section: reviews, label: Software review, apc: none,
+       length: "standard 約 5–8 頁、featured 約 8–15 頁，雙倍行距 12 pt", src: preparing}
+    - {id: media_review, section: reviews, label: Media review, apc: none, length: "約 2–4 頁，雙倍行距 12 pt", src: preparing}
+    - {id: reviews_proposal, section: reviews, label: Reviews proposal, apc: {status: not_published, checked: 2026-10-08},
+       note: 經 ScholarOne 提交，先與 Reviews 編輯溝通, src: author_instructions}
+    - id: commentary
+      label: Commentary
+      apc: none
+      length: "不超過 15 頁雙倍行距（含表、圖、參考文獻，不含附錄）"
+      note: >-
+        針對過去 5 年內刊出的 Psychometrika 文章。兩種：受邀評論 focus article，或任何作者對任一近 5 年文章的評論。
+        審查為加速的匿名審查（兩位 associate editor 加一至兩位審稿人）。必含 Abstract、Introduction、
+        相關小節、Discussion 或 conclusion、References。
+        Article Types 清單把 "Commentary on Focus Article" 列為收 APC 的研究文章，另列一個不收 APC 的 "Commentary"；
+        兩者的界線頁面沒說清楚。
+      src: preparing
+    - {id: editorial, label: Editorial, apc: none, src: author_instructions}
+  apc_note: >-
+    Article Types 清單中，單星號 "* For the purposes of Gold Open Access funding, this journal considers these
+    article types to be research articles"（接受後收 APC，除非機構協議或減免涵蓋）；雙星號 "** No APCs are required
+    for these article types"。
+
+  length:
+    value: 40
+    unit: pages_double_spaced
+    basis: {size_pt: 12, spacing: double, font: {status: not_published, checked: 2026-10-08}}
+    includes: [references, tables, figures]
+    excludes: [appendixes]
+    approx_words:
+      value: 10000
+      assumption: "250 words/page；數學式與表格多的稿件每頁字數會低很多"
+      confidence: low
+    exceptions: >-
+      官方原文 "roughly 40"。較長的稿件 "will be sent back to the authors with a request to revise"；
+      若認為主題特殊需要超過 40 頁，須在正式投稿前先聯絡 Editor-in-Chief。
+    applies_to: [tm_original, acs_original]
+    src: preparing
+
+  abstracts:
+    - id: main
+      max_words: 200
+      required_at: submission
+      placement: 匿名稿件內（不在 cover page）
+      src: preparing
+  keywords: {min: 3, max: 5, src: preparing}
+
+  structure:
+    applies_to: 初次投稿的 Theory & Methods 與 Application and Case Studies 稿件
+    files:
+      - id: cover_page
+        contents:
+          - 作者，標明 corresponding author，完整聯絡資訊與機構（含國家）
+          - Acknowledgments（選填；經費不放這裡）
+          - Data Availability statement（必填）
+          - Financial Support（必填，有固定句型）
+          - Competing Interests statement（必填）
+      - id: anonymized_manuscript
+        contents: [Abstract（200 字以內）, Keywords（3–5 個）, Main text, References]
+    revised_manuscripts: 另附逐點回應審稿意見的說明
+    financial_support_wording:
+      single: "This work was supported by the [Funding Agency] under Grant [number xxxx]."
+      none: "This research received no specific grant funding form any funding agency, commercial or not-for-profit sectors."
+      note: none 句型照官方原文抄錄（含原文的 "form"）
+    competing_interests_none: "Competing interests: The author(s) declare none"
+    data_availability_placement_conflict: >-
+      preparing 與 submitting 頁把 Data Availability statement 列在 cover page；research_transparency 頁卻寫
+      "Data Availability Statements should be placed in the back matter of your manuscript, before the References"。
+      兩頁說法衝突，官方未說明以何者為準。
+    src: preparing
+
+  formatting:
+    style_manual: {name: APA Publication Manual, edition: 7, src: preparing}
+    citation_style: {name: APA Author-Date, src: preparing}
+    templates:
+      latex:
+        name: CUP Data Template（Overleaf 官方範本，多刊共用）
+        url: https://www.overleaf.com/latex/templates/cup-data-template/kwrskzvmfxbq
+        journal_option: psy
+        note: 範本原始碼預設 \documentclass[journal=gmj]{CUP-JNL-DTM}，要改成 journal=psy；可從 Overleaf 直接送到投稿系統
+        src: overleaf_template
+      word: {provided: true, files: [title page, anonymised main document], src: preparing}
+      recommendation: 官方用語 "strongly encouraged"，LaTeX 或 Word 範本擇一
+    pdf_required: {value: true, note: LaTeX 與 Word 投稿都要附 PDF，審查期間與最終檔皆然, src: preparing}
+    line_numbers: {status: not_published, checked: 2026-10-08}
+    figures_tables:
+      initial_submission: 圖、表、註腳放在正文中對應位置
+      tables: 必須是可編輯格式，不可是圖檔
+      at_acceptance: 每張圖另交獨立檔
+      numbering: 依序以阿拉伯數字編號並加標題；diagram、graph、box、code snippet 也要編號
+      accessibility: 須符合 WCAG 2.1 Level AA；所有圖、表、多媒體要有 alt-text，可自備，未提供則由機器產生、校稿時確認
+      src: preparing
+    equations: {status: not_published, checked: 2026-10-08}
+
+  supplementary:
+    published: 隨文章線上刊出，不印在期刊頁面中；不排版、不編修，照原檔刊出
+    examples: [appendices, additional tables or figures, datasets, videos, sound files]
+    declare_at_submission: >-
+      投稿時要說明能提供哪些補充材料（含資料與程式碼），審查時會納入考量；
+      資料與程式碼須有足夠說明，讓最終版的結果可被重製與驗證。
+    naming: 正文中以 "Online Resource" 引用（如 "Online Resource 4"），檔名依序如 ESM_4.pdf，每個檔案附簡短說明
+    file_header: 每個檔案內要寫文章標題、期刊名、作者名、通訊作者的機構與 email
+    permanence: 屬於正式學術記錄，刊出後只能經更正程序修改
+    src: preparing
+
+  review:
+    type: double_anonymized
+    type_src: review_process
+    min_reviewers: {value: 2, qualifier: usually, src: publishing_ethics}
+    commentary_review: 加速的匿名審查：兩位 associate editor 加一至兩位審稿人
+    anonymization:
+      required: true
+      rules:
+        - 作者姓名不得出現在正文任何地方的 header 或 author note（preparing）
+        - 引用自己的著作照常引用，不要刪（preparing；cup_anonymising 另建議改用第三人稱，避免 "we" 指稱自己先前的研究）
+        - 審稿人看得到的附加檔（圖、補充材料）也要匿名（cup_anonymising）
+        - 修稿的審稿意見回應也不能含作者姓名或機構（cup_anonymising）
+      src: [preparing, cup_anonymising]
+    author_may_suggest_reviewers: {status: not_published, checked: 2026-10-08}
+    appeals: >-
+      只針對特定稿件，且須有證據顯示編輯或審稿人有重大事實錯誤或誤解，或決策過程的完整性受損；
+      一般每份稿件每個決策階段只受理一次申訴。
+    appeals_src: publishing_ethics
+    reviewer_ai_rule: 審稿人不得把稿件或審查意見放進任何 AI 工具或公開平台
+    reviewer_ai_rule_src: reviewer_instructions
+
+  openness:
+    data_availability_statement: {required: true, applies_to: 所有投稿稿件, src: research_transparency}
+    code:
+      top_level: II
+      rule: "Analysis code must be made available in supplemental material. Exceptions must be identified at article submission."
+      src: research_transparency
+    data:
+      top_level: II
+      rule: >-
+        強烈鼓勵公開所有實證資料；要求作者在可能時把資料存放於公開 repository，或放在正文、補充檔中；
+        無法分享時必須說明理由。
+      src: research_transparency
+    preregistration: {status: not_published, checked: 2026-10-08}
+    reporting_guidelines: {value: EQUATOR Network, required: false, note: 鼓勵, src: research_transparency}
+    repositories: 建議用提供永久識別碼、有長期保存政策的專用 repository；並在正文引用所用的資料與材料
+    software_articles: ACS 的軟體開發文章須附原始碼與實證分析的重製材料（author_instructions）
+
+  authorship:
+    criteria: 以 ICMJE 為基礎的四項條件（publishing_ethics）
+    contributor_taxonomy: {status: not_published, checked: 2026-10-08, note: 頁面未提 CRediT}
+    corresponding_author_duties: [校對與修稿, 代表共同作者簽出版協議, 安排 APC, 刊出後回應各方詢問]
+    corresponding_author_change: 投稿後更換通訊作者須經正式程序審查
+    src: publishing_ethics
+
+  submission:
+    portal:
+      system: ScholarOne Manuscripts
+      url: https://mc.manuscriptcentral.com/psychometrika
+      verified: true
+      note: >-
+        curl 與 WebFetch 都被 Cloudflare 擋（HTTP 403，"Just a moment..." 挑戰頁）；2026-10-08 以
+        safari-browser 開啟，確認是 ScholarOne Manuscripts 登入頁，URL 未被轉走。帳號與 Cambridge Core 帳號分開。
+        call_data_intensive 頁稱之為 "editorial manager submission system"，實為 ScholarOne。
+      src: submitting
+    orcid: {required_for: corresponding author, src: submitting}
+    section_request: 投稿時可指定 Theory and Methods 或 ACS，編輯可能建議改投
+    cover_letter:
+      required_content: {status: not_published, checked: 2026-10-08,
+                         note: 未見 cover letter 的一般格式規定；唯一提到 cover letter 的是下面的學位論文條款}
+      thesis_based: 稿件若以學位論文為基礎，須在 cover letter 告知編輯；論文若已由出版社公開出版，可能須先取得該出版社同意
+      thesis_src: publishing_ethics
+    licence: 接受後填 Author Information Form，簽非專屬出版授權（Ironclad 電子簽）；著作權維持原狀
+    licence_src: publishing_agreement
+
+  fees:
+    submission_fee: {status: not_published, checked: 2026-10-08}
+    model: 全面 Gold Open Access（"wholly open access journal"），作者可選六種 Creative Commons 授權之一
+    apc:
+      currency_rates:
+        - {currency: GBP, standard: 2610, member: 1960}
+        - {currency: USD, standard: 3655, member: 2740}
+      member_discount: Psychometric Society 會員擔任通訊作者可享 25% 折扣，於付款流程中申請
+      taxes: 可能另加稅（"additional taxes may apply"）
+      applies_to: 研究類文章（單星號類型）；書評、軟體評論、媒體評論、Commentary、Editorial 不收
+      src: fees
+    funding_routes:
+      - 通訊作者所屬機構與 Cambridge 有 open access 協議者，多數情況全額涵蓋，於出版流程中自動判定（可用 eligibility checker 預查）
+      - Cambridge Open Equity Initiative：100 多個中低收入國家的通訊作者
+      - Research4Life
+      - 有第三方經費（如研究計畫）者應以該經費支付
+      - 以上皆不適用者可申請減免或全額豁免；於接受後填 Author Information Form 時提出
+    decision_independence: 是否接受只由編輯決定，與作者的付費能力無關；編輯與審稿人不經手 APC 減免
+    institution_check: {status: not_applicable, checked: 2026-10-08,
+                        note: 個別機構是否有協議屬投稿者層級資訊，本記錄未查；請用 https://www.cambridge.org/core/eligibility-checker}
+    color_print: {status: not_published, checked: 2026-10-08}
+    src: open_access
+
+  policies:
+    dual_submission: forbidden
+    dual_submission_src: publishing_ethics
+    preprints:
+      allowed: true
+      rule: "This journal allows preprints to be posted anywhere at any time, including before submission to the journal."
+      src: open_access
+    green_oa: 可依 Cambridge Green Open Access 政策在機構典藏或個人網站放出版前版本
+    similarity_screening: 保留以抄襲檢測工具檢查所有投稿的權利；抄襲的定義明列 "extended mathematical derivations" 與 "computer code"
+    similarity_src: publishing_ethics
+    text_recycling: 依 COPE 指引判斷，不可接受者可能退稿
+    generative_ai:
+      authorship: AI 工具不得列為作者
+      disclosure_required: 用 AI 產生文字或圖像（含翻譯）、或分析資料時必須聲明；拼字、文法、單字片語、格式等最小且非生成性的使用不必聲明
+      placement:
+        text: acknowledgments 或註腳（比照語言編修服務）
+        data_analysis: Methods 章節
+        figures: 圖說
+      content: [工具名稱與版本, 使用日期, 他人如何取得與使用, 完整使用方式, 引用工具輸出所含的第三方材料]
+      src: preparing
+    competing_interests: {disclosure_required: true, placement: cover page, src: preparing}
+    funding_statement: {required: true, placement: cover page（Financial Support 節）, src: preparing}
+    ethics_human_participants: >-
+      涉及人類參與者或其資料的研究應經倫理委員會核准，並寫明委員會名稱、核准編號與同意類型；
+      若豁免審查，在 Methods 寫明給予豁免的委員會。
+    ethics_src: publishing_ethics
+    affiliations: 機構應為研究實際進行、支持或核准的單位；故意填錯屬不當行為
+    cope_member: true
+    language_editing: 選用、自費，不影響錄用
+    post_acceptance:
+      accepted_manuscript: 收齊定稿與出版協議後 48 小時內以 Accepted Manuscript 形式上線（排版前），採 CC BY-NC-ND，日後換成正式版
+      proofs: 約接受後兩週寄出校樣
+      src: publication_process
+
+  standards:
+    - id: top-guidelines
+      url: https://www.cos.io/initiatives/top-guidelines
+      areas_declared: [analytic methods (code) Level II, data transparency Level II]
+      src: research_transparency
+    - id: equator
+      label: EQUATOR Network reporting guidelines
+      required: false
+      note: >-
+        research_transparency 頁只泛稱 "Reporting guidelines for many study designs"，未指定哪一份適用於方法論文；
+        本記錄未查 EQUATOR 本身，故不判斷是否有對應模組。
+
+# ─────────────────────────────────────────────────────────────
+# FAST — 期刊無年度週期；徵稿放這裡。
+# ─────────────────────────────────────────────────────────────
+cycle:
+  applies_to: null
+  rolling_calls:
+    - id: data_intensive_methods
+      label: "Special Issue: Data Intensive Methods in Psychometrics"
+      section: theory_and_methods
+      type: special_issue
+      wants: >-
+        利用「許多個」資料集（而非單一大型資料集）推進方法論研究；新方法在資料密集情境的表現，
+        或用大量資料檢驗既有方法的實際功能。須符合 Theory and Methods 的標準。
+      process: >-
+        先向客座編輯交 500 字以內的短提案；全文經一般審查流程，投稿時在 ScholarOne 選擇該 special issue。
+        逾期提案可直接聯絡客座編輯。
+      deadlines:
+        - {id: proposal, date: 2026-03-15, timezone: {status: not_published, checked: 2026-10-08}, note: 已過}
+        - {id: proposal_feedback, date: 2026-04-15, note: 官方寫 "We aim to supply feedback by"}
+        - {id: full_manuscript, date: 2027-03-01, timezone: {status: not_published, checked: 2026-10-08}}
+      guest_editors: [Benjamin W. Domingue, Kylie Gorney, Jonas Haslbeck, Klint Kanopka, Leonie V.D.E. Vogelsmeier]
+      posted: 2026-01-15
+      url: https://www.psychometricsociety.org/post/call-special-issue-intensive-methods
+      src: call_data_intensive
+    - id: acs_ai_diagnostic
+      label: "ACS Special Section: Leveraging AI to Empower Development and Application of Diagnostic Statistical Models"
+      section: application_and_case_studies
+      type: special_section
+      deadlines:
+        - {id: submission, date: 2025-10-31, note: 已過；學會頁未標 CLOSED}
+      posted: 2025-07-15
+      url: https://www.psychometricsociety.org/post/call-papers-psychometrika-applications-and-case-studies-acs
+      src: call_acs_ai_diagnostic
+
+# ─────────────────────────────────────────────────────────────
+warnings:
+  - >-
+    Theory & Methods 與 ACS 稿件以約 40 頁雙倍行距、12 pt 為上限（含參考文獻、表、圖，不含附錄）；
+    超過者 "will be sent back to the authors with a request to revise"。要超長必須在投稿前先聯絡 Editor-in-Chief。
+  - >-
+    雙盲審查：cover page 與匿名稿件分成兩個檔；作者姓名不得出現在正文的 header 或 author note。
+  - >-
+    全面 Gold OA。研究類文章接受後收 APC（USD 3,655／GBP 2,610；學會會員 USD 2,740／GBP 1,960，可能另加稅），
+    除非機構協議或減免涵蓋；減免是接受後才申請。
+  - >-
+    分析程式碼必須放在補充材料（TOP Level II）；無法提供者要在投稿時就聲明例外。所有稿件都要有 Data Availability statement。
+  - >-
+    官方頁面彼此有出入：Data Availability statement 的位置（cover page 或 References 前的 back matter），
+    以及第二個 section 的名稱（ACS 或 "Application Reviews and Case Studies"）。投稿前宜向 psychometrika@cambridge.org 確認。
+  - >-
+    Springer 舊期刊頁（link.springer.com/journal/11336）仍在線，內容停在 2024 年以前，不可作為現行規定的依據。
+  - 通訊作者投稿時必須有 ORCID。

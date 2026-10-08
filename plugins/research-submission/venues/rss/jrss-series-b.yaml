@@ -1,0 +1,460 @@
+--- # research-submission venue record
+# 內容擷取自 Oxford Academic（OUP）與 Royal Statistical Society 官方頁面 2026-10-08。
+# 期刊所有權屬 RSS，出版與投稿須知由 OUP 代管；規定本體在 OUP 的 General Instructions 頁，
+# 討論論文（Discussion Paper）路線的細則另見 RSS 的 Discussion Meetings 指南 PDF。
+
+schema_version: 1
+id: rss/jrss-series-b
+kind: journal
+family: statistics-journals
+status: active
+
+sources:
+  - id: general_instructions
+    role: authoritative
+    url: https://academic.oup.com/jrsssb/pages/general-instructions
+    note: >-
+      頁面標題 "General Instructions"，導覽列連結文字為 "Author Guidelines"。
+      由期刊首頁 Submit 選單點進。頁內有兩個連結錯置：(1) "optional LaTeX template ... can be
+      found here" 的 here 連到 Overleaf 上標題為 Series C (Applied Statistics) 的範本；
+      (2) "ScholarOne Manuscripts FAQ" 連到 COPE 的 PDF，不是 ScholarOne 說明頁。
+    fetch:
+      method: browser
+      http_viable: false
+      http_failure_mode: >-
+        academic.oup.com 全站有 Cloudflare 挑戰：curl 回 HTTP 403 + 約 5.4 KB 的
+        "Just a moment... Enable JavaScript and cookies to continue" 空殼。WebFetch 能通過挑戰，
+        但只回模型摘要與 125 字元以內的短引文，拿不到逐字全文，無法做 hash 比對；
+        逐字全文以 safari-browser 讀 document.body.innerText 取得（約 28,900 字元，含導覽列）。
+      validity:
+        must_contain: "which we define as 28 lines of text per page"
+        min_extracted_chars: 15000
+    snapshot:
+      fetched_at: 2026-10-08
+      last_verified_at: 2026-10-08
+      extracted_sha256: null
+
+  - id: journal_home
+    role: supporting
+    url: https://academic.oup.com/jrsssb
+    note: 期刊首頁；Impact Factor、Joint Editors、Latest Issue 在此。
+    fetch:
+      method: webfetch
+      http_viable: false
+      http_failure_mode: curl 回 HTTP 403 + 約 5.4 KB Cloudflare 挑戰頁（同 general_instructions）
+      validity:
+        must_contain: "publishes work at the leading edge of methodological development"
+        min_extracted_chars: 2000
+    snapshot: {fetched_at: 2026-10-08, last_verified_at: 2026-10-08, extracted_sha256: null}
+
+  - id: about
+    role: supporting
+    url: https://academic.oup.com/jrsssb/pages/about
+    note: Aims and Scope 全文與 General Instructions 的 Scope 段逐字相同；另列 Abstracting and Indexing。
+    fetch:
+      method: webfetch
+      http_viable: false
+      http_failure_mode: curl 回 HTTP 403 + 約 5.5 KB Cloudflare 挑戰頁
+    snapshot: {fetched_at: 2026-10-08, last_verified_at: 2026-10-08, extracted_sha256: null}
+
+  - id: why_publish
+    role: supporting
+    url: https://academic.oup.com/jrsssb/pages/why-publish
+    note: >-
+      行銷頁。內容比首頁舊：寫 Impact Factor 3.6（Clarivate 2024）、Joint Editors 為
+      Hani Doss、Xuming He、Daniela Witten，均與首頁和 Editorial Board 頁現況不符；不要從這頁取數字或人名。
+    fetch:
+      method: webfetch
+      http_viable: false
+      http_failure_mode: curl 回 HTTP 403 + 約 5.5 KB Cloudflare 挑戰頁
+    snapshot: {fetched_at: 2026-10-08, last_verified_at: 2026-10-08, extracted_sha256: null}
+
+  - id: editorial_board
+    role: supporting
+    url: https://academic.oup.com/jrsssb/pages/editorial-board
+    fetch:
+      method: webfetch
+      http_viable: false
+      http_failure_mode: curl 回 HTTP 403 + 約 5.5 KB Cloudflare 挑戰頁
+    snapshot: {fetched_at: 2026-10-08, last_verified_at: 2026-10-08, extracted_sha256: null}
+
+  - id: oa_charges
+    role: supporting
+    url: https://academic.oup.com/pages/open-research/open-access/charges-licences-and-self-archiving
+    note: >-
+      OUP 全社共用的 OA 收費頁。各期刊金額不寫在靜態文字裡，要在頁內計算器選 Journal
+      (JRSSSB) 與 Manuscript category 後按 "Show charge" 才顯示。頁內 "Download full pricing file (.xlsx)"
+      連到 https://global.oup.com/fdscontent/academic/xls/openaccess/charges.xlsx，curl 取得 HTTP 202 + 0 bytes，
+      未能讀取。
+    fetch:
+      method: browser
+      http_viable: false
+      http_failure_mode: >-
+        curl 回 HTTP 403 + 約 5.7 KB Cloudflare 挑戰頁；WebFetch 能取得頁面但計算器未互動前
+        不顯示任何期刊金額，須在瀏覽器中操作下拉選單。
+      validity:
+        must_contain: "What is the OA charge for my article?"
+        min_extracted_chars: 3000
+    snapshot: {fetched_at: 2026-10-08, last_verified_at: 2026-10-08, extracted_sha256: null}
+
+  - id: scholarone
+    role: supporting
+    url: https://mc.manuscriptcentral.com/jrssb
+    note: 以瀏覽器確認登入頁寫 "Welcome to the submission site for Journal of the Royal Statistical Society:Series B"。
+    fetch:
+      method: browser
+      http_viable: false
+      http_failure_mode: curl 與 WebFetch 都回 HTTP 403（約 5.5 KB）
+    snapshot: {fetched_at: 2026-10-08, last_verified_at: 2026-10-08, extracted_sha256: null}
+
+  - id: rss_series_b
+    role: supporting
+    url: https://rss.org.uk/news-publication/publications/journals/series-b/
+    note: >-
+      RSS 學會端的期刊介紹頁。直覺路徑 /news-publication/publications/our-journals/series-b/ 是 404，
+      而且 404 頁有約 56 KB，比這頁還大，單靠長度擋不住。頁上的 Impact Factor 3.6（was 3.1）、
+      5-year 6.4 未標年份，與首頁的 2025 數字不同。
+    fetch:
+      method: http
+      http_viable: true
+      validity:
+        must_contain: "Published five times a year by Oxford University Press"
+        min_extracted_chars: 3000
+    snapshot: {fetched_at: 2026-10-08, last_verified_at: 2026-10-08, extracted_sha256: null}
+
+  - id: rss_discussion_meetings
+    role: supporting
+    url: https://rss.org.uk/news-publication/publications/journals/discussion-papers-meetings/
+    note: General Instructions 裡 "Forthcoming discussion papers are available from the society’s web pages" 的連結目標。
+    fetch:
+      method: http
+      http_viable: true
+      validity:
+        must_contain: "Preprints of the papers are available to download ahead of each meeting"
+        min_extracted_chars: 3000
+    snapshot: {fetched_at: 2026-10-08, last_verified_at: 2026-10-08, extracted_sha256: null}
+
+  - id: rss_discussion_guidelines
+    role: supporting
+    url: https://rss.org.uk/RSS/media/File-library/Events/Discussion%20meetings/Discussion-Meetings-guidelines-updated.pdf
+    note: >-
+      "Discussion Meetings and Submission Guidelines"，頁尾標 September 2025。由 rss_discussion_meetings
+      頁的 "guidelines" 連結取得；同頁 "submission process" 連到 ..._1.pdf，兩檔逐位元組相同。
+      這是 PDF：HTTP 下載正常（200、約 125 KB），但 verify.py 的 HTML 抽取器讀不出 PDF 文字，
+      對它算出的 hash 實際上是對檔案位元組做比對；內容以 pdftotext 抽取。WebFetch 同樣讀不出 PDF 文字。
+    fetch:
+      method: http
+      http_viable: true
+    snapshot: {fetched_at: 2026-10-08, last_verified_at: 2026-10-08, extracted_sha256: null}
+
+# ─────────────────────────────────────────────────────────────
+identity:
+  name: "Journal of the Royal Statistical Society Series B: Statistical Methodology"
+  owner: Royal Statistical Society
+  publisher: Oxford University Press
+  issn: {print: "1369-7412", electronic: "1467-9868"}
+  homepage: https://academic.oup.com/jrsssb
+  frequency: {value: 5 issues per year, src: general_instructions}
+  editors:
+    joint_editors:
+      - {name: H. Doss, affiliation: "University of Florida, USA"}
+      - {name: X. He, affiliation: "Washington University in St. Louis, USA"}
+      - {name: N. Chopin, affiliation: "ENSAE, France"}
+    src: editorial_board
+    note: 首頁與 rss_series_b 頁所列相同；why_publish 頁的名單（含 Daniela Witten）已過時
+  editorial_office_email: {value: journal@rss.org.uk, src: general_instructions}
+  open_access: {value: hybrid, src: general_instructions,
+                note: 可選不收費的 Assignment RSS（僅訂閱者可讀）或付費的 CC BY／CC BY-NC 開放取用授權}
+  sister_journals: [Series A (Statistics in Society), Series C (Applied Statistics),
+                    "RSS: Data Science and Artificial Intelligence"]
+  external_ids:
+    crossref: "1369-7412"
+    openalex: issn:1369-7412
+  metrics:
+    impact_factor: {value: 3.8, year: 2025, as_of: 2026-10-08, src: journal_home}
+    impact_factor_5yr: {value: 7.3, year: 2025, as_of: 2026-10-08, src: journal_home}
+    category_rank:
+      value: "9/167"
+      category: statistics & probability
+      as_of: 2026-10-08
+      src: rss_series_b
+      note: >-
+        頁面未標年份。同頁的 Impact Factor 為 3.6（was 3.1），與 why_publish 頁標為 Clarivate 2024 的
+        數字相同，所以這個排名可能是 2024 年版，但官方頁面沒有明寫。
+    acceptance_rate: {status: not_published, checked: 2026-10-08,
+                      note: 查過 general_instructions、journal_home、about、why_publish、rss_series_b，均未列}
+    time_to_first_decision:
+      status: not_published
+      checked: 2026-10-08
+      note: 一般投稿未公布。討論論文路線見 article_types 的 discussion_paper（初篩約 3 週、首次答覆目標 4 個月）。
+
+# ─────────────────────────────────────────────────────────────
+# SLOW — 數年不變。
+# ─────────────────────────────────────────────────────────────
+requirements:
+  refresh: {check_every: P6M, method: extracted_hash_diff}
+
+  scope:
+    aims: >-
+      刊登統計學與廣義資料科學的方法學論文。論文應增進對統計方法的理解，或發展、改良統計方法；
+      數學理論須服務於這個目的。典型的 Series B 論文提出新的資料蒐集或分析方法，附帶理論、
+      適用範圍說明與一個真實資料例子。
+    also_considered:
+      - 既有方法的比較、批判性評估與新應用
+      - 有明確實務意義的機率論貢獻
+      - 涉及原創方法的統計計算或模擬
+      - 統計科學基礎的原創貢獻
+    likely_rejected_if:             # 官網原文 "likely to be rejected"，即使正確且寫得好
+      - 只是既有發表成果的直接特例（"straightforward special cases of previously published work"）
+      - 只有數學上的興趣（"of mathematical interest only"）
+      - 篇幅相對於新內容的重要性太長
+      - 以例行性的計算或模擬為主（"dominated by computations or simulations of a routine nature"）
+    out_of_scope_hints:
+      - case: 以應用、政策或社會議題為主的論文
+        suggested_venue: Series A 或 Series C
+        note: 原文出自討論論文指南，談的是討論論文該投哪一個 series
+        src: rss_discussion_guidelines
+    src: general_instructions
+
+  article_types:
+    - id: original
+      label: Original Article（一般投稿論文）
+      src: general_instructions
+    - id: discussion_paper
+      label: Discussion Paper（在 RSS Discussion Meeting 宣讀並連同討論一起刊出）
+      selection_criteria: 論文品質，以及引發討論的潛力；應寫給廣泛而多元的讀者
+      submission: >-
+        Series B 採固定截止日（見 cycle.rolling_calls）。在 ScholarOne 選 manuscript type
+        'Discussion Paper'；cover letter 宜說明為何適合該 series，並註明若未獲選為討論論文
+        是否願意改走一般審查。
+      length: {value: 12000, unit: words, note: "約 24 頁期刊版面，或 12 pt Times、多半行行距的稿件約 30 頁；含圖表與參考文獻"}
+      review: >-
+        由 Discussion Papers Editor 主持；Discussion Meetings Committee 先快速初篩，目標通常 3 週內完成。
+        屬顯著新方法而適合 Series B 者交 Research Section Committee 安排審稿；目標 4 個月內給首次答覆。
+        只對窄專業族群有意義的論文不會被選為宣讀論文，但編輯可建議轉為一般審查。
+      src: rss_discussion_guidelines
+    - id: discussion_contribution
+      label: Discussion paper contribution（對已排定或已宣讀之討論論文的書面評論）
+      limits: 一般 400 字以內；擔任 vote of thanks 提案人或附議人的受邀講者約 800 字；字數不含表格、參考文獻、圖
+      format: 可編輯檔（Word 或 .tex）＋審查用 PDF＋每張圖一個檔；開頭須寫 "[Discussant name]’s contribution to the Discussion of [Paper name] by [Author surname(s)]"
+      deadline: 依公布的截止日；RSS 指南寫會議後 4 週內
+      src: general_instructions
+    - id: discussion_reply
+      label: Discussion Reply
+      note: 只出現在 OUP 收費計算器的稿件類別清單，作者須知本文提到 "authors’ replies" 但未另訂規定
+      src: oa_charges
+    - id: letter_to_the_editor
+      label: Letter to the Editor
+      note: 只出現在 OUP 收費計算器的稿件類別清單；作者須知未提及此類型，也沒有篇幅規定
+      src: oa_charges
+
+  length:
+    value: 30
+    unit: pages_double_spaced
+    basis: {paper: A4, size_pt: 12, spacing: "fully double-spaced，定義為每頁 28 行"}
+    includes: [references, tables, figures, appendixes]
+    nature: 軟性上限（"Please strive to keep the paper under 30 pages"）
+    exceptions: >-
+      約 35 頁以上的稿件 "tend to discourage readership, and elicit negative reviews, including at the screening stage"。
+      另一處寫 "Except for discussion meetings papers, manuscripts that are longer than 30 journal pages are
+      unlikely to be accepted for publication"——這裡的單位是期刊排版頁，與上面的稿件頁不同。
+      討論論文另以 12000 字為限（見 article_types）。
+    supplemental_counted: {status: not_published, checked: 2026-10-08,
+                           note: 頁數規定列舉了 appendices、references、tables、figures，未提 supplementary material 是否計入}
+    src: general_instructions
+
+  abstracts:
+    - id: main
+      max_words: 200
+      placement: 稿件開頭
+      forbidden: [reference citations, abbreviations]
+      src: general_instructions
+
+  keywords:
+    count: [5, 6]
+    order: alphabetical
+    note: 可為關鍵詞或關鍵片語；非強制但建議同時填在投稿表單，以利選審稿人
+    src: general_instructions
+
+  formatting:
+    latex:
+      instruction: "Please prepare your paper in LaTeX."
+      template: >-
+        有選用範本。期刊頁上 "can be found here" 的連結指向 Overleaf 上標題為 Series C 的範本
+        （https://www.overleaf.com/latex/templates/template-for-journal-of-the-royal-statistical-society-series-c-applied-statistics/xhkktkrcfswc），
+        是否即 Series B 適用的版本，頁面沒有說明。不用範本時建議用 article.cls，避免自訂巨集與特殊排版。
+      upload: LaTeX 原始檔打包成一個 zip 上傳，另附主稿 PDF
+    paper_size: A4
+    font_size_pt: 12
+    spacing: fully double-spaced（每頁 28 行）；表格與圖說的字級也要夠大
+    spelling: 英式拼寫（引文與參考文獻除外）
+    references: 投稿時任何易讀格式皆可；作者自負正確性；盡量避免引用未公開或非公開領域的資料
+    abbreviations: 非標準縮寫於首次出現時定義；用大寫、不加句點
+    tables:
+      - 編號並在正文引用；全部放在正文之後
+      - 須為可編輯格式，不可嵌入成圖檔
+      - 不用直線分欄，表身內不用橫線；數字靠右或對齊小數點並適度四捨五入
+      - 表註符號順序 †, ‡, §, §§, *, **, ††, ‡‡
+    figures:
+      files: 每張圖一個獨立檔；多面板圖做成一個檔，各面板左上角標 A、B、C…
+      legends: 圖標題與圖說寫在稿件內，不放在圖檔裡
+      vector_preferred_for: [maps, charts, graphs, diagrams]
+      vector_formats: [.eps, .ai, .pdf]
+      dpi: {printed_images: 350, line_art: 600, complex_line_art: 1200, electronic: 72}
+      forbidden_formats: [.doc, .docx, .jpeg, .jpg]
+      alt_text: 主文所有圖都必須附 alt text，寫在稿件內該圖圖說正下方，以 'Alt text:' 起頭
+    lists: 用 (a), (b), (c)…，下一層用 (i), (ii), (iii)…；不用項目符號與 (A)/(I) 等
+    theorems: >-
+      定理、引理、系理、命題、remark 等依類型各自連續編號，不依章節編號
+      （theorem 1, theorem 2, proposition 1…；不是 theorem 2.1 或跨類型連號）
+    equations:
+      - 方程式獨立成行置中，編號放右側；首選 (1), (2), (3)，也可 (2.1), (2.2)；群組可用 (1a), (1b)
+      - 矩陣用斜體、向量用粗體
+      - 必要的數學推導放附錄，正文只保留相關方程式；每個附錄要有短標題
+      - 巢狀括號順序 [{()}]；複雜引數用 exp 而非 e
+    src: general_instructions
+
+  structure:
+    title_page_or_covering_note:
+      - 論文標題
+      - 全部作者姓名與所屬機構
+      - 一位通訊作者的郵寄地址與 email
+      - 50 字元以內的 running head
+    title_page_note: >-
+      原文把 running head 與「討論論文要在投稿時標記」寫在同一個條目裡
+      （"a short running head of 50 characters or less to ensure that a Discussion Paper manuscript is flagged on
+      submission ... The author should mention this in the title page/covering note"），語意含糊；
+      合理讀法是兩件事：附 running head，以及若要投討論論文須在 title page 或 covering note 註明。
+    required_sections:
+      - {id: data_availability_statement, placement: 獨立一節，放在 Acknowledgements 之前}
+      - {id: acknowledgments_and_funding, placement: 稿件末尾，完整列出補助與計畫編號}
+    supplementary_material:
+      - 不可把資料放在補充材料；資料放正文或存放於公開典藏庫並在正文註明位置
+      - 其他補充材料須與主稿同時提交，並在正文引用
+      - 只在線上提供，不經編修排版；格式應與主稿一致，可在任何瀏覽器使用
+      - 每個檔案不超過 2 MB
+    src: general_instructions
+
+  review:
+    type: single_anonymized
+    statement: "This journal uses single blind peer review."
+    author_may_suggest_reviewers: {status: not_published, checked: 2026-10-08, src: general_instructions,
+                                   note: 只提到關鍵詞有助於選審稿人，未說作者可否推薦或排除審稿人}
+    conditional:
+      - id: discussion_paper_route
+        optional: true
+        when: 作者選擇以 Discussion Paper 投稿
+        requirements:
+          - 只能在固定截止日（1/1、4/1、7/1、10/1）投稿
+          - 先經 Discussion Meetings Committee 初篩，再由 Research Section Committee 安排審稿
+          - 宣讀時作者報告約 40 分鐘，2–3 位受邀講者開場討論，作者口頭回應後另交書面回覆刊出
+    src: general_instructions
+
+  openness:
+    data:
+      policy: >-
+        "it is the policy of Series B that published papers must be accompanied by details of where the data can be found."
+        一般而言所有分析的資料集都應公開；只有在法規理由（例如無法去識別的個人健康資料）等極少數情況下
+        才會考慮例外，此時作者須釋出模仿真實資料性質、可套用文中全部分析的模擬資料集。
+      repositories: 大型資料建議用公開典藏庫；Figshare、Dryad 等非結構化典藏庫也可
+      persistent_identifier: 資料集或程式碼須有 DOI，並在正文與參考文獻中引用
+    code:
+      at_submission: >-
+        "Code to reproduce all empirical results in the paper must be made available to reviewers and editors
+        at the time of submission." 程式碼要組織良好、有文件、易於執行（例如 Figure1.R、Table2.R）。
+      before_acceptance: >-
+        須公開於 GitHub 或 Codeberg 等網站並產生 DOI；URL 與 DOI 都要寫進正文，否則不能錄取。
+      scope_wording: >-
+        同一節裡兩種措辭並存："full reproduction of all numerical results" 與 "reproduce all empirical results"。
+        頁面沒有區分模擬結果是否屬於 "empirical"；以較嚴的 "all numerical results" 準備較安全。
+    data_availability_statement: {required: true, placement: 獨立一節，置於 Acknowledgements 之前}
+    enforcement: 資料取得方式的理由不充分，或錄取前未公開可完整重現數值結果的程式碼，編輯可拒絕刊登
+    top_guidelines: {status: not_published, checked: 2026-10-08, src: general_instructions}
+    preregistration: {status: not_published, checked: 2026-10-08, src: general_instructions}
+    src: general_instructions
+
+  submission:
+    portal: https://mc.manuscriptcentral.com/jrssb
+    system: ScholarOne Manuscripts
+    portal_verified: true
+    eligibility:
+      - 為作者本人原創，不與任何已發表作品重複（含自己的）
+      - 未在其他期刊或有同儕審查的會議論文集審查中、錄取或已發表
+    cover_letter_must_include:
+      - Conflict of Interest 聲明
+      - 使用 AI 的揭露（若有使用）
+    contact: journal@rss.org.uk
+    src: general_instructions
+
+  fees:
+    submission: {status: not_published, checked: 2026-10-08, src: general_instructions,
+                 note: 須知只說 "Some papers ... may have associated charges" 並指向 Charges 段，該段只列 OA 費與彩色印刷費}
+    apc:
+      optional: true
+      value: 2945.00
+      currency: GBP
+      applies_to: [Original Article, Discussion Paper]
+      as_of: 2026-10-08
+      tax: 不含增值稅或其他銷售稅，另依稅率加計
+      note: >-
+        只有選擇 CC BY／CC BY-NC 開放取用授權時才收；選 Assignment RSS 不收授權費。
+        付款與簽約在錄取後經 SciPris 進行，編輯決定在此之前做出，不受付費意願或能力影響。
+      src: oa_charges
+    read_and_publish: >-
+      通訊作者所屬機構若參加 OUP 的 Read and Publish 協議，可由機構支付 OA 費。
+      投稿時須把該機構列為通訊作者的主要所屬機構；投稿後不得為此更換通訊作者。
+      Discussion Contributions（含作者回覆）不適用 Read and Publish。
+    waiver: 中低收入國家的通訊作者可依 OUP APC waiver and discount policy 獲減免
+    color_print: {value: 50, currency: GBP, per: printed colour image, tax: 另計,
+                  avoid: 印刷版用灰階、線上版用全彩即可免除}
+    src: general_instructions
+
+  licensing:
+    options: [Assignment RSS（不收費，僅訂閱者可讀）, CC BY, CC BY-NC]
+    discussion_items: >-
+      討論論文與討論評論（含作者回覆）各自簽授權，不隨所屬討論論文的授權；選 Assignment RSS 者以 "Free to View" 刊出。
+      RSS 討論指南（2025-09）另寫評論者須在收到校樣時把著作權讓與學會，與 OUP 頁面的可選 OA 授權說法不完全一致。
+    src: general_instructions
+
+  policies:
+    dual_submission: forbidden
+    preprints:
+      allowed: true
+      after_acceptance: 須更新 preprint 的狀態並附正式版 DOI
+    self_archiving: 可在個人網頁、機構網頁與其他典藏庫自行典藏（依 OUP Self-Archiving Policy B）
+    generative_ai:
+      authorship: ChatGPT 等 AI 工具不得列為作者，OUP 會篩查作者名單
+      disclosure_required: true
+      placement: [cover letter, Methods 或 Acknowledgements 章節]
+      covered_uses: 產生內容或圖像、寫程式、處理資料、翻譯
+    integrity_screening: 可能以第三方服務篩查不當影像修改與論文工廠
+    ethics_framework: COPE
+    conflict_of_interest: {disclosure_required: true, placement: 給編輯的 covering letter, note: 編輯可決定刊於文末}
+    permissions: 重製非自有版權的引文、表、圖須取得非專屬、印刷與電子、終身、全球英文版權利
+    language_editing: 選用，不保證錄取
+    orcid: {status: not_published, checked: 2026-10-08, src: general_instructions,
+            note: 頁面有 ORCID Identifiers 小節，但只說明 ORCID 是什麼，未寫是否必填}
+    early_publication: 簽回授權後 48 小時內線上刊出未編修的錄取稿，之後以排版定稿取代
+    src: general_instructions
+
+# ─────────────────────────────────────────────────────────────
+# FAST — 期刊無年度週期；討論論文的固定截止日放這裡。
+# ─────────────────────────────────────────────────────────────
+cycle:
+  applies_to: null
+  rolling_calls:
+    - id: discussion_paper_deadlines
+      label: Series B Discussion Paper submission deadlines
+      type: recurring_fixed_dates
+      dates: ["01-01", "04-01", "07-01", "10-01"]
+      timezone: {status: not_published, checked: 2026-10-08}
+      note: 每年四個固定日。紀錄當日（2026-10-08）已過 10 月 1 日，依此推算下一個是 2027-01-01。
+      src: general_instructions
+
+# ─────────────────────────────────────────────────────────────
+warnings:
+  - 不依須知準備的稿件，編輯可直接退回（"The Editors may return manuscripts that do not follow these instructions."）
+  - 投稿當下就要把可重現全部實證結果的程式碼交給審稿人與編輯；錄取前程式碼須公開並有 DOI，URL 與 DOI 要寫進正文
+  - 只具數學興趣、或以例行模擬為主的論文，即使正確也可能被拒
+  - 篇幅以每頁 28 行、含附錄與參考文獻計算，盡量少於 30 頁；約 35 頁以上在初篩階段就容易得到負面評價
+  - 使用 AI 必須同時在 cover letter 與 Methods 或 Acknowledgements 中揭露

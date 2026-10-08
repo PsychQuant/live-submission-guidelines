@@ -1,0 +1,499 @@
+--- # research-submission venue record
+# 內容擷取自 OUP（academic.oup.com/jrsssc）與 RSS（rss.org.uk）官方頁面 2026-10-08。
+# JRSS-C 由 Royal Statistical Society 擁有、Oxford University Press 出版。
+# 作者須知散在兩個機構的頁面：OUP 的 General Instructions 是現行版本本體；
+# RSS 的 Series C 頁給範圍聲明、Submit a paper 頁給投稿系統與政策文件連結；
+# RSS 的 Notes for Authors PDF（2025-02-17）多了幾條 OUP 頁沒寫的規定（preprint、
+# 12000 字換算、關鍵字須出現在摘要中），但有些地方與 OUP 頁不一致，見 warnings。
+
+schema_version: 1
+id: rss/jrss-series-c
+kind: journal
+family: statistics-journals
+status: active
+
+# ─────────────────────────────────────────────────────────────
+# 來源與 provenance
+# ─────────────────────────────────────────────────────────────
+sources:
+  - id: oup_instructions
+    role: authoritative
+    url: https://academic.oup.com/jrsssc/pages/general-instructions
+    note: >-
+      作者須知本體（OUP 頁面標題為 General Instructions，頁內標題為 Instructions to Authors）。
+      本次逐字內容以 safari-browser 讀取 document.body.innerText 取得（約 31 KB）；
+      WebFetch 能通過挑戰頁，但只回傳摘要與每句至多 125 字元的摘錄，不足以做逐字核對。
+      頁內 ORCID 段把本刊誤寫為 "Series C (Statistics in Society)"（Statistics in Society 是 Series A 的副標）。
+    fetch:
+      method: webfetch
+      http_viable: false
+      http_failure_mode: >-
+        Cloudflare 挑戰頁（<title>Just a moment...</title>）以 HTTP 403 回傳約 5.4 KB。
+        curl 預設 UA、瀏覽器 UA、verify.py 的 UA 都一樣；academic.oup.com/jrsssc 底下
+        測過的五個頁面與 mc.manuscriptcentral.com/jrssc 全部是 403 + 5.4–5.7 KB。
+        該挑戰頁的 <title> 在 <head> 內，verify.py 的抽取器會得到 0 字元。
+      validity:
+        must_contain: "manuscripts that are longer than 24 journal pages are unlikely to be accepted for publication"
+        min_extracted_chars: 12000
+    snapshot:
+      fetched_at: 2026-10-08
+      last_verified_at: 2026-10-08
+      extracted_sha256: null
+
+  - id: rss_series_c
+    role: authoritative
+    url: https://rss.org.uk/news-publication/publications/journals/series-c/
+    note: RSS 的 Series C 頁：範圍聲明（與 OUP 的 Aims & Scope 逐字相同）、影響係數、出刊頻率。
+    fetch:
+      method: http
+      http_viable: true
+      validity:
+        must_contain: "Papers where the application merely serves as an illustration for new methodology"
+        min_extracted_chars: 4000
+    snapshot:
+      fetched_at: 2026-10-08
+      last_verified_at: 2026-10-08
+      extracted_sha256: null
+
+  - id: rss_submit
+    role: authoritative
+    url: https://rss.org.uk/news-publication/publications/journals/submit-paper/
+    note: >-
+      四本 RSS 期刊共用的投稿頁：ScholarOne 網址、編輯部 email、Notes for Authors PDF、
+      style 檔、利益揭露與資料程式碼政策 PDF 的連結。
+      2026-10-08 一次以 verify.py 的 UA 抓取時遇到 connection reset（只收到 29 KB），
+      重試六次皆正常；屬暫時性網路問題，不是 bot 防護。
+    fetch:
+      method: http
+      http_viable: true
+      validity:
+        must_contain: "New submissions to the Journal of the Royal Statistical Society should be made to one of the following ScholarOne Manuscripts sites"
+        min_extracted_chars: 3500
+    snapshot:
+      fetched_at: 2026-10-08
+      last_verified_at: 2026-10-08
+      extracted_sha256: null
+
+  - id: rss_notes_pdf
+    role: supporting
+    url: https://rss.org.uk/RSS/media/File-library/Publications/RSS-journal-notes-for-authors-2025.pdf
+    note: >-
+      "Journal of the Royal Statistical Society — Notes for Authors on the Submission of Papers"，
+      頁尾日期 17 February 2025，7 頁，由 rss_submit 頁連出。內容大部分與 oup_instructions 相同，
+      但多了 preprint 政策、"24 journal pages (12000 words)"、關鍵字須出現在摘要中、
+      不用頁尾註腳等規定。PDF：verify.py 的 HTML 抽取器不適用，本記錄引用的文字以
+      pdftotext（poppler）抽取；WebFetch 讀不到內文（壓縮串流）。
+    fetch: {method: http, http_viable: true}
+    snapshot: {fetched_at: 2026-10-08, last_verified_at: 2026-10-08}
+
+  - id: rss_data_code_pdf
+    role: supporting
+    url: https://rss.org.uk/RSS/media/File-library/Publications/rss-journals-provision-data-computer-code-2014.pdf
+    note: >-
+      "Statement on the Provision of Data and Computer Code for Published Papers"（2014），
+      含投稿表單上的強制聲明題目原文。PDF，同 rss_notes_pdf 的抽取限制。
+    fetch: {method: http, http_viable: true}
+    snapshot: {fetched_at: 2026-10-08, last_verified_at: 2026-10-08}
+
+  - id: oup_home
+    role: supporting
+    url: https://academic.oup.com/jrsssc
+    note: 期刊首頁：2025 影響係數、主編、最新卷期。
+    fetch:
+      method: webfetch
+      http_viable: false
+      http_failure_mode: Cloudflare 403（同 oup_instructions）
+    snapshot: {fetched_at: 2026-10-08, last_verified_at: 2026-10-08}
+
+  - id: oup_about
+    role: supporting
+    url: https://academic.oup.com/jrsssc/pages/about
+    note: About 頁的 Aims and Scope 是較舊的措辭版本（"The emphasis of Series C is on case-studies of statistical analyses in practice."），與 oup_instructions 不完全相同。
+    fetch:
+      method: webfetch
+      http_viable: false
+      http_failure_mode: Cloudflare 403（同 oup_instructions）
+    snapshot: {fetched_at: 2026-10-08, last_verified_at: 2026-10-08}
+
+  - id: oup_why_publish
+    role: supporting
+    url: https://academic.oup.com/jrsssc/pages/why-publish
+    note: 行銷頁；影響係數仍寫 2024 年版的 1.3，比 oup_home 舊。
+    fetch:
+      method: webfetch
+      http_viable: false
+      http_failure_mode: Cloudflare 403（同 oup_instructions）
+    snapshot: {fetched_at: 2026-10-08, last_verified_at: 2026-10-08}
+
+  - id: oup_oa_charges
+    role: supporting
+    url: https://academic.oup.com/pages/open-research/open-access/charges-licences-and-self-archiving
+    note: >-
+      OUP 全社的 OA 收費頁。各刊 APC 不寫在頁面文字上，而在查詢表單背後的內嵌 JS 資料
+      （apcLookupData）裡；本刊的值以 safari-browser 讀該變數取得。頁上的
+      "Download full pricing file (.xlsx)"（global.oup.com/fdscontent/academic/xls/openaccess/charges.xlsx）
+      以 curl 抓回 HTTP 202 + 0 bytes，未取得。
+    fetch:
+      method: browser
+      http_viable: false
+      http_failure_mode: Cloudflare 403；且 APC 數值只存在於前端 JS 資料，WebFetch 的文字轉換看不到
+    snapshot: {fetched_at: 2026-10-08, last_verified_at: 2026-10-08}
+
+  - id: editorial_2025
+    role: supporting
+    url: https://academic.oup.com/jrsssc/article/74/5/1215/8323459
+    note: >-
+      Kneib & Thorarinsdottir (2025) "JRSS-C editorial 2025"，JRSS-C 74(5), 1215–1216，
+      doi:10.1093/jrsssc/qlaf053，期刊首頁以 "Latest editorial: shaping the future of applied
+      statistics" 連結。本次在 safari-browser 中讀到全文；頁面顯示機構訂閱提示，
+      未訂閱者是否可讀全文未確認。
+    fetch:
+      method: browser
+      http_viable: false
+      http_failure_mode: Cloudflare 403（同 oup_instructions）
+    snapshot: {fetched_at: 2026-10-08, last_verified_at: 2026-10-08}
+
+# ─────────────────────────────────────────────────────────────
+identity:
+  name: "Journal of the Royal Statistical Society Series C: Applied Statistics"
+  abbreviation: {value: JRSS-C, src: editorial_2025}
+  house_citation_abbreviation: {value: Appl. Statist., src: rss_notes_pdf}
+  owner: Royal Statistical Society
+  publisher: Oxford University Press
+  issn: {print: "0035-9254", electronic: "1467-9876"}
+  homepage: https://academic.oup.com/jrsssc
+  editor:
+    name: Thomas Kneib and Thordis Thorarinsdottir (Joint Editors)
+    src: oup_why_publish
+  editorial_office_email:
+    conflicting: true
+    values:
+      - {value: journal@rss.org.uk, src: oup_instructions}
+      - {value: jrsssc.editorialoffice@oup.com, src: rss_submit}
+  frequency: {value: 每年 5 期，約 50 篇, src: editorial_2025}
+  open_access: {value: hybrid, src: oup_oa_charges}
+  external_ids:
+    crossref: "0035-9254"
+    openalex: issn:0035-9254
+  metrics:
+    impact_factor: {value: 1.4, year: 2025, as_of: 2026-10-08, src: oup_home}
+    impact_factor_5yr: {value: 1.8, year: 2025, as_of: 2026-10-08, src: oup_home}
+    impact_factor_previous:
+      value: 1.3
+      year: 2024
+      as_of: 2026-10-08
+      src: oup_why_publish
+      note: >-
+        rss_series_c 也寫 "Impact Factor: 1.3 (was 1.0); 5-year Impact Factor: 1.6"，未標年份，應為同一舊版
+    category_rank:
+      value: "71/167"
+      category: statistics & probability
+      as_of: 2026-10-08
+      src: rss_series_c
+      note: 頁面未標 JCR 年份；與同頁 1.3 的影響係數並列，推測為 2024 年版
+    acceptance_rate: {status: not_published, checked: 2026-10-08, note: oup_home、oup_about、oup_why_publish、oup_instructions、rss_series_c 皆無}
+    time_to_first_decision: {status: not_published, checked: 2026-10-08, note: 同上五頁皆無}
+
+# ─────────────────────────────────────────────────────────────
+# SLOW — 數年不變。
+# ─────────────────────────────────────────────────────────────
+requirements:
+  refresh: {check_every: P6M, method: extracted_hash_diff}
+
+  scope:
+    aims: >-
+      處理應用統計中的真實問題：應用必須是論文的核心，也是研究工作的動機。
+      這通常意味著標題會點出所研究的應用，且應用要在摘要、引言、討論與其他各節中占顯著位置；
+      論文要直接處理該應用，並清楚說明套用所提方法後，對該應用問題得到了什麼額外洞見。
+    aims_quote: >-
+      "Series C seeks to publish papers that tackle genuine problems in applied statistics,
+      i.e. where applications are central to the paper and provide the motivation for the work presented."
+    contribution_required: >-
+      須對統計有新貢獻：為真實應用情境改造或發展新方法，或示範既有進階方法的創新組合。
+      計算統計、機器學習、資料科學的統計面向，只要符合上述應用要求也收。
+    evaluation_criteria_note: 以下三項由 Aims & Scope 歸納，官方未條列審稿判準
+    evaluation_criteria:
+      - 應用是否為論文核心與動機（而非示範用的例子）
+      - 是否對統計有新貢獻（新方法、方法改造，或既有進階方法的創新組合）
+      - 是否清楚說明對應用問題帶來的額外洞見
+    not_suitable:
+      - quote: "Papers where the application merely serves as an illustration for new methodology or papers that use well-established statistical methods to analyse data are not suitable for Series C."
+        src: oup_instructions
+      - quote: "Similarly, papers that only contain brief numerical illustrations or focus exclusively on simulation studies are not suitable, although numerical illustrations and simulations may of course form part of a Series C paper."
+        src: oup_instructions
+      - quote: "Methodological papers that are not motivated by a genuine application are not acceptable; nor are papers that include only brief numerical illustrations or that mainly describe simulation studies of properties of statistical techniques."
+        src: oup_instructions
+        note: 此句位於 Submission > Discussion Papers 小節內一段 Series C 總述，不限於討論論文
+    technical_material: >-
+      為了讓焦點留在應用上，部分技術細節、推導與證明可以不放正文而移到補充材料；
+      數學式的推導如屬必要應放附錄，正文只留相關方程式；"Extended algebraic treatment should be avoided."
+      頁面另寫 "A deep understanding of the mathematics behind statistical methodology is not necessary to appreciate the content."
+    application_areas: 盡可能廣，含農業、生物、商業、化學、氣候、生態、經濟、工程、遺傳、產業、醫學、物理、社會科學，不以此為限
+    src: oup_instructions
+    sibling_series_note:
+      text: >-
+        RSS Notes 的 Terms of reference 寫 Series B 收 "high quality papers on the methodological aspects of
+        statistics"；方法論為主的討論論文 "will be assigned for assessment by the Research Section Committee
+        and subsequent publication will usually be in Series B"。這是 RSS 自己對三個 series 的分工說明，
+        不是 Series C 頁面上的轉介語。
+      src: rss_notes_pdf
+
+  article_types:
+    - id: contributed
+      label: 一般投稿論文（contributed papers；編輯 2025 社論稱 regular papers）
+      src: oup_instructions
+    - id: discussion_paper
+      label: Discussion Paper（在 RSS Discussion Meeting 宣讀並附討論）
+      note: >-
+        投稿時在 ScholarOne 選 'Discussion Paper' 類別，並在標題頁或 covering note 註明；
+        Series A/C 方向的討論論文沒有截止日，通過初篩後個別審查；不受 24 頁限制。
+        以下出自 rss_notes_pdf：由 Discussion Meetings Committee 獨立於一般流程評估，通常另找 4–5 位審稿人；
+        covering note 須說明為何投本 series，以及若未獲選為討論論文是否改以一般論文審查。
+      src: oup_instructions
+    - id: discussion_contribution
+      label: Discussion paper contribution（對已宣讀討論論文的書面評論）
+      limits: 一般 400 字以內；受邀的 proposer／seconder 約 800 字；不含表、參考文獻與圖
+      note: 需可編輯格式（Word 或 .tex）另附 PDF，於公告截止日前在 ScholarOne 選 'Discussion paper contribution'
+      src: oup_instructions
+    - id: review
+      label: Review papers
+      note: 通常回顧某類統計方法的發展，並以一或多個應用示範；也可處理某類資料該如何分析的爭議
+      src: editorial_2025
+    - id: special_issue
+      label: Special issues（提案制）
+      note: 見 cycle.rolling_calls
+      src: editorial_2025
+    - id: short_communication
+      label: Short communications
+      note: >-
+        只出現一句 "Short communications may also be appropriate."，位於 Discussion Papers 小節內的
+        Series C 總述段落；未說明是否為獨立投稿類別、長度上限或流程。
+      src: oup_instructions
+
+  length:
+    value: 24
+    unit: pages_typeset
+    approx_words:
+      value: 12000
+      assumption: rss_notes_pdf 原文 "longer than 24 journal pages (12000 words)"；OUP 頁只寫 24 journal pages
+      confidence: medium
+    exceptions: >-
+      討論會論文（discussion meetings papers）除外。措辭是 "unlikely to be accepted for publication"，
+      不是硬性退件；rss_notes_pdf 另寫可把額外材料放補充檔，審查期間編輯可就長度給建議。
+      是否含參考文獻、附錄：兩份來源都沒寫。
+    src: oup_instructions
+
+  abstracts:
+    - id: summary
+      max_words: 200
+      placement: 稿件開頭
+      keywords: 5 或 6 個關鍵字或關鍵詞組，依字母排序
+      restrictions: 摘要內不得引用文獻，也不得用縮寫
+      note: >-
+        OUP 頁寫 "maximum length of 200 words"；rss_notes_pdf 寫 "preferably no more than about 200 words"，
+        並要求關鍵字也要出現在摘要中（OUP 頁未寫此條）。投稿表單上填摘要與關鍵字非強制，但有助於挑審稿人。
+      src: oup_instructions
+  keywords: {min: 5, max: 6, order: alphabetical, src: oup_instructions}
+
+  formatting:
+    language: 僅收英文稿（rss_notes_pdf）
+    spelling: >-
+      UK spelling（引文與參考文獻除外）；rss_notes_pdf 指定 Chambers Dictionary
+    latex:
+      template: OUP General Template（Overleaf）
+      template_url: https://www.overleaf.com/latex/templates/oup-general-template/ybpypwncdxyb
+      series_c_options: "modern, medium, single column, numbered headings, and author-year references"
+      bibliography_style: author–year 用 \bibliographystyle{abbrvnat}
+      alternative: 不用 Overleaf 範本時建議用 article.cls，避免本地巨集與特殊格式
+      upload: LaTeX 原始檔打包成 zip 上傳，另上傳主稿 PDF
+      legacy_style_file: >-
+        rss_submit 頁仍連到 stylefile16.zip（statsoc.cls、rss.bst，2016）；rss_notes_pdf 寫 style 檔
+        "not essential to use it"
+      src: oup_instructions
+    word_files: 可用 TeX 或 Word 投稿；排版依期刊樣式重排
+    spacing: {status: not_published, checked: 2026-10-08, src: oup_instructions}
+    line_numbers: {status: not_published, checked: 2026-10-08, src: oup_instructions}
+    footnotes: 除通訊地址外不使用頁尾註或尾註（rss_notes_pdf；OUP 頁未提）
+    headings: 建議依序編號的章節標題（rss_notes_pdf "it is suggested"）
+    references: >-
+      oup_instructions：投稿時可用任何易讀的引用格式；rss_notes_pdf：依 Harvard 制（作者－年份，
+      依姓氏字母排序、不編號）
+    mathematics:
+      theorem_numbering: >-
+        定理、引理、系、命題、remark 等依類型各自連續編號，不依章節：theorem 1, theorem 2, proposition 1；
+        不可 theorem 2.1 或跨類型連號
+      equations: 重要方程式獨立成行並連續編號，(1), (2), ... 為佳，(2.1) 也可
+      notation: 矩陣用斜體、向量用粗體；巢狀括號順序 [{()}]；行文中以 exp 取代 e
+      derivations: 數學式的推導如屬必要放附錄（每個附錄要有短標題），正文只留相關方程式
+      src: oup_instructions
+    lists: 用 (a), (b), (c)… 與 (i), (ii), (iii)…；不用項目符號
+    tables: 編號並在正文引用，置於正文之後，須為可編輯格式（不得是圖片）；不用垂直線與表內水平線
+    figures:
+      files: 每張圖一個檔案（多面板圖合為一檔，各面板左上角標 A, B, C…）；圖題與圖說放在稿件內，不放在圖檔內
+      raster_dpi: {print_images: 350, line_art: 600, fine_line_art: 1200, screen: 72}
+      vector: 圖表、地圖、示意圖建議 .eps、.ai、.pdf 向量格式
+      forbidden: .doc/.docx 或 .jpeg/.jpg 製作的圖不收
+      alt_text: 所有圖都要附 alt text，放在主稿各圖圖說正下方，以 'Alt text:' 起頭
+      keys: 圖例（key）應移除，內容改寫進圖說
+    src: oup_instructions
+
+  structure:
+    title_page:
+      - 論文標題
+      - 所有作者姓名與所屬機構
+      - 一位通訊作者的郵寄地址與 email
+      - 50 字元以內的 running head
+      - 若要以討論論文審查，須在標題頁或 covering note 註明
+    data_availability_statement: {required: true, placement: 獨立一節，置於 Acknowledgements 之前}
+    acknowledgments_and_funding: 放在稿件末尾，列出完整補助資訊含計畫編號
+    src: oup_instructions
+
+  supplementary:
+    timing: 須與主稿同時提交
+    must_be_cited_in_text: true
+    max_file_size_mb: 2
+    note: >-
+      僅線上提供、不編修不排版；格式須與主稿一致。rss_notes_pdf 另要求全部放在單一文件
+      "Web-based supporting materials for (title of manuscript) by (authors)"，可含技術證明、詳細說明、表與圖；
+      編輯可能要求把主稿部分內容移到補充材料。
+    src: oup_instructions
+
+  review:
+    type: single_blind
+    quote: "This journal uses single blind peer review."
+    author_may_suggest_reviewers: {status: not_published, checked: 2026-10-08, src: oup_instructions}
+    src: oup_instructions
+
+  openness:
+    data_code_policy:
+      statement: >-
+        "In the interests of transparency and reproducibility, it is the policy of the Journal of the Royal
+        Statistical Society Series C that published papers should be accompanied by details of where the data
+        and computer code used in the analyses could be found."
+      code: 重現結果所需的自寫腳本或程式，須存放在公開 repository（例如 GitHub）或作為補充材料上傳
+      data: 大型資料建議放公開 repository（Figshare、Dryad 亦可）或補充材料；無法放置時須應編輯與審稿人要求提供，發表後應讀者合理要求提供
+      exemption: 因資料使用協議等原因無法公開時，須在投稿時明確說明理由
+      enforcement: "The Editors reserve the right to refuse publication of any paper for which the justification for failing to provide details of how to access data or the code is deemed inadequate."
+      citation: 有 persistent identifier 或 DOI 的資料與程式碼，須在正文與參考文獻中引用
+      src: oup_instructions
+    submission_form_declaration:
+      required: true
+      question: "Confirm that, if the paper is accepted for publication, you can make data and code available, to accompany the published paper"
+      answers: ["Yes", "No"]
+      if_no: 說明原因，並盡可能提供取得資料與程式碼的完整方式
+      documentation_standard: 資料與程式碼須記錄到足以重現最終版本所有結果的程度
+      src: rss_data_code_pdf
+    editors_expectation:
+      text: 主編社論寫論文應附資料與程式碼，讓有興趣的讀者能不費力地重現分析
+      src: editorial_2025
+
+  authorship:
+    orcid: {required: true, who: 僅投稿作者（submitting author）, src: oup_instructions}
+    contributor_taxonomy: {status: not_published, checked: 2026-10-08, src: oup_instructions}
+
+  submission:
+    portal: https://mc.manuscriptcentral.com/jrssc
+    system: ScholarOne Manuscripts
+    portal_verified: false
+    portal_note: >-
+      網址出自 rss_submit 頁與 oup_home 的 Submission Site 連結；本身回 Cloudflare 403，
+      curl 與 WebFetch 都未能確認頁面內容。
+    files_at_initial_submission:
+      conflicting: true
+      statements:
+        - {text: LaTeX 原始檔打包 zip 上傳，另附主稿 PDF, src: oup_instructions}
+        - {text: 初投建議只交 .ps/.pdf 或 Word，原始檔錄用後再交, src: rss_notes_pdf}
+    covering_note_must_include:
+      - 通訊作者完整聯絡資訊與其他與投稿相關的資訊
+      - 利益衝突聲明（Conflict of Interest statement）
+      - 使用 AI 的揭露（同時也要寫在 Methods 或 Acknowledgements）
+      - 擬投的 series 與值得注意之處（rss_notes_pdf）
+    conditions:
+      - 原創、未重複已發表內容（含自己的）
+      - 未在其他期刊審查中、未被接受、未曾發表
+    src: oup_instructions
+
+  fees:
+    submission: {status: not_published, checked: 2026-10-08, src: oup_instructions}
+    licence_options:
+      - {id: assignment_rss, label: Assignment RSS, charge: 0, access: 僅訂閱者}
+      - {id: cc_by, label: CC BY, charge: OA APC}
+      - {id: cc_by_nc, label: CC BY-NC, charge: OA APC}
+    apc:
+      value: 2945
+      currency: GBP
+      as_of: 2026-10-08
+      src: oup_oa_charges
+      note: >-
+        取自 OUP OA 收費查詢工具的內嵌資料（apcLookupData，journalCurrency GBP）。
+        rss_notes_pdf（2025-02-17）寫的是 £2,621 / $3,300 / €3,150，已較舊。
+        可透過 OUP Read and Publish 協議由機構支付：通訊作者須在投稿時以合格機構為主要所屬，
+        投稿後不得為此更換通訊作者。編輯決定在簽授權之前，不受付費能力影響。
+    color_print: {per_image: 50, currency: GBP, note: 不含稅；印刷用灰階、線上用彩色即可免付, src: oup_instructions}
+    src: oup_instructions
+
+  policies:
+    dual_submission: forbidden
+    preprints:
+      allowed: true
+      text: >-
+        rss_notes_pdf："the journal will consider for review manuscripts that are also available as preprints on
+        non-commercial servers such as arXiv, and a submitted version of manuscripts may also be posted to such a
+        non-commercial server at any time." 錄用後須在 preprint 版加上正式版連結。OUP 頁未談 preprint。
+      src: rss_notes_pdf
+    self_archiving: {text: 可在個人網頁、機構網頁與其他 repository 自行典藏各版本，細節見 OUP Author Self Archiving Policy, src: oup_instructions}
+    generative_ai:
+      authorship: 不得列為作者，OUP 會在作者名單中篩查
+      disclosure_required: true
+      placement: covering letter 與 Methods 或 Acknowledgements 兩處都要
+      scope: 包含產生內容或圖像、寫程式、處理資料、翻譯
+      src: oup_instructions
+    conflict_of_interest: {disclosure_required: true, placement: covering letter, note: 編輯可決定刊在文末, src: oup_instructions}
+    integrity_screening: 可能以第三方服務篩查不當影像修改與論文工廠；依 COPE 處理
+    third_party_permissions: 重製非自有版權材料須取得非專屬、紙本與電子、終身、全球英文版權
+    language_editing: 選用，不保證錄用
+    src: oup_instructions
+
+  standards:
+    - id: rss-data-code-2014
+      label: RSS Statement on the Provision of Data and Computer Code for Published Papers
+      url: https://rss.org.uk/RSS/media/File-library/Publications/rss-journals-provision-data-computer-code-2014.pdf
+      required: true
+    - id: rss-disclosure-2014
+      label: RSS Statement on the Disclosure of Financial and Other Interests
+      url: https://rss.org.uk/RSS/media/File-library/Publications/rss-journals-disclosure-interests-2014.pdf
+      required: true
+
+# ─────────────────────────────────────────────────────────────
+# FAST — 期刊無年度週期。
+# ─────────────────────────────────────────────────────────────
+cycle:
+  applies_to: null
+  rolling_calls:
+    - id: discussion_papers
+      label: RSS Discussion Meeting 論文
+      type: general_ongoing
+      deadline: {status: not_applicable, note: "There are no submission deadlines for papers that are aimed at Series A or Series C."}
+      wants: 能引發討論的論文；社論要求 "discussability" 須落在對應用核心的面向上，具突破性與大影響潛力
+      src: oup_instructions
+    - id: special_issue_proposals
+      label: 專刊提案
+      type: general_ongoing
+      deadline: {status: not_applicable, note: 隨時以非正式方式寄給共同主編}
+      wants: 客座編輯名單與資格、主題為何對應用統計及時且重要的簡述、Call for Papers 草稿
+      src: editorial_2025
+
+# ─────────────────────────────────────────────────────────────
+warnings:
+  - >-
+    範圍門檻：應用必須是論文核心與動機。官方明寫 "Methodological papers that are not motivated by a genuine
+    application are not acceptable"，應用只作示範、只有簡短數值例、以模擬為主的論文都不適合；
+    應用通常要出現在標題中。
+  - '"Extended algebraic treatment should be avoided."：數學推導如屬必要放附錄，證明可移到補充材料。'
+  - 篇幅超過 24 個期刊排版頁（約 12000 字）"unlikely to be accepted"；討論論文除外。
+  - >-
+    投稿表單有強制的資料與程式碼聲明；無法提供資料或程式碼且理由不充分時，編輯保留拒絕刊登的權利。
+  - >-
+    兩個來源不一致之處：編輯部 email（journal@rss.org.uk vs jrsssc.editorialoffice@oup.com）；
+    初投是否要交 LaTeX 原始檔（OUP 頁要 zip + PDF，RSS Notes 建議初投只交 PDF）；
+    APC 金額（OUP 查詢工具 £2,945，RSS Notes 2025 寫 £2,621）。以 OUP 現行頁面為準，有疑義先問編輯部。

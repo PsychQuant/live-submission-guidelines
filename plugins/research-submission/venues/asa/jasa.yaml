@@ -1,0 +1,554 @@
+--- # research-submission venue record
+# 內容擷取自 Taylor & Francis（ASA 委託出版）與 JASA 可重現性指引官方頁面，2026-10-08。
+# 各欄位凡 Theory and Methods（T&M）與其他 section 規定不同處皆註明。
+#
+# sources 排序是刻意的：http 來源全部排在前面、browser 來源排在最後。
+# verify.py --write 以「替換第一個 extracted_sha256: null」寫回 hash，若 browser 來源排在前面，
+# http 來源的 hash 會被寫進 browser 來源的欄位。
+
+schema_version: 1
+id: asa/jasa
+kind: journal
+family: statistics-journals
+status: active
+
+# ─────────────────────────────────────────────────────────────
+sources:
+  - id: repro_guide
+    role: authoritative
+    url: https://jasa-acs.github.io/repro-guide/
+    note: >-
+      JASA 可重現性指引首頁（GitHub Pages，jasa-acs 維護）。T&F 須知頁的
+      「reproducibility guide」連結指向無結尾斜線的版本，會 301 到此。
+      規定「何時必須交 code/data」以本頁與 T&F 須知為準（皆為 invited revision）。
+    fetch:
+      method: http
+      http_viable: true
+      validity:
+        must_contain: "All invited revisions to JASA (both Applications & Case Studies and Theory & Methods) must include code, data, and the workflow"
+        min_extracted_chars: 3000
+    snapshot:
+      fetched_at: 2026-10-08
+      last_verified_at: 2026-10-08
+      extracted_sha256: null
+
+  - id: repro_author_guidelines
+    role: authoritative
+    url: https://jasa-acs.github.io/repro-guide/pages/author-guidelines.html
+    note: >-
+      本頁寫「authors are required to include an ... ACC Form with their submission」，
+      與 T&F 須知及 repro_guide 首頁「初投稿鼓勵、獲邀修改才必交」的說法不一致，見 warnings。
+    fetch:
+      method: http
+      http_viable: true
+      validity:
+        must_contain: "Data cleaning/preparation are considered to be part of the workflow"
+        min_extracted_chars: 3000
+    snapshot:
+      fetched_at: 2026-10-08
+      last_verified_at: 2026-10-08
+      extracted_sha256: null
+
+  - id: repro_acc
+    role: supporting
+    url: https://jasa-acs.github.io/repro-guide/pages/acc.html
+    fetch:
+      method: http
+      http_viable: true
+      validity:
+        must_contain: "The purpose of the ACC form is to document the artifacts associated with a manuscript"
+        min_extracted_chars: 1500
+    snapshot:
+      fetched_at: 2026-10-08
+      last_verified_at: 2026-10-08
+      extracted_sha256: null
+
+  - id: repro_checklist
+    role: supporting
+    url: https://jasa-acs.github.io/repro-guide/pages/author-checklist.html
+    fetch:
+      method: http
+      http_viable: true
+      validity:
+        must_contain: "Random seeds set where exact reproducibility is expected"
+        min_extracted_chars: 3000
+    snapshot:
+      fetched_at: 2026-10-08
+      last_verified_at: 2026-10-08
+      extracted_sha256: null
+
+  - id: asa_journals
+    role: supporting
+    url: https://www.amstat.org/publications/journals
+    note: ASA 自家期刊總覽頁，只有一句 JASA 簡介；連到 tandfonline 的 toc/uasa20/current。
+    fetch:
+      method: http
+      http_viable: true
+      validity:
+        must_contain: "is the premier journal of statistical science"
+        min_extracted_chars: 4000
+    snapshot:
+      fetched_at: 2026-10-08
+      last_verified_at: 2026-10-08
+      extracted_sha256: null
+
+  - id: tf_preprints
+    role: supporting
+    url: https://authorservices.taylorandfrancis.com/publishing-your-research/making-your-submission/posting-to-preprint-server/
+    note: T&F 全出版社層級的 preprint 政策；JASA 須知頁的「Preprints Author Services page」連結指向此頁。
+    fetch:
+      method: http
+      http_viable: true
+      validity:
+        must_contain: "We do not consider posting on a preprint server to be duplicate publication"
+        min_extracted_chars: 3000
+    snapshot:
+      fetched_at: 2026-10-08
+      last_verified_at: 2026-10-08
+      extracted_sha256: null
+
+  - id: tf_ai_policy
+    role: supporting
+    url: https://authorservices.taylorandfrancis.com/editorial-policies/using-ai-in-your-research-and-manuscript-preparations/
+    note: T&F 全出版社層級的生成式 AI 政策；JASA 須知頁 Checklist 的「Declaration of generative AI use」連到此頁。
+    fetch:
+      method: http
+      http_viable: true
+      validity:
+        must_contain: "How to declare generative AI use in your manuscript"
+        min_extracted_chars: 3000
+    snapshot:
+      fetched_at: 2026-10-08
+      last_verified_at: 2026-10-08
+      extracted_sha256: null
+
+  - id: tf_instructions
+    role: authoritative
+    url: https://www.tandfonline.com/action/authorSubmission?show=instructions&journalCode=uasa20
+    note: >-
+      規定本體。由 ASA 期刊頁連到的 https://www.tandfonline.com/toc/uasa20/current
+      點「Instructions for authors」進入。頁尾標示「Updated 7-30-25」。
+      頁面內同時存在 T&F 通用段落與 JASA 自有段落，兩者有數處互相矛盾（頁數是否含附錄、
+      關鍵字 3–5 或 3–6、摘要稱 unstructured 或 extended），記在各欄位的 note。
+    fetch:
+      method: browser
+      http_viable: false
+      http_failure_mode: >-
+        Cloudflare「Just a moment...」挑戰頁：curl 回 HTTP 403、約 5.7 KB；
+        WebFetch 同樣回 403。同站 journals/uasa20、about-this-journal 也都是 403 + 約 5.5 KB
+        的同型挑戰頁。safari-browser（已登入的真實 Safari）可正常讀取。
+      validity:
+        must_contain: "The research reported should be motivated by a scientific or practical problem"
+        min_extracted_chars: 20000
+    snapshot:
+      fetched_at: 2026-10-08
+      last_verified_at: 2026-10-08
+      extracted_sha256: null
+
+  - id: tf_about
+    role: authoritative
+    url: https://www.tandfonline.com/journals/uasa20/about-this-journal
+    note: Aims and scope、journal metrics、editorial board、open access、ISSN 都在本頁。
+    fetch:
+      method: browser
+      http_viable: false
+      http_failure_mode: Cloudflare 挑戰頁（curl HTTP 403、約 5.5 KB），與 tf_instructions 相同。
+      validity:
+        must_contain: "Established in 1888 and published quarterly in March, June, September, and December"
+        min_extracted_chars: 8000
+    snapshot:
+      fetched_at: 2026-10-08
+      last_verified_at: 2026-10-08
+      extracted_sha256: null
+
+  - id: tf_special_issues
+    role: supporting
+    url: https://www.tandfonline.com/journals/uasa20/special-issues
+    note: 2026-10-08 只列出 1929–1979 年的歷史 proceedings 與索引卷，沒有開放中的徵稿。
+    fetch:
+      method: browser
+      http_viable: false
+      http_failure_mode: Cloudflare 挑戰頁（同 tf_instructions）。
+    snapshot:
+      fetched_at: 2026-10-08
+      last_verified_at: 2026-10-08
+      extracted_sha256: null
+
+# ─────────────────────────────────────────────────────────────
+identity:
+  name: Journal of the American Statistical Association
+  abbreviation: JASA
+  publisher: Taylor & Francis
+  owner: American Statistical Association
+  issn: {print: "0162-1459", electronic: "1537-274X", src: tf_about}
+  homepage: https://www.tandfonline.com/journals/uasa20
+  frequency: quarterly（3、6、9、12 月）
+  sections: [Applications and Case Studies, Theory and Methods, Reviews]
+  open_access: hybrid（T&F Open Select）
+  editors:
+    theory_and_methods:
+      co_editors: [Jianqing Fan, Annie Qu, Dylan Small]
+      co_editors_elect: [Tianxi Cai, Runze Li, Xiaotong Shen]
+      queries_email: jasa.tm.asa@gmail.com
+      src: tf_about
+    coordinating_and_acs_editor: {name: Hongtu Zhu, src: tf_about}
+    reviews_editor: {name: Thomas Lee, src: tf_about}
+    reproducibility_contact: {email: jasa.app.cs.aer@gmail.com, role: Associate Editors for Reproducibility, src: repro_guide}
+  external_ids:
+    crossref: "0162-1459"
+    openalex: issn:0162-1459
+  metrics:
+    impact_factor: {value: 4.0, year: 2025, as_of: 2026-10-08, src: tf_about}
+    impact_factor_5yr: {value: 5.5, year: 2025, as_of: 2026-10-08, src: tf_about}
+    citescore: {value: 7.5, year: 2025, as_of: 2026-10-08, src: tf_about}
+    snip: {value: 3.094, year: 2025, as_of: 2026-10-08, src: tf_about}
+    sjr: {value: 3.790, year: 2025, as_of: 2026-10-08, src: tf_about}
+    quartile: {value: Q1, basis: [Impact Factor, CiteScore], as_of: 2026-10-08, src: tf_about}
+    acceptance_rate:
+      value: 0.14
+      as_of: 2026-10-08
+      src: tf_about
+      note: 全刊數字，頁面未分 section、未註明統計期間。
+    time_to_first_decision: {value_days: 63, as_of: 2026-10-08, src: tf_about, note: 投稿到第一次決定的平均天數（含 desk decision）}
+    time_to_first_post_review_decision: {value_days: 102, as_of: 2026-10-08, src: tf_about}
+    acceptance_to_online: {value_days: 96, as_of: 2026-10-08, src: tf_about}
+
+# ─────────────────────────────────────────────────────────────
+requirements:
+  refresh: {check_every: P6M, method: extracted_hash_diff}
+
+  scope:
+    aims: >-
+      統計科學的旗艦期刊；刊登統計應用、理論與方法，涵蓋經濟、社會、生物、物理、工程、健康科學與人文等
+      所有使用資料的領域。
+    src: tf_about
+    theory_and_methods:
+      statement: >-
+        "The Theory and Methods section publishes articles that make original contributions to the
+        foundations, theoretical development, and methodology of statistics and probability."
+      evaluation_criteria:          # 官網 T&M 段逐條列出的期待
+        - 研究須由科學或實務問題所驅動（"should be motivated by a scientific or practical problem"），理想上以該問題的應用示範所提方法
+        - 以真實資料示範「especially welcomed and strongly encouraged」
+        - 須為已完成的研究（"should report on completed research"）
+        - 須與既有方法做充分比較（"should adequately compare methods with existing methods"）
+        - 追求對統計理論、方法與實務有廣泛影響的實質文章
+      also_accepts:
+        - 把既有理論以重要方式改造、延伸到特定應用領域的文章
+        - 對統計或機率某主題提出新整合的 survey 文章
+      out_of_scope_hints:
+        - case: 焦點較窄的貢獻
+          statement: '"more narrowly focused contributions, while of considerable merit in their own right, may be inappropriate for the Theory and Methods section"'
+      src: tf_instructions
+    applications_and_case_studies:
+      note: >-
+        統計新穎性在應用脈絡中判斷；把既有方法創新地用到新領域也歡迎。須說明資料如何蒐集或選取，
+        並提供讀者理解所需的學科背景。沒有方法學創新、但分析嚴謹且問題重要的資料分析也可能刊登。
+      src: tf_instructions
+
+  article_types:
+    - {id: theory_and_methods, label: Theory and Methods, note: 頁數依全刊通則 35 頁, src: tf_instructions}
+    - id: acs_traditional
+      label: Applications and Case Studies（traditional）
+      limits: 35 頁（含表格、參考文獻、圖）
+      src: tf_instructions
+    - id: acs_short_communication
+      label: ACS Short Communication
+      limits: 25 頁（含表格、參考文獻、圖）
+      note: 資料基礎建設、資料處理流程、資料標註方法、以熟悉方法做的完整資料分析、perspective/commentary
+      src: tf_instructions
+    - id: acs_fast_track
+      label: ACS Fast Track
+      limits: 25 頁
+      note: 曾被高影響期刊（例 Nature、Nature Genetics）拒稿、具重要統計成分的論文，須附詳細審查意見
+      src: tf_instructions
+    - id: review
+      label: Reviews
+      limits: 50 頁（含表格、參考文獻、圖）
+      note: 主要貢獻須是綜整與評析，不是提出全新方法；ACS 類主題的回顧也投 Reviews section
+      src: tf_instructions
+    - {id: book_review, label: Book Reviews, note: 由出版社送書、review editor 邀稿, src: tf_instructions}
+    - {id: letter, label: Letters to the Editor, note: 針對已刊 JASA 文章，須在該文刊出三個月內送達, src: tf_instructions}
+    - {id: discussion_paper, label: Discussion Papers, note: 不能自行投稿，由 editors 從已接受稿件中指定, src: tf_instructions}
+    - id: proceedings_paper
+      label: Papers Published in Proceedings
+      note: >-
+        已刊於研討會論文集不妨礙投稿。ASA Proceedings 的論文可幾乎原樣投稿；非 ASA proceedings 須是更完整的研究，
+        cover letter 須說明期刊版新增了什麼、會議版是否有版權，並在期刊版引用會議版。
+      src: tf_instructions
+  section_rule: 一次只能投一個 section（"Papers can be submitted for publication to only one section at a time"）
+
+  length:
+    value: 35
+    unit: pages_double_spaced
+    basis: {paper: "8.5 x 11 in", font_size_pt: 12, spacing: double, lines_per_page: 26, sides: one}
+    includes: [references, tables, figures, abstract]
+    approx_words:
+      value: 10000
+      assumption: "26 行/頁 × 約 11 字/行 ≈ 285 words/page × 35 頁，未扣圖表與參考文獻所佔版面"
+      confidence: low
+    exceptions: >-
+      上限也包含 title page。Appendices、proofs 與其他支持材料須放在另一份 supplement 檔（審查時須匿名）。
+      同頁另一段（Formatting）寫「the average JASA paper is about 30 manuscript pages ... including all
+      appendices」且「very uncommon for papers much longer than about 35 pages to appear」——
+      與「附錄不計、移到 supplement」的通則相矛盾；保守做法是正文 + 參考文獻控制在 35 頁內，
+      證明全部移到 supplement。
+    src: tf_instructions
+
+  abstracts:
+    - id: main
+      max_words: 200
+      required_at: submission
+      structure: unstructured
+      content: 前 100 字簡述動機與貢獻；其餘以具體例子與有趣的特例加以說明
+      forbidden: [摘要內引用文獻]
+      note: >-
+        原文為「an unstructured abstract of 200 words」與「an extended abstract of 200 words」，
+        未明說 200 是上限還是目標字數。
+      src: tf_instructions
+
+  keywords:
+    min: 3
+    max: 5
+    must_not_appear_in_title: true
+    note: >-
+      通則段寫「between 3 and 5 keywords」；Formatting 段寫「from three to six key words or phrases that do
+      not appear in the paper's title」。取交集即 3–5 個且不與標題重複。
+    src: tf_instructions
+
+  formatting:
+    style_manual: {name: ASA Style Guide, url: "https://files.taylorandfrancis.com/asa-style-guide.pdf", src: tf_instructions}
+    spelling: American
+    file_formats: [Word, LaTeX]
+    latex:
+      document_class: article
+      references: BibTeX + natbib.sty，搭配 plain.bst 或 apalike.bst；接受後須提供 .bib 與 .bbl
+      upload: >-
+        LaTeX 稿先轉成 PDF，上傳為「Manuscript - with author details」與「Manuscript - anonymous」，
+        另將 LaTeX 原始檔打包成單一 zip，標為「LaTeX Source Files」
+      template:
+        url: https://files.taylorandfrancis.com/jasa_template.zip
+        note: >-
+          須知頁稱相容 Quarto 與 Overleaf、ASA 不提供技術支援。2026-10-08 下載檢視 template.tex
+          （JASA_template_2025）：以 \newcommand{\anon}{1} 切換具名版、改為 0 即產生匿名版；
+          內文 \spacingset{1.8}（註明不要改）；bibliographystyle 為 agsm，與須知所寫 plain/apalike 不同。
+      src: tf_instructions
+    page: {size: "8.5 x 11 in", font_size_pt: 12, spacing: "fully double-spaced（26 lines/page）", numbered: true}
+    element_order: [title page, author footnote, abstract, keywords, article text（含 tables、figures）,
+                    acknowledgments, appendices, references]
+    math_style:
+      - 指數寫成 exp( )
+      - 行內分數用斜線，例如 (w+x)/(y+z)
+      - overbar 不可跨一個字元以上；不用 underbar
+      - 向量與矩陣符號一律粗體
+      - 腳註少用，且不可含數學式
+    tables_figures:
+      placement: 內文首次提及後盡快出現，不可放在檔尾或另檔
+      formats: {preferred: [eps, ps], acceptable: [pdf, tif, jpg, bmp]}
+      min_dpi_print: 300
+      color: 線上免費彩色；若印刷版黑白而線上彩色，同一圖檔須兩用，圖說與內文不得提及顏色
+      image_descriptions: 必須為所有傳達必要資訊的圖提供 alt text
+    unpublished_cited_works: 審查需要的未發表論文與技術報告須隨稿附上
+    src: tf_instructions
+
+  structure:
+    cover_letter: {required: true, content: 說明研究的重要性（"detailing the significance of your work"）, src: tf_instructions}
+    supplementary_material:
+      encouraged: true
+      typical_content: 技術推導與證明、額外圖表、程式碼與資料
+      anonymous: true
+      note: 審稿人都看得到 supplement，所以必須匿名；接受後可能放上 JASA 網站，資料與程式經 Figshare 公開
+      src: tf_instructions
+    statements_required:
+      - {id: funding, content: 列出所有經費來源；沒有經費也要聲明, src: tf_instructions}
+      - {id: disclosure, content: 利益衝突聲明，置於 acknowledgments 之後、references 之前；無衝突也要寫, src: tf_instructions}
+      - {id: generative_ai, content: 是否與如何使用生成式 AI；未使用也要聲明, src: tf_instructions}
+
+  review:
+    type: double_anonymous
+    applies_to: [Applications and Case Studies, Theory and Methods]
+    flow: 先由 editor 判斷是否合適，再送外審
+    associate_editor_anonymous: false
+    files_at_submission: [匿名稿（無作者姓名與機構）, 具名稿]
+    author_responsibility: 作者自行清除身分線索，含引用自己未發表的著作與經費來源；supporting manuscripts 也比照
+    src: tf_instructions
+    conditional:
+      - id: reproducibility_at_invited_revision
+        when: 初投稿獲邀修改（invited revision），適用 T&M 與 ACS（2021-09-01 之後投稿的新稿）
+        requirements:
+          - 填寫 Author Contributions Checklist（ACC），以 PDF 作為 supplementary material 的獨立檔案上傳
+          - 隨修改稿繳交 code、data 與重現工作流程
+          - 若可重現材料放在 supplement，打包成單一 zip（建議檔名 reproducibility_materials.zip），目錄結構清楚
+          - 繳交前須自行對照 Reproducibility Pre-Submission Checklist（此 checklist 本身不繳交）
+          - 資料原則上須讓審稿人取得；保密資料可經 Editor 准許例外，但須提供可與程式碼搭配執行的 pseudo-dataset
+          - 程式碼須能重現主要結果（資料前處理、分析、圖表）；模擬與比較方法的程式碼也須提供
+      - id: reject_and_resubmit
+        when: 收到 reject and resubmit
+        requirements: [可能被要求在重投時一併繳交可重現材料]
+      - id: conditional_acceptance
+        when: 有條件接受
+        requirements:
+          - code 與 data 須依 ACC 所述公開（資料可經核准例外）
+          - 匿名 GitHub repository 須換成公開、具名的 Git repository
+          - 完成前稿件不算接受，作者也不得宣稱已接受
+      - id: preprint_posted
+        optional: true
+        when: 作者已把投稿版本放上 preprint server
+        requirements: [期刊提醒雙盲匿名性無法保證（"anonymity cannot be guaranteed"）]
+    reproducibility_materials_anonymity:
+      note: >-
+        T&F 須知前段要求「should remove identifying author information from the code/data ... to the extent
+        possible」，後段（Review Process）又寫「Authors can choose whether to anonymize their reproducibility
+        materials, including the ACC form」；repro_author_guidelines 也寫「may choose to anonymize」。
+        可用 Anonymous GitHub。
+      src: tf_instructions
+    author_may_suggest_reviewers: {status: not_published, checked: 2026-10-08, src: tf_instructions}
+    editorial_screening: >-
+      投稿時可能篩檢抄襲與「重投近期被 JASA 拒絕的稿件」；三個月內三次 desk reject 或三次違規，
+      Editorial Board 可不經外審退稿，嚴重者一年內自動拒收該作者新稿。
+    revised_manuscript_window: 距 editor 最後一次處理超過 1 年才重投的修改稿，可能被視為新投稿
+
+  openness:
+    reproducibility_review:
+      applies_to: [Theory and Methods, Applications and Case Studies]
+      since: {theory_and_methods: "2021（2021-09-01 之後的新投稿）", applications_and_case_studies: "2016"}
+      reviewer: 多數由 JASA associate editors for reproducibility（AER）擔任
+      src: repro_guide
+    initial_submission: >-
+      repro_guide 首頁：「We encourage but do not require that initial submissions include the code, data,
+      and workflow」。T&F 須知亦寫 ACC 的填寫說明在獲邀修改後才寄給作者。
+    acc_timing_conflict:
+      note: >-
+        repro_author_guidelines 寫「authors are required to include an ... ACC Form with their submission」，
+        repro_acc 寫「provide as supplementary material when submitting your manuscript for review」，
+        兩者讀起來像初投稿就要交 ACC；與上一條相矛盾。初投稿附上 ACC PDF 可同時滿足兩種讀法。
+      checked: 2026-10-08
+    data_statement:
+      required: true
+      form: ACC form 須說明資料在發表後如何公開
+      exception: 基於安全或保密理由可由 Editor 准許例外，但須提供 pseudo-dataset
+      src: repro_author_guidelines
+    data_documentation: 非專有格式、清楚的 metadata、data dictionary；資料前處理視為須可重現的流程的一部分
+    code_statement: {required: true, applies_to: 文中計算性結果（含模擬）, src: repro_checklist}
+    software_citation: 對研究結果不可或缺的軟體套件須列入 References；輔助用途可不列
+    repositories:
+      - {name: JASA area of Figshare, url: "https://tandf.figshare.com/JASA", note: supplement 內 <500 MB 的 code 與 data 於接受後存放此處}
+      - {name: JASA Dataverse, url: "https://dataverse.harvard.edu/dataverse/jasa", note: 接受後存放，或存 Harvard Dataverse 再連結}
+      - {name: Anonymous GitHub, url: "https://anonymous.4open.science/", note: 審查期間匿名用}
+    git_only_insufficient: 只放在 Git repository 不足以長期保存，須同時放進 supplement 或有 DOI 的永久典藏（如 Zenodo）
+    template_repository: https://github.com/jasa-acs/repro-template
+    award: JASA Reproducibility Award（2023 起，每年 JSM 頒發；當年度所有被接受稿件皆有資格）
+    src: repro_guide
+
+  authorship:
+    taxonomy: CRediT
+    credit_required: false
+    note: 期刊「supports」CRediT；投稿時須準備好各作者的 CRediT 角色，有提供才會刊出
+    affiliation_changes_after_acceptance: forbidden
+    orcid: {required: false, note: '"Where available, please also include ORCiDs"'}
+    src: tf_instructions
+
+  submission:
+    system: Taylor & Francis Submission Portal
+    portal:
+      url: https://rp.tandfonline.com/submission/create?journalCode=UASA
+      verified: false
+      note: >-
+        取自須知頁「Go to submission site」按鈕的 href（2026-10-08）。curl 解析 rp.tandfonline.com 逾時，
+        未實際載入確認。同頁「To submit your manuscript please click here」的連結是範本佔位符
+        journalCode=XXXX，不要用那個。
+    similarity_screening: Crossref（同意於審查與製作期間做原創性檢查）
+    language: English only
+    src: tf_instructions
+
+  fees:
+    submission: 0
+    page_charges: 0
+    publication_fee: 0
+    statement: "There are no submission fees, publication fees or page charges for this journal."
+    apc:
+      applies_when: 選擇 Open Select 開放取用時
+      amount: {status: not_published, checked: 2026-10-08, src: tf_instructions,
+               note: JASA 頁面未列金額，只指向 T&F 的 APC finder；機構若與 T&F 有 OA 協議可減免}
+      not_open_access: 不選 OA 則無 APC
+    color_print:
+      online: 免費
+      first_four_per_figure: {USD: 400, GBP: 300, AUD: 500, EUR: 350}
+      fifth_onward_per_figure: {USD: 75, GBP: 50, AUD: 100, EUR: 65}
+      note: 依所在地可能另加稅
+    src: tf_instructions
+
+  policies:
+    dual_submission: forbidden
+    previously_published: 已發表或在他刊審查中的稿件不受理（研討會論文集例外，見 article_types.proceedings_paper）
+    preprints:
+      allowed: true
+      conditions:
+        - 可放在非商業 preprint server；T&F 不視為重複發表
+        - 投稿稿件中須引用該 preprint
+        - 接受後在 preprint 上註明已被接受；刊出後加上正式版 DOI
+      double_anonymous_caveat: 已放 preprint 時，期刊明言無法保證匿名
+      copyright_permission: >-
+        ASA 版權協議允許作者把投稿時的作者自製版本放在個人網頁或公開數位典藏，但須附連到期刊正式網頁的連結
+      src: [tf_preprints, tf_instructions]
+    generative_ai:
+      disclosure_required: true
+      placement: 獨立聲明（"Declaration of generative AI use"）；未使用也須聲明
+      suggested_wording_if_unused: "The authors report generative AI was not used in their research or preparation of this manuscript"
+      statement_contents: [作者已確認內容原創與正確, AI 工具名稱與版本, 已確認工具使用條款允許發表, 作者對全部內容（含參考文獻正確性）負全責]
+      drafting_text: 不允許以生成式 AI 產出稿件或任何章節的初稿
+      copyediting: 允許（拼字、文法、行文），不可用來建立或推導論證
+      reference_suggestion: 允許，但作者須自行查證
+      authorship: {status: not_found, checked: 2026-10-08, note: AI 政策頁把作者資格問題轉指 T&F Authorship editorial policies，該頁未擷取}
+      src: [tf_instructions, tf_ai_policy]
+    conflict_of_interest:
+      disclosure_required: true
+      placement: acknowledgments 之後、references 之前
+      wording_if_none: "The authors report there are no competing interests to declare."
+      src: tf_instructions
+    editors_as_authors: 編輯委員可投稿；作者若為編輯，將排除於該稿所有編務之外
+    plagiarism: 零容忍；抄襲或一稿多投將退稿並通知作者所屬機構
+    copyright: 刊出前須簽版權轉讓給 ASA（美國政府雇員執行公務之作品除外）；選 OA 則有 Creative Commons 授權選項
+    third_party_material: 投稿前須取得版權人書面許可
+    accepted_manuscript_online: 接受後先以未編輯的 Accepted Manuscript Online（AMO）上線，之後由 Version of Record 取代
+    src: tf_instructions
+
+  standards:
+    - id: jasa-acc
+      label: JASA Author Contributions Checklist（ACC）Form
+      url: https://jasa-acs.github.io/repro-guide/pages/acc.html
+      required: true
+      level: 獲邀修改時必交（初投稿時是否必交，官方頁面說法不一，見 openness.acc_timing_conflict）
+      applicability:
+        - {case: monte_carlo_simulation, status: covered, ref: "https://jasa-acs.github.io/repro-guide/pages/author-checklist.html",
+           note: "checklist 第 4 節：Simulation and competitor methods are provided if results are shown；須設定 random seed"}
+        - {case: real_data_application, status: covered,
+           note: 資料原則上須給審稿人；須附 data dictionary；前處理須以程式碼重現}
+        - {case: restricted_data, status: partial,
+           note: Editor 可准許例外，但須提供格式相同的 synthetic/pseudo dataset}
+        - {case: proofs_only_no_computation, status: partial,
+           note: 頁面未特別規範純理論結果；checklist 只要求「若未重現全部結果，須說明重現範圍」}
+      escalation: jasa.app.cs.aer@gmail.com
+    - id: jasa-repro-checklist
+      label: JASA Reproducibility Pre-Submission Checklist
+      url: https://jasa-acs.github.io/repro-guide/pages/author-checklist.html
+      required: true
+      level: 繳交可重現材料前須自我檢核；checklist 本身不繳交（2026-08 起明列為預期）
+    - {id: asa-style-guide, label: ASA Style Guide, url: "https://files.taylorandfrancis.com/asa-style-guide.pdf", required: true}
+    - {id: credit, label: CRediT, required: false}
+
+# ─────────────────────────────────────────────────────────────
+cycle:
+  applies_to: null
+  rolling_calls: []
+  note: 2026-10-08 檢查 special issues 頁，只有 1929–1979 年的歷史卷，沒有開放徵稿（src tf_special_issues）。
+
+# ─────────────────────────────────────────────────────────────
+warnings:
+  - T&M 明言「more narrowly focused contributions ... may be inappropriate」；JASA 要的是對統計理論、方法與實務有廣泛影響的文章，且研究須由科學或實務問題驅動、強烈鼓勵以真實資料示範
+  - 正文上限 35 頁（8.5×11 吋、12 pt、全雙行距 26 行／頁，含 title page、摘要、圖表與參考文獻）；附錄與證明一律移到匿名 supplement
+  - 雙盲審查：須上傳匿名與具名兩份稿件；作者自行清除身分線索（含引用自己未發表的著作、經費來源）；已放 preprint 則匿名無法保證
+  - 獲邀修改時必須繳交 ACC form、code 與 data；有條件接受後須公開 code 與 data 並把匿名 repo 換成具名公開 repo，否則不算接受
+  - 官方頁面對 ACC 是否初投稿就要交說法不一；初投稿就附 ACC PDF 最保險
+  - 系統會篩檢重投近期被拒稿件；三個月內三次 desk reject 可能被不經外審退稿，嚴重者一年內自動拒收
+  - 須知頁正文的「click here」投稿連結指向佔位符 journalCode=XXXX；請用「Go to submission site」（journalCode=UASA）
+  - 距 editor 最後一次處理超過一年才重投的修改稿可能被當作新投稿

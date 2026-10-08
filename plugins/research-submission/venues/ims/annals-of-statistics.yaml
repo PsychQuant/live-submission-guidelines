@@ -1,0 +1,644 @@
+--- # research-submission venue record
+# 內容擷取自 IMS 官方頁面（imstat.org，經 Safari 通過 Anubis 挑戰）、Project Euclid、
+# EJMS 與 VTeX LaTeX 支援頁，2026-10-08。
+# imstat.org 全站以 Anubis proof-of-work 擋 curl 與 WebFetch，規定本體只能用真實瀏覽器取得；
+# 各 source 的 fetch 欄位記錄了這件事。
+
+schema_version: 1
+id: ims/annals-of-statistics
+kind: journal
+family: statistics-journals
+status: active
+
+# ─────────────────────────────────────────────────────────────
+# 來源與 provenance。AoS 的須知拆成十幾個子頁，規定本體分散在
+# Manuscript Preparation、Supplement Instructions、Manuscript Handling Procedures、
+# Guidelines for Referees、Guidelines for Associate Editors、Ethical Principles 六頁。
+# 所有 imstat.org 子頁網址皆由期刊首頁側欄連結取得，非推測。
+# ─────────────────────────────────────────────────────────────
+sources:
+  - id: manuscript_preparation
+    role: authoritative
+    url: https://imstat.org/journals-and-publications/annals-of-statistics/annals-of-statistics-manuscript-preparation/
+    note: >-
+      投稿條件、EJMS 入口、LaTeX 範本要求、篇幅、affiliation 與致謝政策都在這一頁。
+      頁面上「template」連結指向 http://www.e-publications.org/ims/support/ims-instructions.html。
+    fetch:
+      method: browser
+      http_viable: false
+      http_failure_mode: >-
+        imstat.org 全站由 Anubis（v1.28.0-pre2）proof-of-work 挑戰保護：curl 回 HTTP 200 +
+        7355–7356 bytes 的「Making sure you're not a bot!」頁（非 403）。2026-10-08 實測 11 個
+        不同 imstat.org URL 回應大小幾乎相同（決定性證據：全是同一個挑戰頁）。WebFetch 同樣
+        只拿到 Anubis 頁。須以 safari-browser 開啟、等 JS 解完挑戰後讀 innerText。
+      validity:
+        must_contain: "A typical paper should not exceed 25 pages"
+        min_extracted_chars: 2000
+    snapshot:
+      fetched_at: 2026-10-08
+      last_verified_at: 2026-10-08
+      extracted_sha256: null
+
+  - id: supplement_instructions
+    role: authoritative
+    url: https://imstat.org/journals-and-publications/annals-of-statistics/annals-of-statistics-supplement-instructions/
+    fetch:
+      method: browser
+      http_viable: false
+      http_failure_mode: Anubis proof-of-work 挑戰頁（HTTP 200 + 7356 bytes），同 manuscript_preparation
+      validity:
+        must_contain: "it is the journal policy to post ALL supplemental files"
+        min_extracted_chars: 2000
+    snapshot:
+      fetched_at: 2026-10-08
+      last_verified_at: 2026-10-08
+      extracted_sha256: null
+
+  - id: handling_procedures
+    role: authoritative
+    url: https://imstat.org/journals-and-publications/annals-of-statistics/annals-of-statistics-manuscript-handling-procedures/
+    fetch:
+      method: browser
+      http_viable: false
+      http_failure_mode: Anubis proof-of-work 挑戰頁（HTTP 200 + 7356 bytes），同 manuscript_preparation
+      validity:
+        must_contain: "The Associate Editor quickly screens papers"
+        min_extracted_chars: 1800
+    snapshot:
+      fetched_at: 2026-10-08
+      last_verified_at: 2026-10-08
+      extracted_sha256: null
+
+  - id: referee_guidelines
+    role: authoritative
+    url: https://imstat.org/journals-and-publications/annals-of-statistics/annals-of-statistics-guidelines-for-referees/
+    note: 審稿判準（三項）與審稿人建議類別的正式文字在此頁；作者端判斷「會被怎麼評」以此為準。
+    fetch:
+      method: browser
+      http_viable: false
+      http_failure_mode: Anubis proof-of-work 挑戰頁（HTTP 200 + 7355 bytes），同 manuscript_preparation
+      validity:
+        must_contain: "Technical sophistication alone is not sufficient grounds for publication"
+        min_extracted_chars: 4000
+    snapshot:
+      fetched_at: 2026-10-08
+      last_verified_at: 2026-10-08
+      extracted_sha256: null
+
+  - id: ae_guidelines
+    role: authoritative
+    url: https://imstat.org/journals-and-publications/annals-of-statistics/annals-of-statistics-guidelines-for-associate-editors/
+    note: >-
+      給副編輯的內部準則，但對作者最有資訊量：desk-reject 比例、審稿時程目標、
+      「statistical innovation」判準、cover letter 須寫出 key innovations、作者須願意擔任審稿人。
+      頁首說作者須遵守的政策與 author certifications「appended below」，但 2026-10-08 實際頁面
+      內容在 "The IMS mission statement for the AoS provides guidance and is as follows." 之後
+      就結束，附錄政策與 certifications 不在頁上（已檢查 DOM，無隱藏內容）。
+    fetch:
+      method: browser
+      http_viable: false
+      http_failure_mode: Anubis proof-of-work 挑戰頁（HTTP 200 + 7356 bytes），同 manuscript_preparation
+      validity:
+        must_contain: "Mathematical depth is neither necessary nor sufficient"
+        min_extracted_chars: 8000
+    snapshot:
+      fetched_at: 2026-10-08
+      last_verified_at: 2026-10-08
+      extracted_sha256: null
+
+  - id: ethical_principles
+    role: authoritative
+    url: https://imstat.org/journals-and-publications/annals-of-statistics/annals-of-statistics-ethical-principles/
+    fetch:
+      method: browser
+      http_viable: false
+      http_failure_mode: Anubis proof-of-work 挑戰頁（HTTP 200 + 7356 bytes），同 manuscript_preparation
+      validity:
+        must_contain: "Plagiarism, including self-transcription"
+        min_extracted_chars: 4500
+    snapshot:
+      fetched_at: 2026-10-08
+      last_verified_at: 2026-10-08
+      extracted_sha256: null
+
+  - id: editorial_policy
+    role: authoritative
+    url: https://imstat.org/journals-and-publications/annals-of-statistics/annals-of-statistics-editorial-policy/
+    fetch:
+      method: browser
+      http_viable: false
+      http_failure_mode: Anubis proof-of-work 挑戰頁（HTTP 200 + 7356 bytes），同 manuscript_preparation
+      validity:
+        must_contain: "not on formalism"
+        min_extracted_chars: 1200
+    snapshot:
+      fetched_at: 2026-10-08
+      last_verified_at: 2026-10-08
+      extracted_sha256: null
+
+  - id: acceptance_of_papers
+    role: authoritative
+    url: https://imstat.org/journals-and-publications/acceptance-of-papers/
+    note: IMS 各刊共用頁（版權轉讓、出版費、offprint），由 AoS 首頁的 Publications 選單連入。
+    fetch:
+      method: browser
+      http_viable: false
+      http_failure_mode: Anubis proof-of-work 挑戰頁（HTTP 200 + 7356 bytes），同 manuscript_preparation
+      validity:
+        must_contain: "Payment of some or all of the estimated publication charges"
+        min_extracted_chars: 1200
+    snapshot:
+      fetched_at: 2026-10-08
+      last_verified_at: 2026-10-08
+      extracted_sha256: null
+
+  - id: ims_arxiv
+    role: authoritative
+    url: https://imstat.org/journals-and-publications/electronic-access/ims-journals-on-arxiv/
+    note: IMS 層級的 arXiv 政策頁，由首頁 Publications 選單（Electronic Access 底下）連入。
+    fetch:
+      method: browser
+      http_viable: false
+      http_failure_mode: Anubis proof-of-work 挑戰頁（HTTP 200 + 7356 bytes），同 manuscript_preparation
+      validity:
+        must_contain: "The IMS encourages all members to post their articles on arXiv"
+        min_extracted_chars: 1000
+    snapshot:
+      fetched_at: 2026-10-08
+      last_verified_at: 2026-10-08
+      extracted_sha256: null
+
+  - id: journal_home
+    role: supporting
+    url: https://imstat.org/journals-and-publications/annals-of-statistics/
+    note: 期刊首頁：一句話宗旨與現任編輯群。各子頁連結從這裡的側欄取得。
+    fetch:
+      method: browser
+      http_viable: false
+      http_failure_mode: Anubis proof-of-work 挑戰頁（HTTP 200 + 7356 bytes），同 manuscript_preparation
+      validity:
+        must_contain: "Harrison Zhou"
+        min_extracted_chars: 800
+    snapshot: {fetched_at: 2026-10-08, last_verified_at: 2026-10-08, extracted_sha256: null}
+
+  - id: contacts
+    role: supporting
+    url: https://imstat.org/journals-and-publications/annals-of-statistics/annals-of-statistics-contacts/
+    note: >-
+      此頁列出的 Editors（Lan Wang、Enno Mammen）與期刊首頁的現任編輯（Hans-Georg Müller、
+      Harrison Zhou，2025-2027）不一致——此頁未隨換屆更新。見 warnings。
+    fetch:
+      method: browser
+      http_viable: false
+      http_failure_mode: Anubis proof-of-work 挑戰頁（HTTP 200 + 7356 bytes），同 manuscript_preparation
+      validity:
+        must_contain: "Managing and Production Editors"
+        min_extracted_chars: 800
+    snapshot: {fetched_at: 2026-10-08, last_verified_at: 2026-10-08, extracted_sha256: null}
+
+  - id: euclid_details
+    role: supporting
+    url: https://projecteuclid.org/journals/annals-of-statistics/scope-and-details
+    note: >-
+      期刊首頁「Published Issues」連到 https://projecteuclid.org/euclid.aos，轉址到
+      /journals/annals-of-statistics；本頁是其「SCOPE & DETAILS」分頁（原始 href 用反斜線
+      annals-of-statistics\scope-and-details，瀏覽器正規化為斜線）。ISSN、頻率、存取政策與
+      metrics 只在此頁出現。同站「AUTHOR GUIDELINES」分頁僅寫須知在期刊網站，無實質內容。
+    fetch:
+      method: webfetch
+      http_viable: false
+      http_failure_mode: >-
+        Incapsula bot 挑戰：curl 回 HTTP 200 + 1056–1161 bytes 空殼（iframe 指向
+        /_Incapsula_Resource）。WebFetch 可取得真實內容。
+      validity:
+        must_contain: "Articles older than 3 years are open"
+        min_extracted_chars: 600
+    snapshot: {fetched_at: 2026-10-08, last_verified_at: 2026-10-08, extracted_sha256: null}
+
+  - id: ejms_portal
+    role: supporting
+    url: https://www.e-publications.org/ims/submission/
+    note: IMS Electronic Journal Management System（VTeX 營運）。未登入時轉址到 /ims/submission/index/login。
+    fetch:
+      method: http
+      http_viable: true
+      validity:
+        must_contain: "EJMS - Electronic Journal Management System"
+        min_extracted_chars: 300
+    snapshot: {fetched_at: 2026-10-08, last_verified_at: 2026-10-08, extracted_sha256: null}
+
+  - id: latex_support
+    role: supporting
+    url: https://www.e-publications.org/ims/support/ims-instructions.html
+    note: Manuscript Preparation 頁「template」連結的目標（原連結為 http://，自動轉 https）。說明範本開發已移到 GitHub，AOS 範本文件在 vtex-soft.github.io/texsupport.ims-aos。
+    fetch:
+      method: http
+      http_viable: true
+      validity:
+        must_contain: "The development of IMS journals LaTeX templates moved to GitHub"
+        min_extracted_chars: 400
+    snapshot: {fetched_at: 2026-10-08, last_verified_at: 2026-10-08, extracted_sha256: null}
+
+  - id: latex_package_aos
+    role: supporting
+    url: https://vtex-soft.github.io/texsupport.ims-aos/
+    note: AOS 作者套件說明（imsart.cls / imsart.sty、aos-template.tex、aos-sample.tex/pdf、BibTeX 樣式）。
+    fetch:
+      method: http
+      http_viable: true
+      validity:
+        must_contain: "aos-template.tex"
+        min_extracted_chars: 800
+    snapshot: {fetched_at: 2026-10-08, last_verified_at: 2026-10-08, extracted_sha256: null}
+
+  - id: aos_sample_tex
+    role: supporting
+    url: https://raw.githubusercontent.com/vtex-soft/texsupport.ims-aos/master/aos-sample.tex
+    note: >-
+      作者套件 repo（https://github.com/vtex-soft/texsupport.ims-aos ，由 latex_package_aos 頁的
+      「View on GitHub」連入）中的範例原始檔。摘要 200 字上限只出現在這份範例的 abstract 環境內文，
+      imstat.org 各頁都沒有寫——所以它是「範本說明」而非期刊頁面規定，見 abstracts 的 note。
+    fetch:
+      method: http
+      http_viable: true
+      validity:
+        must_contain: "than 200 words"
+        min_extracted_chars: 10000
+    snapshot: {fetched_at: 2026-10-08, last_verified_at: 2026-10-08, extracted_sha256: null}
+
+  - id: aos_template_tex
+    role: supporting
+    url: https://raw.githubusercontent.com/vtex-soft/texsupport.ims-aos/master/aos-template.tex
+    note: 同一 repo 的投稿範本。「以單一 .tex 檔投稿、不用 \input」的說明只出現在這份範本的註解裡，aos-sample.tex 沒有。
+    fetch:
+      method: http
+      http_viable: true
+      validity:
+        must_contain: "Submit your LaTeX"
+        min_extracted_chars: 4000
+    snapshot: {fetched_at: 2026-10-08, last_verified_at: 2026-10-08, extracted_sha256: null}
+
+# ─────────────────────────────────────────────────────────────
+identity:
+  name: The Annals of Statistics
+  abbreviation: AOS
+  publisher: Institute of Mathematical Statistics
+  issn: {print: "0090-5364", electronic: "2168-8966", src: euclid_details}
+  homepage: https://imstat.org/journals-and-publications/annals-of-statistics/
+  hosting_platform: {name: Project Euclid, url: "https://projecteuclid.org/journals/annals-of-statistics"}
+  editors:
+    - {name: Hans-Georg Müller, term: "2025-2027", src: journal_home}
+    - {name: Harrison Zhou, term: "2025-2027", src: journal_home}
+  managing_editor: {name: Dan Nordman, src: journal_home}
+  production_editor: {name: Patrick Kelly, email: pkelly@wharton.upenn.edu, src: contacts}
+  frequency: bimonthly
+  coverage: "1973-current"
+  external_ids:
+    crossref: "0090-5364"
+    openalex: issn:0090-5364
+  access:
+    model: 訂閱制（IMS 會員與機構訂戶經 Project Euclid 存取）；超過 3 年的文章開放
+    statement: "Access: Articles older than 3 years are open."
+    src: euclid_details
+  metrics:
+    impact_factor:
+      value: 2.901
+      as_of: 2026-10-08
+      src: euclid_details
+      note: Project Euclid 頁面未標示 JCR 年度；as_of 是擷取日，不是 JCR 版次，數值可能是舊年度
+    impact_factor_5yr: {value: 4.497, as_of: 2026-10-08, src: euclid_details, note: 同上，未標示年度}
+    category_rank:
+      value: "8/123"
+      category: Statistics & Probability
+      as_of: 2026-10-08
+      src: euclid_details
+      note: '頁面原文 "Journal Citation Reports® Ranking: #8 of 123 in Statistics & Probability"，未標示年度'
+    mcq: {value: 1.99, label: Mathematical Citation Quotient, as_of: 2026-10-08, src: euclid_details}
+    acceptance_rate:
+      status: not_published
+      checked: 2026-10-08
+      note: >-
+        官網無錄取率。ae_guidelines 只給 desk-reject 的預期比例（共同主編初篩約 30%、
+        副編輯初篩再退約 20%），那不是錄取率，不可換算。
+      src: ae_guidelines
+    time_to_first_decision:
+      status: not_published
+      checked: 2026-10-08
+      note: 無實際統計值；只有 ae_guidelines 內的時程目標（見 review.timeline_targets）
+      src: ae_guidelines
+
+# ─────────────────────────────────────────────────────────────
+# SLOW — 數年不變。驗證用 hash diff 即可。
+# ─────────────────────────────────────────────────────────────
+requirements:
+  refresh: {check_every: P6M, method: extracted_hash_diff}
+
+  scope:
+    aims: >-
+      發表反映當代統計多種面向的最高品質研究論文；首要強調重要性與原創性，而非形式主義
+      （"Primary emphasis is placed on importance and originality, not on formalism."）。
+      涵蓋統計所有領域，特別是數理統計與應用／跨領域統計。
+    src: editorial_policy
+    areas:
+      - id: mathematical_statistics
+        statement: >-
+          持續在數理統計前沿扮演特殊角色，尤其是可能對統計方法、計算或理解產生重大影響的理論進展。
+        src: editorial_policy
+      - id: applied_interdisciplinary
+        statement: >-
+          發表統計在自然、醫學、技術與社會科學各領域跨領域研究中所扮演角色的論文
+          （"interdisciplinary investigations in all fields of natural, medical, technical and social science"）。
+        src: editorial_policy
+    innovation_criterion:
+      statement: >-
+        關鍵要求是論文含有對統計理論、方法、資料分析、應用、計算或統計學習具預期影響的有前景新想法。
+        數學深度既非必要也非充分（"Mathematical depth is neither necessary nor sufficient."）；
+        影響相近時，簡潔理論與較簡單的證明優於刻意複雜的理論。副編輯不應以「缺乏數學深度」
+        或「更適合 JASA」為由退稿；主要判準是具前瞻性新想法的統計創新。
+      src: ae_guidelines
+    applied_and_nonmathematical_work: >-
+      官網明載品質與創新傑出、偏應用或非數學取向的論文也應在 AoS 找到位置
+      （"Papers of outstanding quality and innovation with applied and non-mathematical emphasis should also find a home in the AoS"）。
+    application_fields_listed:
+      status: not_published
+      checked: 2026-10-08
+      note: 官網各頁沒有逐一列出應用領域；editorial_policy 只泛提自然、醫學、技術與社會科學的跨領域統計
+    evaluation_criteria:            # Guidelines for Referees 明列的三項
+      - id: interest_importance_novelty
+        label: 作為科學貢獻的興趣、重要性與新穎性
+        detail: 須在其領域新穎原創；與既有文獻的關係是重要性論證的一部分；「Technical sophistication alone is not sufficient grounds for publication」
+      - id: writing_presentation
+        label: 寫作與呈現品質
+        detail: 須妥善引用既有文獻；引言與摘要要提供好的切入點；非英語母語的小語言錯誤不計較，錄取後一律 copy-edit
+      - id: technical_correctness
+        label: 技術正確性
+        detail: 審稿人盡力檢查論證，但最終責任在作者
+    src_evaluation: referee_guidelines
+    screening_criteria:
+      statement: 副編輯初篩的判準：寫作與呈現的清晰度、對潛在讀者的興趣、新穎性與原創性
+      src: handling_procedures
+    out_of_scope_hints:
+      - case: 機率主題，或著重技術性改進的論文
+        statement: >-
+          "Papers on topics in probability or with a focus on technical improvements are discouraged,
+          regardless of mathematical depth, unless they are substantial and clearly consequential for the field of statistics."
+        src: ae_guidelines
+      - case: 專門性的技術改進、缺乏明確影響證據
+        suggested_venue: 更專門的期刊（官網未指名）
+        statement: >-
+          "Papers that emphasize technical improvements of a specialized nature and without evidence for clear impact
+          find a better home in more specialized journals, and similarly papers emphasizing probability in probability journals."
+        src: ae_guidelines
+      - case: 與作者自己已發表（含研討會論文集）結果密切相關的技術內容
+        statement: >-
+          "the Annals of Statistics generally is not interested in publishing technical material that is closely related
+          to results that have been presented in other publications, including conference proceedings, by one or more of the authors."
+        src: ethical_principles
+
+  article_types:
+    status: not_published
+    checked: 2026-10-08
+    note: >-
+      官網只以 "research papers" 描述，沒有文章類型清單（無 review、tutorial、short communication 等分類）。
+      acceptance_of_papers 的出版費表另列 "discussion"（任一 IMS 期刊的討論文 200 USD），
+      顯示存在討論文形式，但 AoS 頁面未說明如何投稿或受邀。
+    src: manuscript_preparation
+
+  length:
+    value: 25
+    unit: pages_typeset
+    basis: {template: "AoS 標準樣式檔（imsart class，\\documentclass[aos]{imsart}）", note: 以期刊排版樣式計頁，非雙倍行距}
+    wording: '"A typical paper should not exceed 25 pages using the standard style files from the Annals of Statistics."'
+    exceptions: >-
+      需要更多篇幅時，額外材料（例如進一步的技術推導或更詳細的模擬結果）應放進 Supplementary Material。
+      措辭是 "typical paper should not exceed"，屬軟性上限。另見 referee_guidelines：
+      "Most published papers will not exceed 30 pages"，且審稿人被要求建議哪些部分應移到 Supplementary Material。
+    includes_note:
+      status: not_published
+      checked: 2026-10-08
+      note: 官網未說明 25 頁是否含參考文獻、附錄、圖表
+    src: manuscript_preparation
+
+  abstracts:
+    - id: main
+      max_words: 200
+      required_at: submission
+      source_type: LaTeX 範例檔內文（不是 imstat.org 頁面規定）
+      rules:
+        - 摘要應清楚、具描述性、自明（self-contained），適合摘要服務刊登
+        - 盡量少用公式
+        - 不得指涉正文中的結果、參考文獻或公式
+      note: >-
+        "not longer than 200 words" 出自 aos-sample.tex 的 abstract 環境內文；imstat.org 的
+        Manuscript Preparation 頁本身未寫摘要字數。此外 ae_guidelines 說作者會被要求在
+        cover letter 與摘要／引言中寫出 key innovations。
+      src: aos_sample_tex
+  keywords:
+    msc_classification: {required_by_template: true, structure: "primary + secondary MSC codes（\\begin{keyword}[class=MSC]）", src: aos_sample_tex}
+    free_keywords: {max: {status: not_published, checked: 2026-10-08}}
+
+  formatting:
+    typesetting: LaTeX（必須）
+    statement: >-
+      "Manuscripts must be written in LaTeX using AOS's template." 範本會設定邊界與字型；
+      不得使用影響版面或格式的套件或指令。
+    template:
+      class: imsart
+      documentclass: "\\documentclass[aos]{imsart}"
+      files: [imsart.cls, imsart.sty, aos-template.tex, aos-sample.tex, aos-sample.pdf]
+      bibtex_styles: [spr-ims-number.bst, spr-ims-nameyear.bst, acmtrans-ims.bst]
+      repository: https://github.com/vtex-soft/texsupport.ims-aos
+      src: latex_package_aos
+    single_tex_file: {required: true, note: "範本註解：不要用 \\input{...} 引入其他 tex 檔，以單一 .tex 檔投稿（範本層級的說明，期刊頁未寫）", src: aos_template_tex}
+    submission_file: PDF（EJMS 上傳）
+    affiliations: 每位作者只列一個 affiliation（僅系所與大學）；其他 affiliation 放 Acknowledgments
+    acknowledgements: >-
+      僅限：(a) 提供想法、回饋或程式碼等具體貢獻的具名個人；(b) 參與審稿與編輯流程的（可匿名）人士；
+      (c) 資助機構；(d) 研究進行或促成的科學機構或會議（作者本機構除外）
+    funding: 範本另有 {funding} 環境
+    references: 9 位以內作者全部列出，10 位起用 et al.（範本註解）
+    orcid: {supported: true, how: "\\orcid{0000-0000-0000-0000}", required: {status: not_published, checked: 2026-10-08}, src: aos_sample_tex}
+    table_of_contents: 50 頁以上的文章請用 \tableofcontents（範本註解）
+    src: manuscript_preparation
+
+  supplementary_material:
+    role: 篇幅溢出時放技術推導、詳細模擬結果等的指定位置
+    separate_file: true
+    typeset: false
+    rules:
+      - 正文與補充材料必須是分開的檔案；補充材料不經編輯或排版，按原樣張貼
+      - 正文不得用 \ref{} 引用補充材料內的物件（補充材料不排版，會變成 (??)）
+      - 在正文以作者與年份引用（例："Section 4 of the Supplementary Material (Smith (2019))"）
+      - 參考文獻須新增一筆 Supplement to "Title of paper"，DOI 由排版商補上
+      - 參考文獻之前須有 "Supplementary Material" 段，每個檔案以 {supplement} 環境附 \stitle 與 \sdescription
+      - 多個檔案可打包成單一 zip（zip 算一個檔案，需整體描述）
+      - 每個補充檔案會分配獨立 DOI
+    all_files_posted_on_euclid: >-
+      期刊政策是所有補充檔案（含資料、程式碼或任何類型檔案）都隨文章張貼在 Project Euclid；
+      放在 GitHub 等其他平台可以，但這些檔案也必須一併提供。
+    external_link_only: {allowed: false, note: "範本註解：\"It cannot be available exclusively as external link.\"", src: aos_sample_tex}
+    unavailable_cited_items: 引用而網路上不易取得的項目（例如自己未發表的相關工作）應以補充檔案上傳（Ethical Principles A4）
+    screening_consequence: >-
+      副編輯若覺得想法有趣但「Supplement is not in good shape」，可直接建議 Reject with Resubmission（ae_guidelines）
+    src: supplement_instructions
+
+  reproducibility:
+    code_and_data_sharing_mandate:
+      status: not_published
+      checked: 2026-10-08
+      note: >-
+        官網沒有要求公開資料或程式碼的條文，也沒有資料可得性聲明的要求。唯一相關的是：
+        若有補充材料（含資料、程式碼），全部隨文張貼在 Euclid，不能只放外部連結。
+      src: supplement_instructions
+    author_certifications:
+      status: not_found
+      checked: 2026-10-08
+      note: >-
+        ae_guidelines 提到 "See author certifications below"，並說作者須遵守的政策「appended below」，
+        但頁面內容在附錄之前就結束。certifications 內容不明，可能在 EJMS 投稿流程中出現（需登入，未查）。
+      src: ae_guidelines
+    reporting_standards: {status: not_published, checked: 2026-10-08, note: 無 TOP、JARS 或其他報告標準要求}
+
+  review:
+    type: referee_anonymous
+    statement: '"The refereeing system is anonymous" — 審稿人身分保密；官網沒有作者匿名（去識別化稿件）的要求或選項，投稿稿件須列作者與 affiliation。'
+    author_anonymization: {status: not_published, checked: 2026-10-08, note: 官網未提供雙盲選項}
+    src: referee_guidelines
+    stages:
+      - id: coeditor_screening
+        detail: 共同主編先初篩，預期約 30% 投稿在送到副編輯前即 desk-reject
+        src: ae_guidelines
+      - id: ae_screening
+        detail: >-
+          每篇指派一位副編輯負責全程。副編輯最多 10 天初篩，預期再退約 20%，退稿時寫 1–2 段理由給作者。
+          判準為寫作與呈現清晰度、讀者興趣、新穎性與原創性。
+        src: ae_guidelines
+      - id: full_review
+        detail: 建議邀 3–4 位審稿人；兩週內不回應的審稿人換人；希望負面意見一個月內交
+        src: ae_guidelines
+    decision_categories:
+      - {id: accept, label: Accept, note: 可能要求極小修正，不再送回編輯}
+      - {id: minor_revision, label: Accept subject to minor revision, note: 預期作者工作量不超過一週；修訂版可能由副編輯檢查}
+      - {id: major_revision, label: Major revision, note: 標準修訂時間兩個月；referee_guidelines 說修訂稿由所有審稿人檢查，ae_guidelines 則說常由副編輯自行檢查即可}
+      - {id: reject_resubmit, label: Reject with resubmission, note: 有有趣內容但貢獻不完整或有重大缺陷；應避免連續 reject-resubmit}
+      - {id: reject, label: Reject, note: 即使修改通常也不再考慮}
+    timeline_targets:
+      note: 皆為 ae_guidelines 給副編輯的目標，不是實際統計
+      reject_decision: 越快越好，且「definitely within the first 3 months」
+      decision_with_incomplete_reports: 4 個月時副編輯須介入評估並給建議
+      referee_report: 一個月內交特別感謝；兩個月內無法交須通知副編輯（referee_guidelines）
+      src: ae_guidelines
+    author_may_suggest_reviewers:
+      allowed: true
+      how: 在 EJMS 的 "Comments to the editor" 欄位建議相關領域專家；編輯與副編輯不一定採用
+      restriction: 不得遊說或直接聯絡被推薦的審稿人
+      src: manuscript_preparation
+    authors_as_referees:
+      required: true
+      statement: (Co-)authors 應願意擔任審稿人；投稿作者須在投稿系統勾選同意
+      src: ae_guidelines
+    language: 非英語母語作者的語言細節不會被過度要求；錄取後一律 copy-edit（handling_procedures、referee_guidelines）
+
+  submission:
+    portal: https://www.e-publications.org/ims/submission/
+    system: EJMS（Electronic Journal Management System，VTeX）
+    file: PDF
+    registration: 首次使用須註冊，只需註冊一次
+    conditions:                     # 投稿即表示同意
+      - 同一研究未曾發表
+      - 未在他處審查中
+      - 所有共同作者同意發表
+    cover_letter_must_state:
+      - 論文的 key innovations（同時寫在摘要／引言）— ae_guidelines
+    progress_tracking: 稿件進度應透過 EJMS 查詢（contacts）
+    src: manuscript_preparation
+
+  fees:
+    submission: {status: not_published, checked: 2026-10-08, note: 官網未提投稿費}
+    publication_charges:
+      mandatory: false
+      statement: >-
+        "Payment of some or all of the estimated publication charges associated with an article is voluntary."
+        審稿與出版費的行政分開；錄取後才請求出版費。
+      amounts:
+        - {label: Print/Gated Electronic Access journal 文章, value: 1295, currency: USD}
+        - {label: Open Electronic Access journal 文章, value: 825, currency: USD}
+        - {label: 任一期刊的 discussion, value: 200, currency: USD}
+      applicable_tier_note: >-
+        頁面未逐刊標示級距。AoS 透過 Project Euclid 以會員／訂閱存取（Electronic Access 頁），
+        依此推斷適用 1295 USD；此為推斷，非頁面明文。
+      partial_payment: 接受任何金額的部分付款
+      open_access: 付清全額出版費的文章授予開放取用（"Open access is granted on any article for which full publication charges are paid."）
+      src: acceptance_of_papers
+    color_print: {status: not_published, checked: 2026-10-08}
+
+  policies:
+    dual_submission: forbidden
+    prior_publication: 投稿即表示同一研究未曾發表（manuscript_preparation）
+    preprints:
+      allowed: true
+      statement: '"The IMS encourages all members to post their articles on arXiv."'
+      caveat: 若最終出版者不是 IMS，須先查版權轉讓協議
+      src: ims_arxiv
+    preprint_citation_duty: >-
+      作者必須引用所有密切相關的文獻，特別是自己與投稿相關的未發表或近期發表工作（含研討會論文集），
+      即使只有 preprint 形式；未引用可能導致迅速退稿（Ethical Principles A4）
+    copyright:
+      transfer_required: true
+      forms: [General Copyright Transfer Agreement, Plan S/UKRI/Wellcome/NIHR Copyright License, US Government Copyright Transfer Agreement]
+      funder_oa: >-
+        IMS 完全遵守 Plan S、UKRI、Wellcome、NIHR 的開放取用要求；資助者要求時，作者保留以
+        CC BY 4.0 散布 author accepted manuscript 的權利，最晚於線上首次刊出日釋出
+      src: acceptance_of_papers
+    generative_ai:
+      status: not_published
+      checked: 2026-10-08
+      note: >-
+        已檢查 AoS 全部作者相關子頁（manuscript preparation、supplement、handling、referees、AE guidelines、
+        ethical principles、contacts、confidentiality）與 IMS 的 Acceptance of Papers、arXiv 頁，皆無生成式 AI 政策；
+        網路搜尋亦未找到 IMS 官方 AI 政策頁。
+    ethics:
+      plagiarism: 含自我抄錄（self-transcription）；文獻回顧、已知性質的摘述等段落也不得從已發表或將發表的作品複製（A1）
+      corresponding_author: 須熟悉取得作者同意與投稿程序；若由經驗較少者擔任，資深共同作者須確保其了解責任（A2）
+      coauthor_informed: 所有作者須被告知投稿並收到相關往來信件副本；通訊作者須能向編輯證明全體同意（A3）
+      editorial_decisions: 投稿遠多於刊登容量；決定部分基於主觀判準（時效、一般興趣）（A5）
+      src: ethical_principles
+    conflict_of_interest:
+      author_disclosure: {status: not_published, checked: 2026-10-08, note: 官網的利益衝突條文只針對副編輯與審稿人（B5、B6 與 ae_guidelines），無作者揭露要求}
+    language_editing: 錄取後由出版端 copy-edit 修正語言錯誤（handling_procedures）
+
+  standards: []
+
+# ─────────────────────────────────────────────────────────────
+# FAST — 期刊無年度週期。
+# ─────────────────────────────────────────────────────────────
+cycle:
+  applies_to: null
+  rolling_calls: []
+  special_issues:
+    status: not_published
+    checked: 2026-10-08
+    note: AoS 官網各頁無徵稿或特刊公告
+
+# ─────────────────────────────────────────────────────────────
+warnings:
+  - >-
+    Contacts 頁仍列 Lan Wang 與 Enno Mammen 為 Editors，但期刊首頁的現任編輯是 Hans-Georg Müller 與
+    Harrison Zhou（2025-2027）。需要直接聯絡編輯時不要照 Contacts 頁的名字寄信；稿件進度一律透過 EJMS 查詢。
+  - >-
+    投稿時須在 cover letter 與摘要／引言中明確寫出論文的 key innovations（ae_guidelines）。初篩階段約 30% 由
+    共同主編 desk-reject、副編輯再退約 20%，判準是統計創新與影響，不是數學深度。
+  - >-
+    篇幅兩頁各說各的：Manuscript Preparation 寫 typical paper 不超過 25 頁，Guidelines for Referees 寫
+    most published papers 不超過 30 頁。以 25 頁（AoS 樣式）規劃，超出部分移到補充材料。
+  - >-
+    補充材料不經排版、按原樣張貼在 Project Euclid，正文不得用 \ref 指向補充材料內的物件；資料與程式碼若列為
+    補充材料，必須上傳檔案本身，不能只給 GitHub 連結。補充材料狀況不佳可能在初篩就被判 Reject with Resubmission。
+  - >-
+    自己相關的未發表工作、preprint、研討會論文集都必須引用，網路上取不到的要以補充檔案上傳；未引用可能迅速退稿。
+    與自己先前發表（含研討會論文集）結果密切相關的技術內容，AoS 一般不感興趣。
+  - >-
+    投稿作者須勾選同意擔任審稿人。可在 "Comments to the editor" 建議審稿人，但不得聯絡被推薦者。
+  - >-
+    Guidelines for Associate Editors 頁說作者須遵守的政策與 author certifications 附在頁末，但頁面在附錄前就截斷。
+    投稿前應在 EJMS 流程中留意是否有額外的聲明或勾選事項。
